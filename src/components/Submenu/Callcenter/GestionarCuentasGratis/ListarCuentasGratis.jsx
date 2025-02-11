@@ -84,14 +84,14 @@ const ListarCuentasGratis = () => {
                         ci:cedula,
                     }}/>
                 </div>
-                <div className='bg-greenVE-400 p-2 rounded-t-md flex flex-col '>
+                <div className='bg-greenVE-400 p-2  flex flex-col '>
                     <div>
                         <div className='flex gap-2'>
                             <div className='w-2/12 ml-2'>
-                                <label className='text-sm text-greenVE-800 '>Desde:</label>
+                                <label className='text-sm text-greenVE-950 '>Desde:</label>
                             </div>
                             <div className='w-2/12'>
-                                <label className='text-sm text-greenVE-800 '>Hasta:</label>
+                                <label className='text-sm text-greenVE-950 '>Hasta:</label>
                             </div>
                             {
                                 total&&
@@ -101,23 +101,23 @@ const ListarCuentasGratis = () => {
                             }
                         </div>
                         <div className='flex gap-2 my-2'>
-                            <input value={fInicio} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setFInicio(event.target.value) }}></input>
-                            <input value={fFin} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setFFin(event.target.value) }}></input>
-                            <input value={nombre} placeholder='Nombres' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setNombre(event.target.value) }}></input>
-                            <input value={cedula} placeholder='Cédula' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setCedula(event.target.value) }}></input>
+                            <input value={fInicio} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setFInicio(event.target.value) }}></input>
+                            <input value={fFin} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setFFin(event.target.value) }}></input>
+                            <input value={nombre} placeholder='Nombres' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setNombre(event.target.value) }}></input>
+                            <input value={cedula} placeholder='Cédula' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setCedula(event.target.value) }}></input>
                             <div className="flex gap-1">
-                                <select className='p-0 text-xs h-7 rounded-full px-2' value={cantidad} onChange={(event)=>setCantidad(event.target.value)}>
+                                <select className='p-0 text-xs h-7  px-2' value={cantidad} onChange={(event)=>setCantidad(event.target.value)}>
                                     {
                                         Config.ELEMENTOSHOJAS.map((item)=>(
                                             <option value={item.id}>{item.nombre}</option>
                                         ))
                                     }
                                 </select>
-                                <button className='bg-greenVE-200 border-2 border-greenVE-600 px-4 rounded-full h-7' onClick={() => handleClicAplicar({filtros:true})}>Aplicar</button>
+                                <button className='bg-greenVE-200 border-2 border-greenVE-600 px-4  h-7' onClick={() => handleClicAplicar({filtros:true})}>Aplicar</button>
                             </div>
                         </div>
                         <div className='flex gap-2 my-2'>
-                            <input value={correo} placeholder='Correo electrónico' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setCorreo(event.target.value) }}></input>
+                            <input value={correo} placeholder='Correo electrónico' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setCorreo(event.target.value) }}></input>
                         </div>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ const ListarCuentasGratis = () => {
                             ? <div className='w-full flex items-center justify-center mt-5'>
                                 <label>Sin resultados disponibles</label>
                             </div>
-                            : <div className="relative overflow-x-auto shadow-md rounded-b-lg ">
+                            : <div className="relative overflow-x-auto shadow-md  ">
                                 <TablaCuentasGratis listado={data} handleUpdateData={handleUpdateData}/>
                                 {<ReactPaginate
                                     forcePage={selPagina}
