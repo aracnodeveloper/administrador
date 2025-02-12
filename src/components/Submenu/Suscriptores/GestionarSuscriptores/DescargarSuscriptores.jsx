@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { listarSuscriptores } from '../../../../controllers/suscriptores/SuscriptoresController';
+import { Tooltip } from 'flowbite-react';
 
 const DescargarSuscriptores = ({ params }) => {
     const [loading, setLoading] = useState(false);
@@ -11,41 +12,39 @@ const DescargarSuscriptores = ({ params }) => {
         listarSuscriptores({filtros: params}).then(async (res) => {
             setLoading(false);
             if (res) {
-                // Create new Excel workbook
                 const workbook = new ExcelJS.Workbook();
                 const worksheet = workbook.addWorksheet("Suscriptores");
 
-                // Define columns
                 const columns = [
-                    { header: "ID Suscripción", key: "id_suscripcion", format: "text" },
-                    { header: "Cédula Cliente", key: "ci_cliente", format: "text" },
-                    { header: "Nombre Cliente", key: "nombre_cliente", format: "text" },
-                    { header: "ID Vendedor", key: "id_vendedor", format: "text" },
-                    { header: "Nombre Vendedor", key: "nombre_vendedor", format: "text" },
-                    { header: "Estado", key: "estado", format: "text" },
+                    { header: "ID", key: "codigo", format: "text" },
+                    { header: "Cédula/RUC", key: "ci_ruc", format: "text" },
+                    { header: "Nombres", key: "usuario", format: "text" },
                     { header: "Fecha Inicio", key: "fecha_inicio", format: "date" },
                     { header: "Fecha Fin", key: "fecha_fin", format: "date" },
-                    { header: "Tipo Suscripción", key: "tipo_suscripcion", format: "text" },
-                    { header: "Valor", key: "valor", format: "currency" }
+                    { header: "Patrocinador", key: "vendedor", format: "text" },
+                    { header: "Estado de Pago", key: "estado_pago", format: "text" },
+                    { header: "Empresa", key: "nombre", format: "text" }
                 ];
 
-                // Process data
+                const fActual = new Date();
+
                 const rows = res.suscripciones.map(element => {
+                    const fechaFin = new Date(element.fecha_fin.split(" ")[0]);
+                    const estado = fechaFin < fActual ? "Expirado" : "Vigente";
+
                     return [
-                        element.id_suscripcion,
-                        element.ci_cliente,
-                        element.nombre_cliente,
-                        element.id_vendedor,
-                        element.nombre_vendedor,
-                        element.estado,
-                        element.fecha_inicio,
-                        element.fecha_fin,
-                        element.tipo_suscripcion,
-                        element.valor
+                        element.codigo,
+                        element.ci_ruc,
+                        element.usuario,
+                        element.fecha_inicio.split(" ")[0],
+                        element.fecha_fin.split(" ")[0],
+                        element.vendedor,
+                        element.estado_pago,
+                        element.nombre,
+                        estado
                     ];
                 });
 
-                // Create table with filters
                 worksheet.addTable({
                     name: 'SuscriptoresTable',
                     ref: 'A1',
@@ -55,47 +54,53 @@ const DescargarSuscriptores = ({ params }) => {
                         theme: 'TableStyleMedium2',
                         showRowStripes: true,
                     },
-                    columns: columns.map(col => ({ name: col.header, filterButton: true })),
+                    columns: [...columns, { name: "Estado Suscripción", filterButton: true }].map(col => ({
+                        name: col.header || col.name,
+                        filterButton: true
+                    })),
                     rows: rows,
                 });
 
-                // Apply format to each cell
+                worksheet.addConditionalFormatting({
+                    ref: `A2:I${rows.length + 1}`,
+                    rules: [
+                        {
+                            type: 'expression',
+                            formulae: [`=$I2="Expirado"`],
+                            style: {
+                                font: { color: { argb: 'FFFF0000' } }
+                            }
+                        }
+                    ]
+                });
+
                 res.suscripciones.forEach((element, rowIndex) => {
                     const row = worksheet.getRow(rowIndex + 2);
                     columns.forEach((col, colIndex) => {
                         const cell = row.getCell(colIndex + 1);
 
                         if (col.format === 'date' && element[col.key]) {
-                            cell.value = new Date(element[col.key]);
-                            cell.numFmt = 'mmmm dd, yyyy';
-                        } else if (col.format === 'number' && element[col.key] !== undefined) {
-                            cell.value = Number(element[col.key]);
-                            cell.numFmt = '0';
-                        } else if (col.format === 'currency' && element[col.key] !== undefined) {
-                            cell.value = Number(element[col.key]);
-                            cell.numFmt = '$#,##0.00';
+                            cell.value = new Date(element[col.key].split(" ")[0]);
+                            cell.numFmt = 'yyyy-mm-dd';
                         } else if (col.format === 'text') {
                             cell.value = element[col.key] || "";
                         }
                     });
                 });
 
-                // Auto-adjust column widths
-                worksheet.columns.forEach((column, colIndex) => {
-                    let maxLength = columns[colIndex].header.length;
+                worksheet.columns.forEach(column => {
+                    let maxLength = 0;
                     column.eachCell({ includeEmpty: true }, cell => {
-                        const columnLength = cell.value ? cell.value.toString().length : 0;
+                        const columnLength = cell.value ? cell.value.toString().length : 10;
                         if (columnLength > maxLength) {
                             maxLength = columnLength;
                         }
                     });
-                    column.width = maxLength + 2;
+                    column.width = maxLength < 10 ? 10 : maxLength + 2;
                 });
 
-                // Generate Excel file in memory
                 const buffer = await workbook.xlsx.writeBuffer();
 
-                // Download file
                 const opciones = {
                     weekday: 'long',
                     year: 'numeric',
@@ -113,17 +118,18 @@ const DescargarSuscriptores = ({ params }) => {
     };
 
     return (
-        <button
-            title='Descargar excel'
-            className='flex gap-1 items-center justify-center bg-greenVE-400 border-2 border-greenVE-600 h-8 w-8 rounded-full'
-            onClick={loading ? null : generarExcel}
-        >
-            {loading ? (
-                <span className="icon-[line-md--loading-twotone-loop] h-5 w-5 text-gray-500" />
-            ) : (
-                <span className="icon-[vscode-icons--file-type-excel] h-5 w-5" />
-            )}
-        </button>
+        <Tooltip content="Descargar Excel" className='bg-gray-700 text-[10px] py-1' arrow={false}>
+            <button
+                className='flex gap-1 items-center justify-center bg-greenVE-400 border-2 border-greenVE-600 h-8 w-8 rounded-full'
+                onClick={loading ? null : generarExcel}
+            >
+                {loading ? (
+                    <span className="icon-[line-md--loading-twotone-loop] h-5 w-5 text-gray-500" />
+                ) : (
+                    <span className="icon-[vscode-icons--file-type-excel] h-5 w-5" />
+                )}
+            </button>
+        </Tooltip>
     );
 };
 

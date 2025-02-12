@@ -52,19 +52,16 @@ const ListarSuscriptores = ({handleClickEdit}) => {
             <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
                 <div className='flex gap-2 items-center'>
                     <label className='text-greenVE-700 text-xl border-0'>Listar suscriptores</label>
+                    <DescargarSuscriptores params={{
+                        cod_vendedor: idVendedor,
+                        nombre_vendedor: nombreVendedor,
+                        ci_cliente: ciUsuario,
+                        cod_cliente: idUsuario,
+                        nombre_cliente: nombreCliente
+                    }}/>
                 </div>
                 <div className='bg-greenVE-400 p-2 rounded-t-md flex flex-col '>
                     <div>
-                        <div className='flex gap-2 items-center'>
-                            <label className='text-greenVE-700 text-xl border-0'>Listar suscriptores</label>
-                            <DescargarSuscriptores params={{
-                                cod_vendedor: idVendedor,
-                                nombre_vendedor: nombreVendedor,
-                                ci_cliente: ciUsuario,
-                                cod_cliente: idUsuario,
-                                nombre_cliente: nombreCliente
-                            }}/>
-                        </div>
                         <div className='flex gap-2'>
                             <div className='w-4/12'>
                                 <label className='text-sm text-greenVE-800 '>Filtrar por:</label>

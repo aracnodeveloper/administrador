@@ -28,7 +28,7 @@ verificarPermiso(539) && menuList.push(
     }
 );
 
-menuList.push(
+verificarPermiso(103) && menuList.push(
     {
         "title": "Suscriptores",
         "menu": <Suspense fallback={<div>Cargando...</div>}>
