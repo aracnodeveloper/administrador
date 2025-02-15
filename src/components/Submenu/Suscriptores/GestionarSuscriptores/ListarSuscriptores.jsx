@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TablaSuscriptores from './TablaSuscriptores';
 import { listarSuscriptores } from '../../../../controllers/suscriptores/SuscriptoresController';
 import ReactPaginate from 'react-paginate';
+import DescargarSuscriptores from "./DescargarSuscriptores";
 
 const ListarSuscriptores = ({handleClickEdit}) => {
     const [numPaginas, setNumPaginas]=useState();
@@ -51,6 +52,13 @@ const ListarSuscriptores = ({handleClickEdit}) => {
             <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
                 <div className='flex gap-2 items-center'>
                     <label className='text-greenVE-700 text-xl border-0'>Listar suscriptores</label>
+                    <DescargarSuscriptores params={{
+                        cod_vendedor: idVendedor,
+                        nombre_vendedor: nombreVendedor,
+                        ci_cliente: ciUsuario,
+                        cod_cliente: idUsuario,
+                        nombre_cliente: nombreCliente
+                    }}/>
                 </div>
                 <div className='bg-greenVE-400 p-2 rounded-t-md flex flex-col '>
                     <div>
@@ -60,22 +68,36 @@ const ListarSuscriptores = ({handleClickEdit}) => {
                             </div>
                         </div>
                         <div className='flex gap-2 my-2'>
-                            <input value={idUsuario} onChange={(event)=>{setIdUsuario(event.target.value)}} placeholder='Id suscripción' className='w-2/12 h-7 rounded-full'></input>
-                            <input value={ciUsuario} onChange={(event)=>{setCiUsuario(event.target.value)}} placeholder='Cédula' className='w-2/12 h-7 rounded-full'></input>
-                            <input value={nombreCliente} onChange={(event)=>{setNombreCliente(event.target.value)}} placeholder='Nombre cliente' className='w-2/12 h-7 rounded-full'></input>
-                            <input value={idVendedor} onChange={(event)=>{setIdVendedor(event.target.value)}} placeholder='Id Vendedor' className='w-2/12 h-7 rounded-full'></input>
-                            <input value={nombreVendedor} onChange={(event)=>{setNombreVendedor(event.target.value)}} placeholder='Nombre vendedor' className='w-2/12 h-7 rounded-full'></input>
-                            <button className='bg-greenVE-200 border-2 border-greenVE-600 px-4 rounded-full h-7' onClick={() => {handleClickAplicar()}}>Aplicar</button>
+                            <input value={idUsuario} onChange={(event) => {
+                                setIdUsuario(event.target.value)
+                            }} placeholder='Id suscripción' className='w-2/12 h-7 rounded-full'></input>
+                            <input value={ciUsuario} onChange={(event) => {
+                                setCiUsuario(event.target.value)
+                            }} placeholder='Cédula' className='w-2/12 h-7 rounded-full'></input>
+                            <input value={nombreCliente} onChange={(event) => {
+                                setNombreCliente(event.target.value)
+                            }} placeholder='Nombre cliente' className='w-2/12 h-7 rounded-full'></input>
+                            <input value={idVendedor} onChange={(event) => {
+                                setIdVendedor(event.target.value)
+                            }} placeholder='Id Vendedor' className='w-2/12 h-7 rounded-full'></input>
+                            <input value={nombreVendedor} onChange={(event) => {
+                                setNombreVendedor(event.target.value)
+                            }} placeholder='Nombre vendedor' className='w-2/12 h-7 rounded-full'></input>
+                            <button className='bg-greenVE-200 border-2 border-greenVE-600 px-4 rounded-full h-7'
+                                    onClick={() => {
+                                        handleClickAplicar()
+                                    }}>Aplicar
+                            </button>
                         </div>
                     </div>
                 </div>
                 <div>
                     {
                         loading
-                        ?<div className='w-full flex items-center justify-center mt-5'>
-                            <span className="icon-[line-md--loading-twotone-loop] w-10 h-10 text-greenVE-600"></span>
-                        </div>
-                        :(!loading&&!data)
+                            ? <div className='w-full flex items-center justify-center mt-5'>
+                                <span className="icon-[line-md--loading-twotone-loop] w-10 h-10 text-greenVE-600"></span>
+                            </div>
+                            :(!loading&&!data)
                         ?<div className='w-full flex items-center justify-center mt-5'>
                            <label>Sin resultados disponibles</label>
                         </div>
