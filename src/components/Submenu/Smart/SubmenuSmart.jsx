@@ -3,32 +3,39 @@ import { verificarPermiso } from '../../../global/utils';
 import { useParams } from 'react-router-dom';
 import { listarReservas } from '../../../controllers/smart/SmartController';
 import Config from '../../../global/config';
+import ListarReservas from "./GestionarReservas/ListarReservas";
+import AgregarReserva from "./GestionarReservas/AgregarReserva";
 
-const SubmenuSmart = () => {
+const SubmenuSmart = ( {defaultSubmenu = 0}) => {
     const [selSubmenu, setSelSubmenu]= useState()
     const [editData, setEditData]=useState()
     const { id } = useParams();
-    const ListarReservas = lazy(()=> import('./GestionarReservas/ListarReservas'));
-    const AgregarReserva = lazy(()=> import('./GestionarReservas/AgregarReserva'));
 
+    useEffect(() => {
+        setSelSubmenu(defaultSubmenu);
+    }, [defaultSubmenu]);
 
     const handleClickEdit=(data)=>{
         setEditData(data);
         setSelSubmenu(1)
     }
-    var submenuList=[
+    const submenuList=[
+
+
     ]
+
     verificarPermiso(22)&&submenuList.push(
         {
             "title":"Listar reservas",
-            "page":<Suspense><ListarReservas handleClickEdit={handleClickEdit}/></Suspense>
-        },
+            "page":<ListarReservas handleClickEdit={handleClickEdit}/>
+        }
     )
+
     verificarPermiso(23)&&submenuList.push(
         {
             "title":"Agregar reserva",
-            "page":<Suspense><AgregarReserva editData={editData} setEditData= {setEditData}/></Suspense>
-        },
+            "page":<AgregarReserva editData={editData} setEditData= {setEditData}/>
+        }
     )
 
     useEffect(()=>{
@@ -50,15 +57,17 @@ const SubmenuSmart = () => {
                     {!Config.isMobile&&<label className='text-sm mb-2 text-center font-semibold text-greenVE-800 py-2 border-greenVE-600 border-0 border-b-2'>Smart</label>}
                     {
                         submenuList.map((item, index)=>(
-                            <button className={`text-gray-500 font-light md:text-xs text-left py-1 border border-gray-200 ${index==0?"border-t-0":index==(submenuList.length-1)?"border-b-2":" border-y-1"} border-x-0 px-4 ${index==selSubmenu?"bg-greenVE-400":"hover:bg-greenVE-100"}`} onClick={()=>{setSelSubmenu(index); setEditData()}}>{item.title}</button>
+                            <button
+                                className={`text-gray-500 font-light md:text-xs text-left py-1 border border-gray-200 ${index===0?"border-t-0":index===(submenuList.length-1)?"border-b-2":" border-y-1"} border-x-0 px-4 ${index===selSubmenu?"bg-greenVE-400":"hover:bg-greenVE-100"}`}
+                                onClick={()=>{setSelSubmenu(index); setEditData()}}
+                            >
+                                {item.title}
+                            </button>
                         ))
                     }
                 </div>
             </div>
-            {
-                (selSubmenu!=null)&&
-                submenuList[selSubmenu].page
-            }
+            {submenuList[selSubmenu]?.page}
         </div>
     );
 };

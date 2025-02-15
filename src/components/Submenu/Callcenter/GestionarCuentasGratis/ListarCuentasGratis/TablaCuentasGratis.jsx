@@ -108,7 +108,7 @@ const TablaCuentasGratis = ({ listado, handleUpdateData }) => {
       />
       </div>
       {editId&&<EditarCuentaGratis open={openEdit} setOpen={setOpenEdit} item={obtenerReservaPorId(editId)} handleUpdateData={handleUpdateData}/>}
-      {(openCRM&&dataCRM)&&<VisualizadorCRM open={openCRM} data={dataCRM}/>}
+      {(openCRM&&dataCRM)&&<VisualizadorCRM open={openCRM} data={dataCRM} onClose={() => setOpenCRM(false)}/>}
     </>
   );
 };
