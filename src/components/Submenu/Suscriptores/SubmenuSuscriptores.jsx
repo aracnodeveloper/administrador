@@ -1,66 +1,74 @@
-import React, {Suspense, useEffect, useState} from 'react';
-import { verificarPermiso } from '../../../global/utils';
-import ListarSuscriptores from './GestionarSuscriptores/ListarSuscriptores';
-import AgregarSuscriptor from './GestionarSuscriptores/AgregarSuscriptor/AgregarSuscriptor';
+import React, { Suspense, useEffect, useState } from "react";
+import { verificarPermiso } from "../../../global/utils";
+import ListarSuscriptores from "./GestionarSuscriptores/ListarSuscriptores";
+import AgregarSuscriptor from "./GestionarSuscriptores/AgregarSuscriptor/AgregarSuscriptor";
+import ImportarSuscriptores from "./GestionarSuscriptores/ImportarSuscriptores/ImportarSuscriptores";
 
-const SubmenuSuscriptores = ({defaultSubmenu = 0}) => {
-    const [selSubmenu, setSelSubmenu]= useState()
-    const [editData, setEditData]=useState()
-    const handleClickEdit=(data)=>{
-        setEditData(data);
-        setSelSubmenu(1)
-    }
+const SubmenuSuscriptores = ({ defaultSubmenu = 0 }) => {
+  const [selSubmenu, setSelSubmenu] = useState();
+  const [editData, setEditData] = useState();
+  const handleClickEdit = (data) => {
+    setEditData(data);
+    setSelSubmenu(1);
+  };
 
-    useEffect(() => {
-        setSelSubmenu(defaultSubmenu);
-    }, [defaultSubmenu]);
+  useEffect(() => {
+    setSelSubmenu(defaultSubmenu);
+  }, [defaultSubmenu]);
 
-    const submenuList=[
+  const submenuList = [];
 
+  verificarPermiso(196) &&
+    submenuList.push({
+      title: "Listar Suscriptores",
+      page: <ListarSuscriptores handleClickEdit={handleClickEdit} />,
+    });
 
-    ];
+  verificarPermiso(147) &&
+    submenuList.push({
+      title: "Agregar Suscriptor",
+      page: <AgregarSuscriptor editData={editData} setEditData={setEditData} />,
+    });
 
-
-    verificarPermiso(196)&&submenuList.push(
-        {
-            "title":"Listar Suscriptores",
-            "page":<ListarSuscriptores handleClickEdit={handleClickEdit}/>
-        }
-    )
-
-    verificarPermiso(147)&&submenuList.push(
-        {
-            "title":"Agregar Suscriptor",
-            "page":<AgregarSuscriptor editData={editData} setEditData= {setEditData}/>
-        }
-    )
-    /*verificarPermiso(541)&&submenuList.push(
+  submenuList.push({
+    title: "Importar Suscriptores",
+    page: <ImportarSuscriptores />,
+  });
+  /*verificarPermiso(541)&&submenuList.push(
         {
             "title":"Gestionar Hoteles",
             "page":<GestionarEstablecimientos/>
         }
     )*/
-    return (
-        <div className='flex w-full p-4'>
-            <div>
-                <div className=' flex flex-col w-56 bg-greenVE-100  px-2 pb-4 rounded-md'>
-                    <label className='text-sm mb-2 text-center font-semibold text-greenVE-800 py-2 border-greenVE-600 border-0 border-b-2'>Suscriptores</label>
-                    {
-                        submenuList.map((item, index)=>(
-                            <button
-                                key={index}
-                                className={`text-gray-500 font-light text-xs text-left py-1 border border-gray-200 ${index === 0 ?"border-t-0": index === (submenuList.length-1) ?"border-b-2":" border-y-1"} border-x-0 px-4 ${index === selSubmenu ?"bg-greenVE-400":"hover:bg-greenVE-100"}`}
-                                onClick={()=>setSelSubmenu(index)}
-                            >
-                                {item.title}
-                            </button>
-                        ))
-                    }
-                </div>
-            </div>
-            {submenuList[selSubmenu]?.page}
+  return (
+    <div className="flex w-full p-4">
+      <div>
+        <div className=" flex flex-col w-56 bg-greenVE-100  px-2 pb-4 rounded-md">
+          <label className="text-sm mb-2 text-center font-semibold text-greenVE-800 py-2 border-greenVE-600 border-0 border-b-2">
+            Suscriptores
+          </label>
+          {submenuList.map((item, index) => (
+            <button
+              key={index}
+              className={`text-gray-500 font-light text-xs text-left py-1 border border-gray-200 ${
+                index === 0
+                  ? "border-t-0"
+                  : index === submenuList.length - 1
+                  ? "border-b-2"
+                  : " border-y-1"
+              } border-x-0 px-4 ${
+                index === selSubmenu ? "bg-greenVE-400" : "hover:bg-greenVE-100"
+              }`}
+              onClick={() => setSelSubmenu(index)}
+            >
+              {item.title}
+            </button>
+          ))}
         </div>
-    );
+      </div>
+      {submenuList[selSubmenu]?.page}
+    </div>
+  );
 };
 
 export default SubmenuSuscriptores;

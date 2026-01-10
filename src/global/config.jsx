@@ -39,6 +39,14 @@ class Config {
     return "/sus/";
   }
 
+  static get VERSUS() {
+    return "/sus/";
+  }
+
+  static get APP() {
+    return "/app/";
+  }
+
   static get VERINFO() {
     return "/info/";
   }

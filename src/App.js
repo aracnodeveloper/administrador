@@ -9,9 +9,7 @@ const Reserva = lazy(()=> import('./pages/Reserva'));
 function App() {
   const session = JSON.parse(localStorage.getItem("datos"));
   const permisos = JSON.parse(localStorage.getItem("permisos"));
-  if(!session||!permisos){
-    window.open("https://visitaecuador.com","_self")
-  }
+  
   return (
     <Router basename="/administrador">
         <Routes>
