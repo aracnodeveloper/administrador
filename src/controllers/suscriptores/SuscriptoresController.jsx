@@ -173,6 +173,7 @@ export const guardarSuscriptor = async ({
       const diffTime = Math.abs(fin - inicio);
       tiempo = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
+    if (isEdit) tiempo = 0;
 
     // IMPORTANTE: Usar estructura "producto" igual que en formatearData.jsx
     const payload = {
@@ -205,13 +206,15 @@ export const guardarSuscriptor = async ({
         id_usuario_vendedor: parseInt(suscripcion.id_vendedor) || 0,
         id_suscripcion_vendedor:
           parseInt(suscripcion.id_suscripcion_vendedor) || 0,
-        cantidad: "1",
+        cantidad: 1,
         precio: parseFloat(suscripcion.precio) || 0,
         id_producto: suscripcion.id_producto,
         id_lista_precio_producto:
           parseInt(suscripcion.id_lista_precio_producto) || 0,
         id_prod_suscripcion: parseInt(suscripcion.id_prod_suscripcion) || 0,
         id_tipo_canal: parseInt(suscripcion.id_canal) || 13,
+        fecha_inicio: suscripcion.fecha_inicio || "",
+        fecha_fin: suscripcion.fecha_fin || "",
         id_suscripcion: isEdit
           ? parseInt(suscripcion.id_tbl_suscripcion) ||
             parseInt(suscripcion.id_suscripcion)
