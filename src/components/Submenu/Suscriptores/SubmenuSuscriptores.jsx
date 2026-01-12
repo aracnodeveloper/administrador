@@ -18,13 +18,13 @@ const SubmenuSuscriptores = ({ defaultSubmenu = 0 }) => {
 
   const submenuList = [];
 
-  verificarPermiso(196) &&
+
     submenuList.push({
       title: "Listar Suscriptores",
       page: <ListarSuscriptores handleClickEdit={handleClickEdit} />,
     });
 
-  verificarPermiso(147) &&
+
     submenuList.push({
       title: "Agregar Suscriptor",
       page: <AgregarSuscriptor editData={editData} setEditData={setEditData} />,

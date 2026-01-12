@@ -7,10 +7,10 @@ const susService = new SuscriptoresService();
 const session = JSON.parse(localStorage.getItem("datos"));
 
 export const listarSuscriptores = async function ({
-  filtros,
-  pagina = 1,
-  idUsuario,
-}) {
+                                                    filtros = {},
+                                                    pagina = 1,
+                                                    idUsuario,
+                                                  }) {
   try {
     var params = {
       token: session.token,
@@ -35,11 +35,7 @@ export const listarSuscriptores = async function ({
       params.nombre_cliente = filtros.nombre_cliente;
     }
 
-    if (filtros.cantidad) {
-      params.cantidad = filtros.cantidad;
-    }
-
-    if (filtros.cantidad) {
+    if (filtros && filtros.cantidad) {
       params.cantidad = filtros.cantidad;
     }
 
@@ -47,11 +43,11 @@ export const listarSuscriptores = async function ({
 
     const res = await susService.listarSuscriptores(params);
     if (res.estado && res.codigo == 0) {
-      // falso
       return res["data"];
     }
   } catch (e) {
-    console.log(e);
+    console.error("Error en listarSuscriptores:", e);
+    throw e;
   }
 };
 
@@ -64,7 +60,6 @@ export const comprobarCodigoPromocional = async function (codigo) {
 
     const res = await susService.comprobarCodigo(params);
     if (res.estado) {
-      // falso
       return res["data"];
     }
   } catch (e) {
@@ -80,7 +75,6 @@ export const listarProductos = async function (idCodigo) {
 
     const res = await susService.listarProductos(params);
     if (res.estado) {
-      // falso
       return res["data"]["productos"];
     }
   } catch (e) {
@@ -88,11 +82,11 @@ export const listarProductos = async function (idCodigo) {
   }
 };
 
-export const importarSuscripciones = async (file, producto, codigoPromo) => {
+export const importarSuscripciones = async (file, producto, codigoPromo, datosVendedor) => {
   const filas = await leerExcel(file);
 
   for (const fila of filas) {
-    const payload = construirSuscripcionPayload(fila, producto, codigoPromo);
+    const payload = construirSuscripcionPayload(fila, producto, codigoPromo, datosVendedor);
     console.log("Payload a enviar:", payload);
     try {
       const res = await susService.crearSuscripcion(payload);
@@ -105,5 +99,130 @@ export const importarSuscripciones = async (file, producto, codigoPromo) => {
     } catch (err) {
       console.error("Error creando suscripción para:", fila, err);
     }
+  }
+};
+
+/**
+ * Función para guardar o actualizar un suscriptor
+ * Usa el MISMO formato que importarSuscripciones (con objeto "producto")
+ */
+export const guardarSuscriptor = async ({ datosPersonales, suscripciones, isEdit = false }) => {
+  try {
+    // Validar que haya datos mínimos
+    if (!datosPersonales.ci || !datosPersonales.nombres) {
+      throw new Error("Debe completar cédula y nombres");
+    }
+
+    // Validar que haya al menos una suscripción
+    if (!suscripciones || suscripciones.length === 0) {
+      throw new Error("Debe agregar al menos una suscripción");
+    }
+
+    const suscripcion = suscripciones[0];
+
+    // Validar que se hayan completado los campos requeridos de la suscripción
+    if (!suscripcion.id_prod_suscripcion || !suscripcion.id_producto) {
+      throw new Error("Debe seleccionar un producto válido");
+    }
+
+    // Validar que haya vendedor asignado
+    if (!suscripcion.id_vendedor || !suscripcion.id_suscripcion_vendedor) {
+      throw new Error("Debe tener un vendedor asignado. Por favor, busque productos con un código promocional válido.");
+    }
+
+    // Extraer nombres
+    const nombresArray = datosPersonales.nombres.trim().split(/\s+/);
+    const nombre1 = nombresArray[0] || '';
+    const nombre2 = nombresArray[1] || '';
+    const apellido1 = nombresArray[2] || '';
+    const apellido2 = nombresArray[3] || '';
+
+    // Extraer email y celular de contactos
+    const emailContacto = datosPersonales.contactos?.find(c => c.id_tbl_tipo_contacto == 1)?.contacto || '';
+    const celularContacto = datosPersonales.contactos?.find(c => c.id_tbl_tipo_contacto == 2 || c.id_tbl_tipo_contacto == 3)?.contacto || '';
+
+    // Calcular tiempo en días
+    let tiempo = 1;
+    if (suscripcion.fecha_inicio && suscripcion.fecha_fin) {
+      const inicio = new Date(suscripcion.fecha_inicio);
+      const fin = new Date(suscripcion.fecha_fin);
+      const diffTime = Math.abs(fin - inicio);
+      tiempo = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    // IMPORTANTE: Usar estructura "producto" igual que en formatearData.jsx
+    const payload = {
+      demo: false,
+      canal: "web",
+      id_empresa: 1,
+      notificar: false,
+      tiempo: tiempo,
+      aceptocondiciones: 1,
+      verificar: false,
+      id_servicio: 1,
+      metodo: "fullvacations",
+
+      // Información personal
+      personal: {
+        ci: datosPersonales.ci,
+        nombres: `${nombre1} ${nombre2} ${apellido1} ${apellido2}`.trim(),
+        celular: celularContacto,
+        email: emailContacto || datosPersonales.ci + "@temp.com",
+        pais: 239, // Ecuador
+        ciudad: datosPersonales.ciudad ? datosPersonales.ciudad.toString() : "297", // Cuenca por defecto
+      },
+
+      // ESTRUCTURA CORRECTA: objeto "producto" (no array "suscripcion")
+      producto: {
+        id_codigo_promocional: parseInt(suscripcion.id_codigo_promocional) || 0,
+        id_usuario_vendedor: parseInt(suscripcion.id_vendedor) || 0,
+        id_suscripcion_vendedor: parseInt(suscripcion.id_suscripcion_vendedor) || 0,
+        cantidad: "1",
+        precio: parseFloat(suscripcion.precio) || 0,
+        id_producto: suscripcion.id_producto,
+        id_lista_precio_producto: parseInt(suscripcion.id_lista_precio_producto) || 0,
+        id_prod_suscripcion: parseInt(suscripcion.id_prod_suscripcion) || 0,
+        id_tipo_canal: parseInt(suscripcion.id_canal) || 13,
+        pago: [
+          {
+            tipo_pago: parseInt(suscripcion.id_estado_pago) || 5,
+            total: parseFloat(suscripcion.precio) || 0,
+            iva: (parseFloat(suscripcion.precio) * 0.12).toFixed(2),
+            subtotal: (parseFloat(suscripcion.precio) / 1.12).toFixed(2),
+            envio: 0,
+            intereses: 0,
+            diferido: 0,
+            num_referencia: "",
+            lote: 0,
+          },
+        ],
+      },
+    };
+
+    console.log("Payload completo a enviar:", JSON.stringify(payload, null, 2));
+
+    // Llamar al servicio
+    const res = await susService.crearSuscripcion(payload);
+    console.log("Respuesta del servicio completa:", JSON.stringify(res, null, 2));
+
+    if (res && res.estado) {
+      console.log("Suscriptor guardado exitosamente:", res);
+
+      // Enviar notificación si se creó correctamente
+      if (res.data?.id_suscripcion_renovacion) {
+        await susService.sendNotificationSubscription({
+          id_suscripcion_renovacion: res.data.id_suscripcion_renovacion,
+        });
+      }
+
+      return res.data;
+    } else {
+      const errorMsg = res?.mensaje || res?.error || res?.msj || "Error al guardar el suscriptor";
+      console.error("Error del backend:", errorMsg, res);
+      throw new Error(errorMsg);
+    }
+  } catch (error) {
+    console.error("Error en guardarSuscriptor:", error);
+    throw error;
   }
 };

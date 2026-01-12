@@ -6,17 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="83db3759-975e-480f-b365-566ca85cd530" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Menu/Menu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu/Menu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Callcenter/GestionarCuentasGratis/ListarCuentasGratis/TablaCuentasGratis.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Callcenter/GestionarCuentasGratis/ListarCuentasGratis/TablaCuentasGratis.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/AgregarSuscriptor.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/AgregarSuscriptor.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/DatosPersonales.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/DatosPersonales.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/InformacionSuscripcion.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/InformacionSuscripcion.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/ListarSuscriptores.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/ListarSuscriptores.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/TablaSuscriptores.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/TablaSuscriptores.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/SubmenuSuscriptores.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/SubmenuSuscriptores.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/callcenter/CallcenterController.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/callcenter/CallcenterController.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controllers/suscriptores/SuscriptoresController.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/suscriptores/SuscriptoresController.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/global/config.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/global/config.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/global/utils.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/global/utils.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/suscriptores/SuscriptoresService.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/suscriptores/SuscriptoresService.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +22,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "anthonyramosc"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/aracnodeveloper/administrador.git",
+    "accountId": "0720622f-9221-47b5-bb61-d2054f88696b"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -54,7 +62,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-WS-252.28238.10" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.26775.11" />
       </set>
     </attachedChunks>
   </component>
@@ -70,6 +78,7 @@
       <workItem from="1764949663402" duration="207000" />
       <workItem from="1764949878097" duration="927000" />
       <workItem from="1764954203205" duration="633000" />
+      <workItem from="1768174426799" duration="4108000" />
     </task>
     <servers />
   </component>
