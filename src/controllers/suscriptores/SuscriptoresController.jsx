@@ -7,10 +7,10 @@ const susService = new SuscriptoresService();
 const session = JSON.parse(localStorage.getItem("datos"));
 
 export const listarSuscriptores = async function ({
-                                                    filtros = {},
-                                                    pagina = 1,
-                                                    idUsuario,
-                                                  }) {
+  filtros = {},
+  pagina = 1,
+  idUsuario,
+}) {
   try {
     var params = {
       token: session.token,
@@ -82,11 +82,21 @@ export const listarProductos = async function (idCodigo) {
   }
 };
 
-export const importarSuscripciones = async (file, producto, codigoPromo, datosVendedor) => {
+export const importarSuscripciones = async (
+  file,
+  producto,
+  codigoPromo,
+  datosVendedor
+) => {
   const filas = await leerExcel(file);
 
   for (const fila of filas) {
-    const payload = construirSuscripcionPayload(fila, producto, codigoPromo, datosVendedor);
+    const payload = construirSuscripcionPayload(
+      fila,
+      producto,
+      codigoPromo,
+      datosVendedor
+    );
     console.log("Payload a enviar:", payload);
     try {
       const res = await susService.crearSuscripcion(payload);
@@ -106,7 +116,11 @@ export const importarSuscripciones = async (file, producto, codigoPromo, datosVe
  * Función para guardar o actualizar un suscriptor
  * Usa el MISMO formato que importarSuscripciones (con objeto "producto")
  */
-export const guardarSuscriptor = async ({ datosPersonales, suscripciones, isEdit = false }) => {
+export const guardarSuscriptor = async ({
+  datosPersonales,
+  suscripciones,
+  isEdit = false,
+}) => {
   try {
     // Validar que haya datos mínimos
     if (!datosPersonales.ci || !datosPersonales.nombres) {
@@ -127,19 +141,26 @@ export const guardarSuscriptor = async ({ datosPersonales, suscripciones, isEdit
 
     // Validar que haya vendedor asignado
     if (!suscripcion.id_vendedor || !suscripcion.id_suscripcion_vendedor) {
-      throw new Error("Debe tener un vendedor asignado. Por favor, busque productos con un código promocional válido.");
+      throw new Error(
+        "Debe tener un vendedor asignado. Por favor, busque productos con un código promocional válido."
+      );
     }
 
     // Extraer nombres
     const nombresArray = datosPersonales.nombres.trim().split(/\s+/);
-    const nombre1 = nombresArray[0] || '';
-    const nombre2 = nombresArray[1] || '';
-    const apellido1 = nombresArray[2] || '';
-    const apellido2 = nombresArray[3] || '';
+    const nombre1 = nombresArray[0] || "";
+    const nombre2 = nombresArray[1] || "";
+    const apellido1 = nombresArray[2] || "";
+    const apellido2 = nombresArray[3] || "";
 
     // Extraer email y celular de contactos
-    const emailContacto = datosPersonales.contactos?.find(c => c.id_tbl_tipo_contacto == 1)?.contacto || '';
-    const celularContacto = datosPersonales.contactos?.find(c => c.id_tbl_tipo_contacto == 2 || c.id_tbl_tipo_contacto == 3)?.contacto || '';
+    const emailContacto =
+      datosPersonales.contactos?.find((c) => c.id_tbl_tipo_contacto == 1)
+        ?.contacto || "";
+    const celularContacto =
+      datosPersonales.contactos?.find(
+        (c) => c.id_tbl_tipo_contacto == 2 || c.id_tbl_tipo_contacto == 3
+      )?.contacto || "";
 
     // Calcular tiempo en días
     let tiempo = 1;
@@ -161,6 +182,7 @@ export const guardarSuscriptor = async ({ datosPersonales, suscripciones, isEdit
       verificar: false,
       id_servicio: 1,
       metodo: "fullvacations",
+      tipo: isEdit ? "modificar" : "guardar",
 
       // Información personal
       personal: {
@@ -169,20 +191,28 @@ export const guardarSuscriptor = async ({ datosPersonales, suscripciones, isEdit
         celular: celularContacto,
         email: emailContacto || datosPersonales.ci + "@temp.com",
         pais: 239, // Ecuador
-        ciudad: datosPersonales.ciudad ? datosPersonales.ciudad.toString() : "297", // Cuenca por defecto
+        ciudad: datosPersonales.ciudad
+          ? datosPersonales.ciudad.toString()
+          : "297", // Cuenca por defecto
       },
 
       // ESTRUCTURA CORRECTA: objeto "producto" (no array "suscripcion")
       producto: {
         id_codigo_promocional: parseInt(suscripcion.id_codigo_promocional) || 0,
         id_usuario_vendedor: parseInt(suscripcion.id_vendedor) || 0,
-        id_suscripcion_vendedor: parseInt(suscripcion.id_suscripcion_vendedor) || 0,
+        id_suscripcion_vendedor:
+          parseInt(suscripcion.id_suscripcion_vendedor) || 0,
         cantidad: "1",
         precio: parseFloat(suscripcion.precio) || 0,
         id_producto: suscripcion.id_producto,
-        id_lista_precio_producto: parseInt(suscripcion.id_lista_precio_producto) || 0,
+        id_lista_precio_producto:
+          parseInt(suscripcion.id_lista_precio_producto) || 0,
         id_prod_suscripcion: parseInt(suscripcion.id_prod_suscripcion) || 0,
         id_tipo_canal: parseInt(suscripcion.id_canal) || 13,
+        id_suscripcion: isEdit
+          ? parseInt(suscripcion.id_tbl_suscripcion) ||
+            parseInt(suscripcion.id_suscripcion)
+          : undefined,
         pago: [
           {
             tipo_pago: parseInt(suscripcion.id_estado_pago) || 5,
@@ -203,7 +233,10 @@ export const guardarSuscriptor = async ({ datosPersonales, suscripciones, isEdit
 
     // Llamar al servicio
     const res = await susService.crearSuscripcion(payload);
-    console.log("Respuesta del servicio completa:", JSON.stringify(res, null, 2));
+    console.log(
+      "Respuesta del servicio completa:",
+      JSON.stringify(res, null, 2)
+    );
 
     if (res && res.estado) {
       console.log("Suscriptor guardado exitosamente:", res);
@@ -217,7 +250,11 @@ export const guardarSuscriptor = async ({ datosPersonales, suscripciones, isEdit
 
       return res.data;
     } else {
-      const errorMsg = res?.mensaje || res?.error || res?.msj || "Error al guardar el suscriptor";
+      const errorMsg =
+        res?.mensaje ||
+        res?.error ||
+        res?.msj ||
+        "Error al guardar el suscriptor";
       console.error("Error del backend:", errorMsg, res);
       throw new Error(errorMsg);
     }
