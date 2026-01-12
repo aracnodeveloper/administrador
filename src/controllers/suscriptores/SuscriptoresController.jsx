@@ -135,7 +135,10 @@ export const guardarSuscriptor = async ({
     const suscripcion = suscripciones[0];
 
     // Validar que se hayan completado los campos requeridos de la suscripción
-    if (!suscripcion.id_prod_suscripcion || !suscripcion.id_producto) {
+    if (
+      !isEdit &&
+      (!suscripcion.id_prod_suscripcion || !suscripcion.id_producto)
+    ) {
       throw new Error("Debe seleccionar un producto válido");
     }
 
