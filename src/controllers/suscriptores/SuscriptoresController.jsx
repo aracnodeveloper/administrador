@@ -114,7 +114,7 @@ export const importarSuscripciones = async (
 
 /**
  * Función para guardar o actualizar un suscriptor
- * Usa el MISMO formato que importarSuscripciones (con objeto "producto")
+ * CORREGIDO: Ahora envía los IDs necesarios para edición
  */
 export const guardarSuscriptor = async ({
   datosPersonales,
@@ -142,8 +142,11 @@ export const guardarSuscriptor = async ({
       throw new Error("Debe seleccionar un producto válido");
     }
 
-    // Validar que haya vendedor asignado
-    if (!suscripcion.id_vendedor || !suscripcion.id_suscripcion_vendedor) {
+    // Validar que haya vendedor asignado (solo para nuevas suscripciones)
+    if (
+      !isEdit &&
+      (!suscripcion.id_vendedor || !suscripcion.id_suscripcion_vendedor)
+    ) {
       throw new Error(
         "Debe tener un vendedor asignado. Por favor, busque productos con un código promocional válido."
       );
@@ -175,7 +178,9 @@ export const guardarSuscriptor = async ({
     }
     if (isEdit) tiempo = 0;
 
-    // IMPORTANTE: Usar estructura "producto" igual que en formatearData.jsx
+    // ============================================
+    // PAYLOAD CORREGIDO PARA EDICIÓN
+    // ============================================
     const payload = {
       demo: false,
       canal: "web",
@@ -198,30 +203,58 @@ export const guardarSuscriptor = async ({
         ciudad: datosPersonales.ciudad
           ? datosPersonales.ciudad.toString()
           : "297", // Cuenca por defecto
+        // *** IMPORTANTE PARA EDICIÓN: incluir id_tbl_usuario ***
+        ...(isEdit &&
+          datosPersonales.id_tbl_usuario && {
+            id_tbl_usuario: parseInt(datosPersonales.id_tbl_usuario),
+          }),
       },
 
-      // ESTRUCTURA CORRECTA: objeto "producto" (no array "suscripcion")
+      // ESTRUCTURA producto
       producto: {
         id_codigo_promocional: parseInt(suscripcion.id_codigo_promocional) || 0,
-        id_usuario_vendedor: parseInt(suscripcion.id_vendedor) || 0,
+        id_usuario_vendedor:
+          parseInt(suscripcion.id_vendedor) ||
+          parseInt(suscripcion.id_tbl_usuario_vendedor) ||
+          0,
         id_suscripcion_vendedor:
-          parseInt(suscripcion.id_suscripcion_vendedor) || 0,
+          parseInt(suscripcion.id_suscripcion_vendedor) ||
+          parseInt(suscripcion.id_tbl_usuario_vendedor) ||
+          0,
         cantidad: 1,
         precio: parseFloat(suscripcion.precio) || 0,
         id_producto: suscripcion.id_producto,
         id_lista_precio_producto:
-          parseInt(suscripcion.id_lista_precio_producto) || 0,
-        id_prod_suscripcion: parseInt(suscripcion.id_prod_suscripcion) || 0,
-        id_tipo_canal: parseInt(suscripcion.id_canal) || 13,
+          parseInt(suscripcion.id_lista_precio_producto) ||
+          parseInt(suscripcion.id_tbl_lista_precio_producto) ||
+          0,
+        id_prod_suscripcion:
+          parseInt(suscripcion.id_prod_suscripcion) ||
+          parseInt(suscripcion.id_tbl_prod_suscripcion) ||
+          0,
+        id_tipo_canal:
+          parseInt(suscripcion.id_canal) ||
+          parseInt(suscripcion.id_tbl_tipo_canal) ||
+          13,
         fecha_inicio: suscripcion.fecha_inicio || "",
         fecha_fin: suscripcion.fecha_fin || "",
-        id_suscripcion: isEdit
-          ? parseInt(suscripcion.id_tbl_suscripcion) ||
-            parseInt(suscripcion.id_suscripcion)
-          : undefined,
+
+        // *** IDs CRÍTICOS PARA EDICIÓN ***
+        ...(isEdit && {
+          id_suscripcion:
+            parseInt(suscripcion.id_tbl_suscripcion) ||
+            parseInt(suscripcion.id_suscripcion) ||
+            undefined,
+          id_suscripcion_renovacion:
+            parseInt(suscripcion.id_tbl_suscripcion_renovacion) || undefined,
+        }),
+
         pago: [
           {
-            tipo_pago: parseInt(suscripcion.id_estado_pago) || 5,
+            tipo_pago:
+              parseInt(suscripcion.id_estado_pago) ||
+              parseInt(suscripcion.id_tbl_estado_pago_suscripcion) ||
+              5,
             total: parseFloat(suscripcion.precio) || 0,
             iva: (parseFloat(suscripcion.precio) * 0.12).toFixed(2),
             subtotal: (parseFloat(suscripcion.precio) / 1.12).toFixed(2),
@@ -235,14 +268,31 @@ export const guardarSuscriptor = async ({
       },
     };
 
-    console.log("Payload completo a enviar:", JSON.stringify(payload, null, 2));
+    // *** AGREGAR IDs A NIVEL RAÍZ PARA EDICIÓN (algunos backends lo esperan así) ***
+    if (isEdit) {
+      payload.id_tbl_suscripcion =
+        parseInt(suscripcion.id_tbl_suscripcion) ||
+        parseInt(suscripcion.id_suscripcion) ||
+        undefined;
+      payload.id_tbl_suscripcion_renovacion =
+        parseInt(suscripcion.id_tbl_suscripcion_renovacion) || undefined;
+      payload.id_tbl_usuario =
+        parseInt(datosPersonales.id_tbl_usuario) || undefined;
+    }
+
+    console.log("========================================");
+    console.log("MODO:", isEdit ? "EDICIÓN" : "CREACIÓN");
+    console.log("IDs para edición:", {
+      id_tbl_suscripcion: payload.id_tbl_suscripcion,
+      id_tbl_suscripcion_renovacion: payload.id_tbl_suscripcion_renovacion,
+      id_tbl_usuario: payload.id_tbl_usuario,
+    });
+    console.log("Payload completo:", JSON.stringify(payload, null, 2));
+    console.log("========================================");
 
     // Llamar al servicio
     const res = await susService.crearSuscripcion(payload);
-    console.log(
-      "Respuesta del servicio completa:",
-      JSON.stringify(res, null, 2)
-    );
+    console.log("Respuesta del servicio:", JSON.stringify(res, null, 2));
 
     if (res && res.estado) {
       console.log("Suscriptor guardado exitosamente:", res);

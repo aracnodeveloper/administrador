@@ -16,13 +16,15 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
     usuario: "",
     clave: "",
     contactos: [],
+    // *** NUEVO: campo para almacenar el id_tbl_usuario ***
+    id_tbl_usuario: null,
   });
 
   const [suscripciones, setSuscripciones] = useState([]);
 
   // Cargar datos cuando editData cambia
   useEffect(() => {
-    console.log("🔄 EditData recibido:", editData);
+    console.log("📄 EditData recibido:", editData);
 
     if (editData) {
       // Normalizar: puede venir como 'suscripcion' o 'suscripciones'
@@ -30,7 +32,7 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
         editData.suscripciones || editData.suscripcion || [];
 
       if (suscripcionesData.length > 0) {
-        console.log("📝 Cargando datos para editar:", editData);
+        console.log("🔍 Cargando datos para editar:", editData);
 
         const primeraSuscripcion = suscripcionesData[0];
         const usuario =
@@ -50,7 +52,7 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
           });
         }
 
-        // Cargar datos personales
+        // *** IMPORTANTE: Cargar datos personales INCLUYENDO id_tbl_usuario ***
         setDatosPersonales({
           ci: usuario.ci_ruc || "",
           nombres: usuario.nombres || "",
@@ -62,48 +64,93 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
           usuario: usuario.usuario || "",
           clave: usuario.clave || "",
           contactos: contactosArray,
+          // *** CRÍTICO: Almacenar el id_tbl_usuario para la edición ***
+          id_tbl_usuario: usuario.id_tbl_usuario || null,
         });
 
-        // Cargar suscripciones
-        const suscripcionesFormateadas = suscripcionesData.map((sus) => {
+        // *** IMPORTANTE: Cargar suscripciones CON TODOS LOS IDs ***
+        const suscripcionesFormateadas = suscripcionesData.map((sus, index) => {
           // Extraer información del vendedor
           const vendedorInfo = sus.vendedor?.[0] || {};
 
-          return {
+          console.log(`📋 Suscripción ${index + 1} datos raw:`, sus);
+
+          const suscripcionFormateada = {
             // Información básica
             titulo: sus.titulo || "",
             fecha_inicio: sus.fecha_inicio
               ? sus.fecha_inicio.split(" ")[0]
               : "",
             fecha_fin: sus.fecha_fin ? sus.fecha_fin.split(" ")[0] : "",
-            id_estado_pago: sus.pago?.[0]?.id_tbl_estado_pago_suscripcion || 2,
+            id_estado_pago:
+              sus.pago?.[0]?.id_tbl_estado_pago_suscripcion ||
+              sus.id_estado_pago ||
+              2,
             observacion: sus.observacion || "",
-            precio: sus.pago?.[0]?.total || 0,
+            precio: sus.pago?.[0]?.total || sus.precio || 0,
 
             // IDs de producto
-            id_producto: sus.id_producto || "",
-            id_prod_suscripcion: sus.id_tbl_prod_suscripcion || "",
-            id_lista_precio_producto: sus.id_tbl_lista_precio_producto || "",
+            id_producto: sus.id_producto || sus.id_tbl_producto || "",
+            id_prod_suscripcion:
+              sus.id_tbl_prod_suscripcion || sus.id_prod_suscripcion || "",
+            id_lista_precio_producto:
+              sus.id_tbl_lista_precio_producto ||
+              sus.id_lista_precio_producto ||
+              "",
 
             // Información del vendedor
-            vendedor: sus.vendedor || "",
-            id_vendedor: sus.id_tbl_usuario_vendedor || "",
-            id_suscripcion_vendedor: sus.id_tbl_usuario_vendedor || "",
+            vendedor: sus.vendedor || vendedorInfo.nombres || "",
+            id_vendedor:
+              sus.id_tbl_usuario_vendedor || vendedorInfo.id_tbl_usuario || "",
+            id_suscripcion_vendedor:
+              sus.id_tbl_usuario_vendedor || vendedorInfo.id_tbl_usuario || "",
+            id_tbl_usuario_vendedor: sus.id_tbl_usuario_vendedor || "",
 
             // Código promocional y canal
             id_codigo_promocional: sus.id_codigo_promocional || 0,
             id_canal: sus.id_tbl_tipo_canal || 13,
+            id_tbl_tipo_canal: sus.id_tbl_tipo_canal || 13,
+
+            // *** CRÍTICOS PARA EDICIÓN ***
+            id_tbl_suscripcion:
+              sus.id_tbl_suscripcion || editData.id_tbl_suscripcion || "",
+            id_tbl_suscripcion_renovacion:
+              sus.id_tbl_suscripcion_renovacion || "",
+            id_suscripcion:
+              sus.id_tbl_suscripcion || editData.id_tbl_suscripcion || "",
           };
+
+          console.log(
+            `✅ Suscripción ${index + 1} formateada:`,
+            suscripcionFormateada
+          );
+          console.log(`🔑 IDs críticos:`, {
+            id_tbl_suscripcion: suscripcionFormateada.id_tbl_suscripcion,
+            id_tbl_suscripcion_renovacion:
+              suscripcionFormateada.id_tbl_suscripcion_renovacion,
+          });
+
+          return suscripcionFormateada;
         });
 
         setSuscripciones(suscripcionesFormateadas);
-        console.log("✅ Datos cargados:", {
+
+        console.log("✅ Datos cargados completamente:", {
           datosPersonales: {
             ci: usuario.ci_ruc,
             nombres: usuario.nombres,
+            id_tbl_usuario: usuario.id_tbl_usuario,
             contactos: contactosArray.length,
           },
           suscripciones: suscripcionesFormateadas.length,
+          primeraSuscripcionIDs: suscripcionesFormateadas[0]
+            ? {
+                id_tbl_suscripcion:
+                  suscripcionesFormateadas[0].id_tbl_suscripcion,
+                id_tbl_suscripcion_renovacion:
+                  suscripcionesFormateadas[0].id_tbl_suscripcion_renovacion,
+              }
+            : null,
         });
       } else {
         console.warn("⚠️ No hay suscripciones en editData");
@@ -126,6 +173,7 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
       usuario: "",
       clave: "",
       contactos: [],
+      id_tbl_usuario: null,
     });
     setSuscripciones([]);
   };
@@ -142,13 +190,34 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
       return;
     }
 
-    // Validar que tenga vendedor asignado
     const suscripcion = suscripciones[0];
-    if (!suscripcion.id_vendedor || !suscripcion.id_suscripcion_vendedor) {
+
+    // Validar que tenga vendedor asignado (solo para nuevas suscripciones)
+    if (
+      !editData &&
+      (!suscripcion.id_vendedor || !suscripcion.id_suscripcion_vendedor)
+    ) {
       alert(
         "La suscripción debe tener un vendedor asignado. Por favor, busque productos con un código promocional válido."
       );
       return;
+    }
+
+    // *** Validar IDs para edición ***
+    if (editData) {
+      console.log("🔍 Validando IDs para edición:", {
+        id_tbl_usuario: datosPersonales.id_tbl_usuario,
+        id_tbl_suscripcion: suscripcion.id_tbl_suscripcion,
+        id_tbl_suscripcion_renovacion:
+          suscripcion.id_tbl_suscripcion_renovacion,
+      });
+
+      if (
+        !suscripcion.id_tbl_suscripcion &&
+        !suscripcion.id_tbl_suscripcion_renovacion
+      ) {
+        console.warn("⚠️ Faltan IDs de suscripción para edición");
+      }
     }
 
     setLoading(true);
@@ -160,7 +229,9 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
       });
 
       if (resultado) {
-        alert("Suscriptor guardado exitosamente ✅");
+        alert(
+          `Suscriptor ${editData ? "actualizado" : "guardado"} exitosamente ✅`
+        );
         limpiarFormulario();
         setEditData(null);
       }
@@ -185,8 +256,17 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
             {editData ? "✏️ Editar Suscriptor" : "➕ Agregar Suscriptor"}
           </label>
           {editData && (
-            <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-sm">
-              Editando suscripción
+            <div className="flex gap-2 items-center">
+              <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-sm">
+                Editando suscripción
+              </div>
+              {/* Mostrar IDs para depuración */}
+              {suscripciones[0] && (
+                <div className="px-2 py-1 bg-gray-200 text-gray-600 rounded text-xs">
+                  ID Sus: {suscripciones[0].id_tbl_suscripcion || "N/A"} | ID
+                  Ren: {suscripciones[0].id_tbl_suscripcion_renovacion || "N/A"}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -222,7 +302,7 @@ const AgregarSuscriptor = ({ editData, setEditData }) => {
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="icon-[eos-icons--loading] h-5 w-5"></span>
-                Guardando...
+                {editData ? "Actualizando..." : "Guardando..."}
               </span>
             ) : (
               `${editData ? "Actualizar" : "Guardar"} Suscriptor`
