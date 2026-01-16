@@ -18,7 +18,7 @@ class SuscriptoresService extends GenericService {
   }
 
   async crearSuscripcion(params) {
-    const url = `${Config.URL_SERVICIOS}${Config.SUSCRIPTOR}gestionarSuscripcion/`;
+    const url = `${Config.URL_SERVICIOS}${Config.ADMIN}${Config.SUSCRIPTOR}gestionarSuscripcion/`;
     return await this.post(url, params);
   }
 
