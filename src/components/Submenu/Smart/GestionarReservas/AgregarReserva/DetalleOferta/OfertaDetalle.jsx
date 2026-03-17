@@ -99,7 +99,7 @@ const OfertaDetalle = ({
                         <label className='font-semibold text-xs'>Buscar Establecimiento</label>
                         <div className='flex'>
                             <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[icon-park-solid--hotel] text-blue-600"></span>
+                                <span className="icon-[icon-park-solid--hotel] text-greenVE-600"></span>
                             </div>
                             <div className='w-full'>
                                 <input
@@ -111,7 +111,7 @@ const OfertaDetalle = ({
                             <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-l-0 cursor-pointer' onClick={loadingEst ? () => { } : () => handleClickCancel()}>
                                 {
                                     !loadingEst
-                                        ? <span className="icon-[game-icons--cancel] text-blue-600" ></span>
+                                        ? <span className="icon-[game-icons--cancel] text-greenVE-600" ></span>
                                         : <span className="icon-[line-md--loading-twotone-loop]"></span>
                                 }
                             </div>
@@ -124,7 +124,7 @@ const OfertaDetalle = ({
                                             suggestion.map((item, key) => (
                                                 <div key={key} className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => { }/*() => (setDestination(item), setSuggestion(null))*/}>
                                                     <div className="flex  w-full p-1 cursor-pointer" onClick={() => onClickSuggestion(item)} >
-                                                        <label key={key} className=" cursor-pointer text-xs text-blue-500" >
+                                                        <label key={key} className=" cursor-pointer text-xs text-greenVE-500" >
                                                             {item.descripcion.split(",")[0].replace("en ", "")}
                                                         </label>
 
@@ -149,7 +149,7 @@ const OfertaDetalle = ({
                         <label className='font-semibold text-xs'>Buscar Oferta</label>
                         <div className='flex'>
                             <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[material-symbols--hotel] text-blue-600"></span>
+                                <span className="icon-[material-symbols--hotel] text-greenVE-600"></span>
                             </div>
                             <div className='w-full'>
                                 <select
@@ -172,7 +172,7 @@ const OfertaDetalle = ({
                         <label className='font-semibold text-xs'>Seleccionar estado reserva</label>
                         <div className='flex'>
                             <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[material-symbols--hotel] text-blue-600"></span>
+                                <span className="icon-[material-symbols--hotel] text-greenVE-600"></span>
                             </div>
                             <div className='w-full'>
                                 <select

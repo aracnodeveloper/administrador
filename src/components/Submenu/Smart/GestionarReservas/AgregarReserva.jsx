@@ -495,7 +495,7 @@ const AgregarReserva = ({ editData, setEditData }) => {
                     {
                         selectedEst
                         && <div className='w-full bg-white'>
-                            <div className='bg-blue-200 px-4 flex py-1 gap-2'>
+                            <div className='bg-greenVE-200 px-4 flex py-1 gap-2'>
                                 <span className="icon-[icon-park-solid--hotel] w-4 h-4"></span>
                                 <label className='text-xs font-semibold'>{selectedEst.titulo.toUpperCase()}</label>
                             </div>
@@ -509,12 +509,12 @@ const AgregarReserva = ({ editData, setEditData }) => {
                                                     item.tipo.toLowerCase().includes("teléfono") ||
                                                     item.tipo.toLowerCase().includes("celular")
                                                 )
-                                                    ? <span className="icon-[bxs--phone] text-blue-600 h-4 w-4"></span>
+                                                    ? <span className="icon-[bxs--phone] text-greenVE-600 h-4 w-4"></span>
                                                     : item.tipo.toLowerCase().includes("whatsapp")
-                                                        ? <span className="text-blue-600 icon-[formkit--whatsapp] h-4 w-4"></span>
+                                                        ? <span className="text-greenVE-600 icon-[formkit--whatsapp] h-4 w-4"></span>
                                                         : item.tipo.toLowerCase().includes("web")
-                                                            ? <span className="icon-[mdi--web] text-blue-600 h-4 w-4"></span>
-                                                            : <span className="icon-[mdi--email] text-blue-600 h-4 w-4"></span>
+                                                            ? <span className="icon-[mdi--web] text-greenVE-600 h-4 w-4"></span>
+                                                            : <span className="icon-[mdi--email] text-greenVE-600 h-4 w-4"></span>
                                             }
                                             <label className='text-xs font-semibold'>{`${item.tipo}: `}</label>
                                             <label className='text-xs'>{item.contacto}</label>
@@ -528,17 +528,17 @@ const AgregarReserva = ({ editData, setEditData }) => {
                         <div class="border-b border-gray-200 dark:border-gray-700">
                             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
                                 <li onClick={() => setSelTab(0)} class="me-2">
-                                    <a href="#" class={selTab == 0 ? "inline-flex items-center justify-center p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"}>
+                                    <a href="#" class={selTab == 0 ? "inline-flex items-center justify-center p-4 text-greenVE-600 border-b-2 border-greenVE-600 rounded-t-lg active dark:text-greenVE-500 dark:border-greenVE-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"}>
                                         <span className="icon-[mdi--account-circle] h-5 w-5"></span>Suscriptor
                                     </a>
                                 </li>
                                 <li onClick={() => setSelTab(1)} class="me-2">
-                                    <a href="#" class={selTab == 1 ? "inline-flex items-center justify-center p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"} aria-current="page">
+                                    <a href="#" class={selTab == 1 ? "inline-flex items-center justify-center p-4 text-greenVE-600 border-b-2 border-greenVE-600 rounded-t-lg active dark:text-greenVE-500 dark:border-greenVE-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"} aria-current="page">
                                         <span className="icon-[ion--bed] h-5 w-5"></span>Detalle oferta
                                     </a>
                                 </li>
                                 <li onClick={() => setSelTab(2)} class="me-2">
-                                    <a href="#" class={selTab == 2 ? "inline-flex items-center justify-center p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"}>
+                                    <a href="#" class={selTab == 2 ? "inline-flex items-center justify-center p-4 text-greenVE-600 border-b-2 border-greenVE-600 rounded-t-lg active dark:text-greenVE-500 dark:border-greenVE-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"}>
                                         <span className="icon-[bi--info-circle-fill] h-5 w-5"></span> Resumen reserva
                                     </a>
                                 </li>

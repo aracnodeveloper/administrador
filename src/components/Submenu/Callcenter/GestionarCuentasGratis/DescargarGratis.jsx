@@ -122,7 +122,7 @@ const DescargarGratis = ({ params }) => {
   };
 
   return (
-    <button title='Descargar excel' className='flex gap-1 items-center justify-center bg-greenVE-400 border-2 border-greenVE-600 h-8 w-8 rounded-full' onClick={loading ? null : generarExcel}>
+    <button className='flex gap-1 items-center justify-center bg-greenVE-400 border-2 border-greenVE-600 h-8 w-8 rounded-full' onClick={loading ? null : generarExcel}>
       {
         loading
           ? <span className="icon-[line-md--loading-twotone-loop] h-5 w-5 text-gray-500"></span>

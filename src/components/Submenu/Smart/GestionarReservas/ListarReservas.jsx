@@ -7,9 +7,7 @@ import { formatDate, verificarPermiso } from '../../../../global/utils';
 import ReactPaginate from 'react-paginate';
 import DescargarReservas from './DescargarReservas';
 
-
 const ListarReservas = ({ handleClickEdit }) => {
-    const [change, setChange] = useState();
     const [data, setData] = useState();
     const [numPaginas, setNumPaginas] = useState();
     const [total, setTotal]=useState();
@@ -25,9 +23,6 @@ const ListarReservas = ({ handleClickEdit }) => {
     const [idReserva, setIdReserva] = useState();
     const [loading, setLoading] = useState();
     const [cantidad, setCantidad]=useState("20");
-    const handleSetChange = () => {
-        setChange(prev => prev + 1);
-    };
 
     useEffect(() => {
         setLoading(true);
@@ -43,7 +38,6 @@ const ListarReservas = ({ handleClickEdit }) => {
             listarGestoresReservas({}).then((res) => {
                 if (res) {
                     setGestores(res)
-                    console.log(res)
                 }
             });
         }
@@ -73,7 +67,6 @@ const ListarReservas = ({ handleClickEdit }) => {
                 setNumPaginas(cantidad=="1"?1:Math.ceil(parseInt(res.cantidad) / parseInt(cantidad)));
                 setTotal(res.cantidad)
                 if (aplicar) {
-                    console.log("resetear");
                     setSelPagina(0);
                 }
             }
@@ -81,126 +74,160 @@ const ListarReservas = ({ handleClickEdit }) => {
     };
 
     const handleOnPageChange = (page) => {
-        setSelPagina(page.selected); // Cambiar el estado de la página seleccionada
+        setSelPagina(page.selected);
         handleClicAplicar({ aplicar: false, pagina: page.selected + 1 });
     };
 
-
-
     return (
-        <div className='pl-3 w-full'>
-            <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
-                <div className='flex gap-2 items-center mb-2'>
-                    <label className='text-greenVE-700 text-xl border-0'>Listar reservas</label>
-                    <DescargarReservas params={{
-                        id_tbl_usuario: parseInt(selGestor),
-                        id_tbl_estado_reserva: parseInt(selEstado),
-                        tipoPago: selPago,
-                        fechas: {
-                            inicio: fInicio,
-                            fin: fFin
-                        },
-                        codCliente: idSuscriptor,
-                        nomEstablecimiento: nomEstablecimiento,
-                        nroReserva: idReserva,
-                    }} />
+        <div className='w-full p-6'>
+            <div className='flex flex-col gap-6'>
+                {/* Header Profesional */}
+                <div className='flex justify-between items-center'>
+                    <div className='flex flex-col gap-1'>
+                        <h2 className='text-2xl font-black text-slate-800 tracking-tight'>Consulta de Reservas</h2>
+                        <p className='text-sm text-slate-500 font-medium'>Gestione y filtre el historial de reservas activas.</p>
+                    </div>
+                    <div className='hover:scale-105 transition-transform'>
+                        <DescargarReservas params={{
+                            id_tbl_usuario: parseInt(selGestor),
+                            id_tbl_estado_reserva: parseInt(selEstado),
+                            tipoPago: selPago,
+                            fechas: { inicio: fInicio, fin: fFin },
+                            codCliente: idSuscriptor,
+                            nomEstablecimiento: nomEstablecimiento,
+                            nroReserva: idReserva,
+                        }} />
+                    </div>
                 </div>
-                <div className='bg-greenVE-400 p-2 rounded-t-md flex flex-col '>
-                    <div>
-                        <div className='flex gap-2'>
-                            <div className='w-4/12'>
-                                <label className='text-sm text-greenVE-800 '>Filtrar por:</label>
-                            </div>
-                            <div className='w-2/12 ml-2'>
-                                <label className='text-sm text-greenVE-800 '>Desde:</label>
-                            </div>
-                            <div className='w-2/12'>
-                                <label className='text-sm text-greenVE-800 '>Hasta:</label>
-                            </div>
-                            {
-                                total&&
-                                <div className='w-[30%] flex items-center justify-end'>
-                                    <label className='text-base font-semibold text-greenVE-500 text-pretty bg-white rounded-md px-2'>Total: {total}</label>
-                                </div>
-                            }
+
+                {/* Parámetros de Búsqueda Ejecutivo */}
+                <div className='bg-slate-50 border border-slate-200 rounded-2xl p-6'>
+                    <div className='flex items-center gap-2 mb-6'>
+                        <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
+                        <label className='text-xs font-black uppercase tracking-widest text-slate-400'>Criterios de búsqueda</label>
+                    </div>
+                    
+                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Desde</label>
+                            <input value={fInicio} type='date' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setFInicio(event.target.value) }} />
                         </div>
-                        <div className='flex gap-2 my-2'>
-                            {verificarPermiso(87) &&
-                                <select className='w-2/12 rounded-full h-7 py-0 text-xs capitalize' value={selGestor} onChange={(event) => setSelGestor(event.target.value)}>
-                                    <option value="-2" disabled selected>Gestor de reserva</option>
-                                    <option value="-1">Todos los gestores</option>
-                                    {gestores && gestores.map((item, index) => (
-                                        <option key={index} value={item.id_tbl_usuario}>{item.nombre}</option>
-                                    ))}
-                                </select>
-                            }
-                            <select className='w-2/12 rounded-full h-7 py-0 text-xs' value={selEstado} onChange={(event) => setSelEstado(event.target.value)}>
-                                <option value="-2" disabled selected>Estado de reserva</option>
-                                <option value="-1">Todos los estados</option>
-                                {Config.ESTADOS.map((item, index) => (
-                                    <option key={index} value={item.id}>{`${item.nombre} `}</option>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Hasta</label>
+                            <input value={fFin} type='date' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setFFin(event.target.value) }} />
+                        </div>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>ID Suscriptor</label>
+                            <input value={idSuscriptor} placeholder='Ingresar ID Suscriptor' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setIdSuscriptor(event.target.value) }} />
+                        </div>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Establecimiento</label>
+                            <input value={nomEstablecimiento} placeholder='Ingresar nombre establecimiento' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setNomEstablecimiento(event.target.value) }} />
+                        </div>
+                    </div>
+
+                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4'>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Gestor de reserva</label>
+                            <select className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' value={selGestor} onChange={(event) => setSelGestor(event.target.value)}>
+                                <option value="-2" disabled>Seleccionar gestor</option>
+                                <option value="-1">Todos los gestores</option>
+                                {gestores && gestores.map((item, index) => (
+                                    <option key={index} value={item.id_tbl_usuario}>{item.nombre}</option>
                                 ))}
                             </select>
-                            <input value={fInicio} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setFInicio(event.target.value) }}></input>
-                            <input value={fFin} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setFFin(event.target.value) }}></input>
-                            <div className="flex gap-1">
-                                <select className='p-0 text-xs h-7 rounded-full px-2' value={cantidad} onChange={(event)=>setCantidad(event.target.value)}>
-                                    {
-                                        Config.ELEMENTOSHOJAS.map((item)=>(
-                                            <option value={item.id}>{item.nombre}</option>
-                                        ))
-                                    }
-                                </select>
-                                <button className='bg-greenVE-200 border-2 border-greenVE-600 px-4 rounded-full h-7' onClick={() => handleClicAplicar({filtros:true})}>Aplicar</button>
-                            </div>
                         </div>
-                        <div className='flex gap-2 my-2'>
-                            <input placeholder='Id Suscriptor' value={idSuscriptor} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setIdSuscriptor(event.target.value) }}></input>
-                            <input placeholder='Establecimiento' value={nomEstablecimiento} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setNomEstablecimiento(event.target.value) }}></input>
-                            <input placeholder='Id Reserva' value={idReserva} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setIdReserva(event.target.value) }}></input>
-                            <select className='w-2/12 rounded-full h-7 py-0 text-xs' value={selPago} onChange={(event) => setSelPago(event.target.value)}>
-                                <option value="-3" disabled selected>Tipo de pago</option>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Estado de reserva</label>
+                            <select className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' value={selEstado} onChange={(event) => setSelEstado(event.target.value)}>
+                                <option value="-2" disabled>Seleccionar estado</option>
+                                <option value="-1">Todos los estados</option>
+                                {Config.ESTADOS.map((item, index) => (
+                                    <option key={index} value={item.id}>{item.nombre}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>ID Reserva</label>
+                            <input value={idReserva} placeholder='Ingresar ID Reserva' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setIdReserva(event.target.value) }} />
+                        </div>
+                        <div className='flex flex-col gap-1.5'>
+                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Tipo de pago</label>
+                            <select className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' value={selPago} onChange={(event) => setSelPago(event.target.value)}>
+                                <option value="-3" disabled>Seleccionar pago</option>
                                 <option value="-2">Todos los tipos</option>
                                 {Config.PAGOS.map((item, index) => (
-                                    <option key={index} value={item.id}>{`${item.nombre} `}</option>
+                                    <option key={index} value={item.id}>{item.nombre}</option>
                                 ))}
                             </select>
                         </div>
                     </div>
-                </div>
-                {
-                    loading
-                        ? <div className='w-full flex items-center justify-center mt-5'>
-                            <span className="icon-[line-md--loading-twotone-loop] w-10 h-10 text-greenVE-600"></span>
+
+                    <div className='flex flex-col lg:flex-row justify-between items-center gap-4 mt-6 pt-6 border-t border-slate-100'>
+                        {total && (
+                            <span className='bg-greenVE-50 text-greenVE-700 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-greenVE-100'>
+                                Total: {total} registros
+                            </span>
+                        )}
+                        <div className='flex gap-2 w-full lg:w-auto'>
+                            <select className='h-10 rounded-xl border-slate-200 text-sm font-bold text-slate-600 focus:ring-greenVE-500' value={cantidad} onChange={(event)=>setCantidad(event.target.value)}>
+                                {Config.ELEMENTOSHOJAS.map((item)=>(
+                                    <option key={item.id} value={item.id}>{item.nombre} pág.</option>
+                                ))}
+                            </select>
+                            <button 
+                                className='flex-grow bg-greenVE-600 hover:bg-greenVE-700 text-white font-bold text-xs uppercase tracking-widest px-8 h-10 rounded-xl transition-all shadow-lg shadow-greenVE-100 flex items-center justify-center gap-2'
+                                onClick={() => handleClicAplicar({filtros:true})}
+                            >
+                                <span className='icon-[material-symbols--search-rounded] text-lg'></span>
+                                Actualizar Resultados
+                            </button>
                         </div>
-                        : (!loading && !data)
-                            ? <div className='w-full flex items-center justify-center mt-5'>
-                                <label>Sin resultados disponibles</label>
-                            </div>
-                            : <div className="relative overflow-x-auto shadow-md rounded-b-lg ">
+                    </div>
+                </div>
+
+                {/* Listado de Resultados */}
+                <div className='relative'>
+                    {loading ? (
+                        <div className='w-full flex flex-col items-center justify-center py-20 gap-4'>
+                            <span className="icon-[line-md--loading-twotone-loop] w-12 h-12 text-greenVE-600"></span>
+                            <p className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Cargando registros...</p>
+                        </div>
+                    ) : (!data || data.length === 0) ? (
+                        <div className='w-full flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200'>
+                            <span className='icon-[material-symbols--search-off-rounded] text-4xl text-slate-300 mb-3'></span>
+                            <p className='text-sm text-slate-500 font-medium'>No hay reservas disponibles</p>
+                        </div>
+                    ) : (
+                        <div className='flex flex-col w-full gap-4'>
+                            <div className='overflow-hidden rounded-2xl border border-slate-100 shadow-sm'>
                                 <TablaReservas handleClickEdit={handleClickEdit} reservas={data} />
+                            </div>
+                            
+                            <div className='mt-4'>
                                 <ReactPaginate
                                     forcePage={selPagina}
                                     breakLabel="..."
-                                    nextLabel="Siguiente"
+                                    nextLabel={<span className='icon-[material-symbols--chevron-right-rounded] text-xl'></span>}
                                     onPageChange={handleOnPageChange}
-                                    pageRangeDisplayed={5}
+                                    pageRangeDisplayed={3}
                                     pageCount={numPaginas}
-                                    previousLabel="Anterior"
-                                    renderOnZeroPageCount={null}
-                                    containerClassName={'flex justify-center p-4'}
-                                    pageClassName={'mx-1'}
-                                    pageLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    previousClassName={'mx-1'}
-                                    previousLinkClassName={'px-3 py-1  border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    nextClassName={'mx-1'}
-                                    nextLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    breakClassName={'mx-1'}
-                                    breakLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    activeClassName={'bg-greenVE-300 rounded py-1 -mt-1'}
+                                    previousLabel={<span className='icon-[material-symbols--chevron-left-rounded] text-xl'></span>}
+                                    containerClassName={'flex justify-center items-center gap-2 p-4'}
+                                    pageClassName={'flex'}
+                                    pageLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-sm font-bold text-slate-600 transition-all hover:bg-greenVE-50 hover:text-greenVE-700 hover:border-greenVE-200'}
+                                    previousClassName={'flex'}
+                                    previousLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all'}
+                                    nextClassName={'flex'}
+                                    nextLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all'}
+                                    breakClassName={'text-slate-300'}
+                                    activeClassName={'!bg-greenVE-600 !border-greenVE-600 rounded-xl shadow-md shadow-greenVE-100'}
+                                    activeLinkClassName={'!text-white'}
                                 />
                             </div>
-                }
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

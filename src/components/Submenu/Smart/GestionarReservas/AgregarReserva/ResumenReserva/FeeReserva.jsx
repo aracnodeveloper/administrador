@@ -34,7 +34,7 @@ const FeeReserva = (
                 <div className='flex w-full gap-4'>
                     <div className='flex w-[31%]'>
                         <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                            <span className="icon-[entypo--flag] text-blue-600"></span>
+                            <span className="icon-[entypo--flag] text-greenVE-600"></span>
                         </div>
                         <div className='w-full'>
                             <input
@@ -54,7 +54,7 @@ const FeeReserva = (
                     <div className='flex w-full gap-4'>
                         <div className='flex'>
                             <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[entypo--flag] text-blue-600"></span>
+                                <span className="icon-[entypo--flag] text-greenVE-600"></span>
                             </div>
                             <div className='w-full mr-2'>
                                 <select
@@ -78,7 +78,7 @@ const FeeReserva = (
                         <div className='flex w-full gap-4'>
                             <div className='flex'>
                                 <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                    <span className="icon-[entypo--flag] text-blue-600"></span>
+                                    <span className="icon-[entypo--flag] text-greenVE-600"></span>
                                 </div>
                                 <div className='w-full mr-2'>
                                     <input

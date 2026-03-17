@@ -1,70 +1,93 @@
 import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { verificarPermiso } from '../../global/utils';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import MenuMobile from './MenuMobile';
 
+// Componentes originales cargados con lazy 
 const SubmenuAudiovisuales = lazy(() => import('../Submenu/Audiovisuales/SubmenuAudiovisuales'));
 const SubmenuSmart = lazy(() => import('../Submenu/Smart/SubmenuSmart'));
 const SubmenuSuscriptores = lazy(() => import('../Submenu/Suscriptores/SubmenuSuscriptores'));
 const SubmenuCallcenter = lazy(() => import('../Submenu/Callcenter/SubmenuCallcenter'));
+const SubmenuInicio = lazy(() => import('../Submenu/Inicio/SubmenuInicio'));
 
 const session = JSON.parse(localStorage.getItem("datos"));
 const nombre = session ? session.data.nombre : "";
 const foto = session ? (session.data.fotos ? session.data.fotos.m : "https://visitaecuador.com/ve/img/contenido/suscriptor/thum141x100/fotoperfil2_xXA8V_0.png") : "https://visitaecuador.com/ve/img/contenido/suscriptor/thum141x100/fotoperfil2_xXA8V_0.png";
 
-var menuList = [
-    {
-        "title": "Inicio",
-        "menu": <div>Menu Inicio</div>
-    }
-];
-
-verificarPermiso(539) && menuList.push(
-    {
-        "title": "Audiovisuales",
-        "menu": <Suspense fallback={<div>Cargando...</div>}>
-            <SubmenuAudiovisuales defaultSubmenu={0} />
-        </Suspense>
-    }
-);
-
-verificarPermiso(103) && menuList.push(
-    {
-        "title": "Suscriptores",
-        "menu": <Suspense fallback={<div>Cargando...</div>}>
-            <SubmenuSuscriptores defaultSubmenu={0} />
-        </Suspense>
-    }
-);
-
-verificarPermiso(17) && menuList.push(
-    {
-        "title": "Smart",
-        "menu": <Suspense fallback={<div>Cargando...</div>}>
-            <SubmenuSmart defaultSubmenu={0} />
-        </Suspense>
-    }
-);
-
-menuList.push(
-    {
-        "title": "Call Center",
-        "menu": <Suspense fallback={<div>Cargando...</div>}>
-            <SubmenuCallcenter defaultSubmenu={0} />
-        </Suspense>
-    }
-);
-
 const Menu = () => {
-    const [selMenu, setSelMenu] = useState(null);
+    const [selMenu, setSelMenu] = useState(0);
     const location = useLocation();
+    const navigate = useNavigate();
     const currentPath = location.pathname;
 
-    useEffect(() => {
-        if (currentPath.includes("reserva")) {
-            setSelMenu(menuList.findIndex(item => item.title === "Smart"));
+    // Lista de menú con sus componentes
+    const menuList = [
+        {
+            "title": "Inicio",
+            "path": "/dashboard",
+            "menu": <Suspense fallback={<div className="flex flex-col items-center justify-center p-12 w-full"><div className="w-10 h-10 border-4 border-greenVE-100 border-t-greenVE-500 rounded-full animate-spin mb-3"></div><p className="text-greenVE-600 font-medium animate-pulse text-sm">Cargando Administrador Beta...</p></div>}><SubmenuInicio /></Suspense>
         }
-    }, [currentPath]);
+
+
+
+    ];
+
+    // visibilidad de Smart y Suscriptores para que funcione 
+    menuList.push({
+        "title": "Suscriptores",
+        "path": "/suscriptores",
+        "menu": <Suspense fallback={<div className="flex flex-col items-center justify-center p-12 w-full"><div className="w-10 h-10 border-4 border-greenVE-100 border-t-greenVE-500 rounded-full animate-spin mb-3"></div><p className="text-greenVE-600 font-medium animate-pulse text-sm">Cargando Suscriptores...</p></div>}><SubmenuSuscriptores defaultSubmenu={0} /></Suspense>
+    });
+
+
+
+
+
+    menuList.push({
+        "title": "Smart",
+        "path": "/smart",
+        "menu": <Suspense fallback={<div className="flex flex-col items-center justify-center p-12 w-full"><div className="w-10 h-10 border-4 border-greenVE-100 border-t-greenVE-500 rounded-full animate-spin mb-3"></div><p className="text-greenVE-600 font-medium animate-pulse text-sm">Cargando Smart...</p></div>}><SubmenuSmart defaultSubmenu={0} /></Suspense>
+    });
+
+
+
+
+
+    menuList.push({
+        "title": "Call Center",
+        "path": "/call-center",
+        "menu": <Suspense fallback={<div className="flex flex-col items-center justify-center p-12 w-full"><div className="w-10 h-10 border-4 border-greenVE-100 border-t-greenVE-500 rounded-full animate-spin mb-3"></div><p className="text-greenVE-600 font-medium animate-pulse text-sm">Cargando Call Center...</p></div>}><SubmenuCallcenter defaultSubmenu={0} /></Suspense>
+    });
+
+
+
+
+
+    if (verificarPermiso(539) || verificarPermiso(538)) {
+        menuList.push({
+            "title": "Audiovisuales",
+            "path": "/audiovisuales",
+            "menu": <Suspense fallback={<div className="flex flex-col items-center justify-center p-12 w-full"><div className="w-10 h-10 border-4 border-greenVE-100 border-t-greenVE-500 rounded-full animate-spin mb-3"></div><p className="text-greenVE-600 font-medium animate-pulse text-sm">Cargando Audiovisuales...</p></div>}><SubmenuAudiovisuales defaultSubmenu={0} /></Suspense>
+        });
+
+
+
+
+    }
+
+    useEffect(() => {
+        const index = menuList.findIndex(item => {
+            if (item.path === "/dashboard") return currentPath === "/dashboard" || currentPath === "/administrador/" || currentPath === "/administrador" || currentPath === "/";
+            return currentPath.includes(item.path);
+        });
+
+        if (index !== -1) {
+            setSelMenu(index);
+        } else if (currentPath.includes("reserva")) {
+            const smartIndex = menuList.findIndex(item => item.title === "Smart");
+            if (smartIndex !== -1) setSelMenu(smartIndex);
+        }
+    }, [currentPath, menuList.length]);
 
     return (
         <>
@@ -83,8 +106,11 @@ const Menu = () => {
                                     menuList.map((item, index) => (
                                         <button
                                             key={index}
-                                            className={`border ${index === 0 ? "" : index === (menuList.length - 1) ? "" : ""} px-4 ${index === selMenu ? "bg-white text-greenVE-500" : "text-white hover:bg-greenVE-600" }`}
-                                            onClick={() => setSelMenu(index)}
+                                            className={`border px-4 ${index === selMenu ? "bg-white text-greenVE-500 font-bold" : "text-white hover:bg-greenVE-600"}`}
+                                            onClick={() => {
+                                                setSelMenu(index);
+                                                navigate(item.path);
+                                            }}
                                         >
                                             {item.title}
                                         </button>
@@ -94,7 +120,7 @@ const Menu = () => {
                     }
                     <div className='flex md:h-[75px] items-start w-6/12 md:w-3/12'>
                         <div className="flex gap-2 items-center cursor-pointer hover:bg-white hover:bg-opacity-20 hover:rounded-md p-1"
-                             onClick={() => { localStorage.removeItem('permisos'); window.open("/", "_self") }}>
+                            onClick={() => { localStorage.removeItem('permisos'); window.open("/", "_self") }}>
                             <img src={foto} className="rounded-full h-10 w-10 border-2 md:block" alt="profile" />
                             <div className="flex flex-col">
                                 <label className="font-semibold text-white cursor-pointer">{nombre}</label>
@@ -104,6 +130,8 @@ const Menu = () => {
                     </div>
                 </div>
             </header>
+
+            {/* Código original  */}
             {/*<div className='flex justify-between px-5 py-3 bg-greenVE-500'>
                 <img className='h-16' src='https://visitaecuador.com/ve/img/diseno/logo_ve.jpg'/>
                 <div className='flex flex-col w-20 justify-center items-center'>
@@ -113,15 +141,11 @@ const Menu = () => {
                         <button className='text-xs text-red-700'>Salir</button>
                     </div>
                 </div>
-            </div>
-            <div className='h-8 w-full bg-greenVE-500 px-10 py-1'>
-                {
-                    menuList.map((item, index)=>(
-                        <button className={`text-white border ${index==0?"border-l-2":index==(menuList.length-1)?"border-r-2":" border-x-1"} border-y-0 px-4 ${index==selMenu?"bg-greenVE-700":"hover:bg-greenVE-600"}`} onClick={()=>setSelMenu(index)}>{item.title}</button>
-                    ))
-                }
             </div>*/}
-            {selMenu !== null && menuList[selMenu].menu}
+
+            <main className="w-full">
+                {selMenu !== null && menuList[selMenu] && menuList[selMenu].menu}
+            </main>
         </>
     );
 };

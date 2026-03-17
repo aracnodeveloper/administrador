@@ -9,7 +9,6 @@ import VisualizadorCRM from './VisualizadorCRM';
 
 
 const TablaCuentasGratis = ({ listado, handleUpdateData }) => {
-  console.log(listado)
   const [loadingId, setLoadingId] = useState();
   const [editId, setEditId] = useState();
   var cedulaCRM = "";
@@ -92,6 +91,7 @@ const TablaCuentasGratis = ({ listado, handleUpdateData }) => {
       <DataGrid
         rows={rows}
         columns={columns}
+        getRowHeight={() => 'auto'}
         disableSelectionOnClick
         localeText={Config.esEs}
         hideFooterPagination={true}

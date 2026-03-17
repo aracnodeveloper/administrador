@@ -113,7 +113,7 @@ const SuscriptorReserva = ({
                     <label className='font-semibold text-xs'>Buscar Suscriptor</label>
                     <div className='flex'>
                         <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                            <span className="icon-[fontisto--person] text-blue-600"></span>
+                            <span className="icon-[fontisto--person] text-greenVE-600"></span>
                         </div>
                         <div className='w-full'>
                             <input
@@ -125,7 +125,7 @@ const SuscriptorReserva = ({
                         <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-l-0 cursor-pointer' onClick={loading ? () => { } : () => handleCLickCancel()}>
                             {
                                 !loading
-                                    ? <span className="icon-[game-icons--cancel] text-blue-600"></span>
+                                    ? <span className="icon-[game-icons--cancel] text-greenVE-600"></span>
                                     : <span className="icon-[line-md--loading-twotone-loop]"></span>
                             }
                         </div>
@@ -160,7 +160,7 @@ const SuscriptorReserva = ({
                         <label className='font-semibold text-xs'>Seleccionar Empresa</label>
                         <div className='flex'>
                             <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[fontisto--person] text-blue-600"></span>
+                                <span className="icon-[fontisto--person] text-greenVE-600"></span>
                             </div>
                             <div className='w-full'>
                                 <select className='text-xs w-full' value={empresa} onChange={(event)=>setEmpresa(event.target.value)}>
@@ -190,7 +190,7 @@ const SuscriptorReserva = ({
                         adicional
                             ? <div className='flex mt-[16px] w-1/2'>
                                 <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0 h-[34px]'>
-                                    <span className="icon-[fontisto--person] text-blue-600"></span>
+                                    <span className="icon-[fontisto--person] text-greenVE-600"></span>
                                 </div>
                                 <div className='w-full'>
                                     <input
@@ -202,7 +202,7 @@ const SuscriptorReserva = ({
                                 <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-l-0 cursor-pointer h-[34px]' onClick={loadingCed ? () => { } : () => handleCLickCancelCed()}>
                                     {
                                         !loadingCed
-                                            ? <span className="icon-[game-icons--cancel] text-blue-600"></span>
+                                            ? <span className="icon-[game-icons--cancel] text-greenVE-600"></span>
                                             : <span className="icon-[line-md--loading-twotone-loop]"></span>
                                     }
                                 </div>

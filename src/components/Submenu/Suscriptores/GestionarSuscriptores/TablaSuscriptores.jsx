@@ -15,47 +15,89 @@ const TablaSuscriptores = ({ suscriptores, handleClickEdit }) => {
     }
 
     return (
-        <table className='w-full'>
-            <thead className="text-[11px] text-gray-700 uppercase bg-gray-50 w-full">
-                <tr className='flex  justify-between '>
-                    <th scope="col" className="flex justify-center items-center w-[5%]">#</th>
-                    <th scope="col" className="flex justify-center items-center w-[5%]">Opciones</th>
-                    <th scope="col" className="flex justify-center items-center w-[10%]">ID</th>
-                    <th scope="col" className="flex justify-center items-center w-[10%]">Cedula</th>
-                    <th scope="col" className="flex justify-center items-center w-[15%]">Nombres</th>
-                    <th scope="col" className="flex justify-center items-center w-[10%]">Inicio / Fin</th>
-                    <th scope="col" className="flex justify-center items-center w-[15%]">Patrocinador</th>
-                    <th scope="col" className="flex justify-center items-center w-[10%]">Pago</th>
-                    <th scope="col" className="flex justify-center items-center w-[10%]">Empresa</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    suscriptores && suscriptores.map((item, index) => (
-                        <tr className={`odd:bg-white even:bg-gray-50 text-[12px] flex justify-between border-y ${((new Date(item.fecha_fin.split(" ")[0])) < fActual) ? "text-red-500" : ""}`} key={item.id_tbl_usuario} >
-                            <td className="flex justify-center items-center w-[5%] text-center">{index + 1}</td>
-                            <td className="flex justify-center items-center text-center w-[5%] gap-2">
-                                <Tooltip className='bg-gray-700 text-[10px] py-1' content="Editar Reserva" arrow={false}>
-                                    {
-                                        loadingId==item.id_tbl_usuario
-                                        ?<span className="icon-[eos-icons--loading] h-5 w-5"></span>
-                                        :<span className="icon-[typcn--edit] w-5 h-5 hover:bg-blue-600  cursor-pointer text-gray-500" onClick={()=>handleClickEditar(item.id_tbl_usuario)}></span>
-                                    }
-                                </Tooltip>
-
-                            </td>
-                            <td className="flex justify-center items-center w-[10%] text-center">{item.codigo}</td>
-                            <td className="flex justify-center items-center w-[10%] text-center py-1">{item.ci_ruc}</td>
-                            <td className="flex justify-center items-center w-[15%] text-center py-1 ">{item.usuario}</td>
-                            <td className="flex justify-center items-center w-[10%] text-center py-1">{`${item.fecha_inicio.split(" ")[0]} / ${item.fecha_fin.split(" ")[0]}`}</td>
-                            <td className="flex justify-center items-center w-[15%] text-center py-1">{item.vendedor}</td>
-                            <td className="flex justify-center items-center w-[10%] text-center py-1">{item.estado_pago}</td>
-                            <td className="flex justify-center items-center w-[10%] text-center py-1">{item.nombre}</td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
+        <div className="overflow-x-auto">
+            <table className='w-full border-collapse'>
+                <thead className="text-[10px] text-slate-400 font-black uppercase tracking-[0.15em] bg-slate-50 border-b border-slate-100">
+                    <tr>
+                        <th className="px-4 py-4 text-center w-[5%]">#</th>
+                        <th className="px-4 py-4 text-center w-[10%]">Acción</th>
+                        <th className="px-4 py-4 text-left w-[10%]">Código</th>
+                        <th className="px-4 py-4 text-left w-[12%]">Identificación</th>
+                        <th className="px-4 py-4 text-left w-[18%]">Nombre Suscriptor</th>
+                        <th className="px-4 py-4 text-center w-[15%]">Vigencia (I/F)</th>
+                        <th className="px-4 py-4 text-left w-[15%]">Vendedor</th>
+                        <th className="px-4 py-4 text-center w-[10%]">Estado</th>
+                        <th className="px-4 py-4 text-left w-[5%]">Empresa</th>
+                    </tr>
+                </thead>
+                <tbody className='divide-y divide-slate-50'>
+                    {
+                        suscriptores && suscriptores.map((item, index) => {
+                            const estaVencido = (new Date(item.fecha_fin.split(" ")[0])) < fActual;
+                            
+                            return (
+                                <tr 
+                                    key={item.id_tbl_usuario} 
+                                    className={`group hover:bg-slate-50/80 transition-colors text-[13px] ${estaVencido ? "bg-red-50/30" : ""}`}
+                                >
+                                    <td className="px-4 py-4 text-center font-medium text-slate-400">
+                                        {index + 1}
+                                    </td>
+                                    <td className="px-4 py-4 text-center">
+                                        <div className='flex justify-center'>
+                                            {loadingId === item.id_tbl_usuario ? (
+                                                <span className="icon-[eos-icons--loading] h-5 w-5 text-greenVE-600"></span>
+                                            ) : (
+                                                <button 
+                                                    onClick={() => handleClickEditar(item.id_tbl_usuario)}
+                                                    className='p-2 rounded-lg bg-slate-100 text-slate-500 hover:bg-greenVE-100 hover:text-greenVE-700 transition-all flex items-center justify-center'
+                                                    title="Editar registro"
+                                                >
+                                                    <span className="icon-[material-symbols--edit-square-outline-rounded] text-lg"></span>
+                                                </button>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-4 text-left font-bold text-slate-700">
+                                        {item.codigo}
+                                    </td>
+                                    <td className="px-4 py-4 text-left text-slate-600 font-medium">
+                                        {item.ci_ruc}
+                                    </td>
+                                    <td className="px-4 py-4 text-left">
+                                        <div className='flex flex-col'>
+                                            <span className={`font-bold ${estaVencido ? "text-red-600" : "text-slate-800"}`}>
+                                                {item.usuario}
+                                            </span>
+                                            <span className='text-[10px] font-bold text-slate-400 uppercase tracking-tighter'>Usuario Activo</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-4 text-center text-slate-500 font-medium">
+                                        <div className='flex flex-col gap-0.5'>
+                                            <span className='text-xs'>{item.fecha_inicio.split(" ")[0]}</span>
+                                            <div className='h-[1px] w-4 bg-slate-200 mx-auto'></div>
+                                            <span className={`text-xs font-bold ${estaVencido ? "text-red-500" : "text-green-600"}`}>{item.fecha_fin.split(" ")[0]}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-4 text-left text-slate-600 text-[12px]">
+                                        {item.vendedor}
+                                    </td>
+                                    <td className="px-4 py-4 text-center">
+                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider
+                                            ${item.estado_pago === 'PAGADO' ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"}`}>
+                                            {item.estado_pago}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-4 text-left text-slate-500 font-medium">
+                                        {item.nombre}
+                                    </td>
+                                </tr>
+                            );
+                        })
+                    }
+                </tbody>
+            </table>
+        </div>
     );
 };
 
