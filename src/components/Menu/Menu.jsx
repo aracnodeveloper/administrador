@@ -3,7 +3,7 @@ import { verificarPermiso } from '../../global/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MenuMobile from './MenuMobile';
 
-// Componentes originales cargados con lazy 
+// Componentes cargados con lazy 
 const SubmenuAudiovisuales = lazy(() => import('../Submenu/Audiovisuales/SubmenuAudiovisuales'));
 const SubmenuSmart = lazy(() => import('../Submenu/Smart/SubmenuSmart'));
 const SubmenuSuscriptores = lazy(() => import('../Submenu/Suscriptores/SubmenuSuscriptores'));
@@ -32,7 +32,7 @@ const Menu = () => {
 
     ];
 
-    // visibilidad de Smart y Suscriptores para que funcione 
+    // visibilidad de Smart y Suscriptores 
     menuList.push({
         "title": "Suscriptores",
         "path": "/suscriptores",
@@ -91,41 +91,58 @@ const Menu = () => {
 
     return (
         <>
-            <header className="bg-greenVE-500">
-                <div className="flex py-2 px-4 items-center md:items-end">
-                    <div className="w-3/12 md:w-2/12 flex cursor-pointer">
-                        <img src="https://visitaecuador.com/img/web/ve_logo.svg" style={{ width: "110px", height: "auto" }} alt="logo" />
+            <header className="bg-greenVE-500 border-b border-white/20 sticky top-0 z-50 shadow-md">
+                <div className="max-w-[1920px] mx-auto flex h-20 px-12 items-center justify-between">
+                    {/* Logo Izquierda - Estilo Empresarial */}
+                    <div className="flex-shrink-0 cursor-pointer flex items-center h-full" onClick={() => navigate("/")}>
+                        <img 
+                            src="https://visitaecuador.com/img/web/ve_logo.svg" 
+                            className="h-11 w-auto object-contain transition-opacity hover:opacity-80" 
+                            alt="logo" 
+                        />
                     </div>
-                    {
-                        window.innerWidth < 768
-                            ? <div className='w-3/12'>
-                                <MenuMobile menuList={menuList} setSelMenu={setSelMenu} selMenu={selMenu} />
-                            </div>
-                            : <div className='h-8 w-full bg-greenVE-500 px-4 py-1 mb-5'>
-                                {
-                                    menuList.map((item, index) => (
-                                        <button
-                                            key={index}
-                                            className={`border px-4 ${index === selMenu ? "bg-white text-greenVE-500 font-bold" : "text-white hover:bg-greenVE-600"}`}
-                                            onClick={() => {
-                                                setSelMenu(index);
-                                                navigate(item.path);
-                                            }}
-                                        >
-                                            {item.title}
-                                        </button>
-                                    ))
-                                }
-                            </div>
-                    }
-                    <div className='flex md:h-[75px] items-start w-6/12 md:w-3/12'>
-                        <div className="flex gap-2 items-center cursor-pointer hover:bg-white hover:bg-opacity-20 hover:rounded-md p-1"
+
+                    {/* Menú Central - Pestañas Integradas */}
+                    <div className="hidden md:flex flex-grow justify-center h-full">
+                        <nav className='flex h-full items-stretch'>
+                            {
+                                menuList.map((item, index) => (
+                                    <button
+                                        key={index}
+                                        className={`px-8 h-20 text-[13px] font-medium transition-all duration-200 uppercase tracking-wider flex items-center relative group font-sans
+                                            ${index === selMenu 
+                                                ? "text-white font-bold" 
+                                                : "text-white/60 hover:text-white hover:bg-white/5"}`}
+                                        onClick={() => {
+                                            setSelMenu(index);
+                                            navigate(item.path);
+                                        }}
+                                    >
+                                        {item.title}
+                                        {/* Indicador de pestaña activo */}
+                                        <div className={`absolute bottom-0 left-0 w-full h-1.5 transition-all duration-300
+                                            ${index === selMenu ? "bg-white scale-x-100 opacity-100 shadow-[0_-2px_10px_rgba(255,255,255,0.4)]" : "bg-white scale-x-0 opacity-0 group-hover:scale-x-50 group-hover:opacity-20"}`}>
+                                        </div>
+                                    </button>
+                                ))
+                            }
+                        </nav>
+                    </div>
+
+                    {/* Menú Mobile */}
+                    <div className='md:hidden'>
+                        <MenuMobile menuList={menuList} setSelMenu={setSelMenu} selMenu={selMenu} />
+                    </div>
+
+                    {/* Perfil Derecha */}
+                    <div className='flex items-center justify-end flex-shrink-0'>
+                        <div className="flex gap-4 items-center cursor-pointer group px-5 py-2 rounded-2xl hover:bg-white/10 transition-all"
                             onClick={() => { localStorage.removeItem('permisos'); window.open("/", "_self") }}>
-                            <img src={foto} className="rounded-full h-10 w-10 border-2 md:block" alt="profile" />
-                            <div className="flex flex-col">
-                                <label className="font-semibold text-white cursor-pointer">{nombre}</label>
-                                <label className="capitalize text-xs text-white cursor-pointer">Salir</label>
+                            <div className="flex flex-col items-end leading-none gap-1">
+                                <label className="text-[13px] font-bold text-white cursor-pointer group-hover:text-white">{nombre}</label>
+                                <label className="text-[10px] font-medium text-white/40 uppercase tracking-widest cursor-pointer group-hover:text-red-300 transition-colors">Salir</label>
                             </div>
+                            <img src={foto} className="rounded-full h-11 w-11 border-2 border-white/20 object-cover shadow-lg group-hover:border-white transition-all" alt="profile" />
                         </div>
                     </div>
                 </div>
