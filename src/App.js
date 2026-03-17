@@ -28,7 +28,7 @@ function App() {
       <Suspense fallback={<div className="flex flex-col items-center justify-center min-h-screen"><div className="w-12 h-12 border-4 border-greenVE-100 border-t-greenVE-500 rounded-full animate-spin mb-4"></div><p className="text-gray-500 animate-pulse font-medium">Cargando...</p></div>}>
 
         <Routes>
-          {/* Volvemos a la estructura original: Una sola entrada a Home */}
+          {/* Una sola entrada a Home */}
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Home />} />
           <Route path="/audiovisuales" element={<Home />} />
