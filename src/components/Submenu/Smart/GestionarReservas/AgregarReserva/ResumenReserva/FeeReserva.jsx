@@ -27,75 +27,64 @@ const FeeReserva = (
     ]
 
     return (
-        <div>
-            <div className='flex flex-col w-8/12 pr-2 pt-4 gap-2'>
-                <label className='font-semibold text-xs'>FEE</label>
-                <label className='font-medium text-[10px] '>Valor Estimado</label>
-                <div className='flex w-full gap-4'>
-                    <div className='flex w-[31%]'>
-                        <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                            <span className="icon-[entypo--flag] text-greenVE-600"></span>
-                        </div>
-                        <div className='w-full'>
-                            <input
-                                value={totalFee}
-                                readOnly
-                                onChange={(event) => { }}
-                                className='text-xs w-full bg-gray-100'>
-                            </input>
-                        </div>
-                    </div>
-                   
-                </div>
-            </div>
-            <div className='flex w-full '>
-                <div className='flex flex-col w-[21.5%]  pr-2 pt-4 gap-2'>
-                    <label className='font-medium text-[10px] '>Facturar</label>
-                    <div className='flex w-full gap-4'>
-                        <div className='flex'>
-                            <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[entypo--flag] text-greenVE-600"></span>
-                            </div>
-                            <div className='w-full mr-2'>
-                                <select
-                                    value={facturar}
-                                    onChange={(event) => handleChangeFacturar(event.target.value)}
-                                    className='text-xs w-full'>
-                                    {
-                                        fee.map((item, index) => (
-                                            <option key={index} value={item.id}>{item.nombre}</option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {
-                    facturar != "1"
-                    ? <div className='flex flex-col w-[25.5%] pt-4 gap-2'>
-                        <label className='font-medium text-[10px] '>{facturar=="2"?"# de Reserva":"Razón / Motivo"}</label>
-                        <div className='flex w-full gap-4'>
-                            <div className='flex'>
-                                <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                    <span className="icon-[entypo--flag] text-greenVE-600"></span>
-                                </div>
-                                <div className='w-full mr-2'>
-                                    <input
-                                        value={facturar=="2"?referenciaFee:comentarioFee}
-                                        onChange={(event) => facturar=="2"?setReferenciaFee(event.target.value):setComentarioFee(event.target.value)}
-                                        className='text-xs w-full'>
-                                    </input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    : <></>
-                }
+        <div className='flex flex-col gap-6 bg-slate-50/50 p-6 rounded-2xl border border-slate-100 animate-fadeIn'>
+            <div className='flex items-center gap-3 border-b border-slate-100 pb-3'>
+                <div className='w-1.5 h-6 bg-greenVE-600 rounded-full'></div>
+                <h3 className='text-sm font-bold text-slate-700 uppercase tracking-widest'>Gestión de FEE</h3>
             </div>
 
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                {/* Valor Estimado */}
+                <div className='flex flex-col gap-2'>
+                    <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
+                        Valor Estimado
+                    </label>
+                    <div className='flex'>
+                        <input
+                            value={totalFee}
+                            readOnly
+                            className='w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 outline-none cursor-default'
+                        />
+                    </div>
+                </div>
+
+                {/* Facturación */}
+                <div className='flex flex-col gap-2'>
+                    <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
+                        Estado de Facturación
+                    </label>
+                    <div className='flex group'>
+                        <select
+                            value={facturar}
+                            onChange={(event) => handleChangeFacturar(event.target.value)}
+                            className='w-full h-11 px-4 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 outline-none focus:border-greenVE-500 transition-all shadow-sm'
+                        >
+                            {fee.map((item, index) => (
+                                <option key={index} value={item.id}>{item.nombre}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                {/* Campo Dinámico (Referencia/Motivo) */}
+                {facturar !== "1" && (
+                    <div className='flex flex-col gap-2 animate-slideLeft'>
+                        <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
+                            {facturar === "2" ? "Referencia de Reserva" : "Razón / Motivo"}
+                        </label>
+                        <div className='flex group'>
+                            <input
+                                value={facturar === "2" ? referenciaFee : comentarioFee}
+                                onChange={(event) => facturar === "2" ? setReferenciaFee(event.target.value) : setComentarioFee(event.target.value)}
+                                className='w-full h-11 px-4 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 outline-none focus:border-greenVE-500 transition-all shadow-sm'
+                                placeholder={facturar === "2" ? "Ingrese # Reserva..." : "Especifique motivo..."}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
 
-export default FeeReserva;
+export default FeeReserva;

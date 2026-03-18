@@ -92,122 +92,119 @@ const OfertaDetalle = ({
 
 
     return (
-        <div className='flex flex-col p-4 z-10 gap-8'>
-            <div className='w-full flex gap-4'>
-                <div className='w-5/12 flex flex-col gap-3'>
-                    <div className='flex flex-col'>
-                        <label className='font-semibold text-xs'>Buscar Establecimiento</label>
-                        <div className='flex'>
-                            <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[icon-park-solid--hotel] text-greenVE-600"></span>
-                            </div>
-                            <div className='w-full'>
-                                <input
-                                    value={inputEst} onChange={(e) => handleChangeEst(e.target.value)}
-                                    className='text-xs w-full'
-                                    placeholder='Ingrese nombre de establecimiento'
-                                ></input>
-                            </div>
-                            <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-l-0 cursor-pointer' onClick={loadingEst ? () => { } : () => handleClickCancel()}>
-                                {
-                                    !loadingEst
-                                        ? <span className="icon-[game-icons--cancel] text-greenVE-600" ></span>
-                                        : <span className="icon-[line-md--loading-twotone-loop]"></span>
-                                }
-                            </div>
-                        </div>
-                        {suggestion && (
-                            <ClickAwayListener onClickAway={handleClickAway} >
-                                <div className=" absolute mt-14 max-h-[17rem] w-[34.5rem] bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
-                                    {
-                                        suggestion ? (
-                                            suggestion.map((item, key) => (
-                                                <div key={key} className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => { }/*() => (setDestination(item), setSuggestion(null))*/}>
-                                                    <div className="flex  w-full p-1 cursor-pointer" onClick={() => onClickSuggestion(item)} >
-                                                        <label key={key} className=" cursor-pointer text-xs text-greenVE-500" >
-                                                            {item.descripcion.split(",")[0].replace("en ", "")}
-                                                        </label>
+        <div className='flex flex-col gap-8 animate-fadeIn'>
+            {/* Controles de Selección de Oferta */}
+            <div className='grid grid-cols-1 md:grid-cols-12 gap-6 bg-slate-50/50 p-6 rounded-2xl border border-slate-100'>
+                {/* Buscar Establecimiento */}
+                <div className='md:col-span-12 lg:col-span-5 flex flex-col gap-2'>
+                    <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
+                        1. Seleccionar Establecimiento
+                    </label>
+                    <div className='relative flex items-stretch group'>
+                        <input
+                            value={inputEst}
+                            onChange={(e) => handleChangeEst(e.target.value)}
+                            className='w-full h-11 px-4 bg-white border border-slate-200 rounded-l-xl text-sm font-semibold text-slate-700 outline-none focus:border-greenVE-500 focus:ring-4 focus:ring-greenVE-500/5 transition-all shadow-sm placeholder:text-slate-300'
+                            placeholder='Ingrese nombre del hotel...'
+                        />
+                        <button
+                            className='flex items-center px-4 bg-white border border-slate-200 border-l-0 rounded-r-xl hover:bg-slate-50 active:scale-95 group transition-all'
+                            onClick={loadingEst ? () => { } : () => handleClickCancel()}
+                        >
+                            <span className='text-[10px] font-bold text-slate-400 group-hover:text-red-500 uppercase transition-colors'>Limpiar</span>
+                        </button>
+                    </div>
 
-                                                        <label key={key} className=" cursor-pointer text-xs" >
-                                                            {`, ${item.titulo}`}
-
-                                                        </label>
-
-
-                                                    </div>
-                                                </div>
-                                            ))
-                                        ) : (<p></p>)
-                                    }
+                    {suggestion && (
+                        <ClickAwayListener onClickAway={handleClickAway} >
+                            <div className="absolute mt-20 w-full max-w-[500px] bg-white z-[60] shadow-2xl rounded-xl border border-slate-100 overflow-hidden animate-slideUp">
+                                <div className='bg-slate-50 px-4 py-2 border-b border-slate-100'>
+                                    <span className='text-[9px] font-bold text-slate-400 uppercase'>Establecimientos encontrados</span>
                                 </div>
-                            </ClickAwayListener>
-                        )}
+                                <div className='max-h-64 overflow-y-auto'>
+                                    {suggestion.map((item, key) => (
+                                        <div
+                                            key={key}
+                                            className='flex items-center justify-between p-4 hover:bg-greenVE-50 transition-all cursor-pointer border-b border-slate-50 last:border-0 group'
+                                            onClick={() => onClickSuggestion(item)}
+                                        >
+                                            <div className='flex flex-col'>
+                                                <span className='text-xs font-bold text-slate-700 group-hover:text-greenVE-800 transition-colors'>
+                                                    {item.titulo}
+                                                </span>
+                                                <span className='text-[10px] text-slate-400 font-medium'>
+                                                    {item.descripcion.split(",")[0].replace("en ", "")}
+                                                </span>
+                                            </div>
+                                            <span className='text-[10px] font-bold text-greenVE-600 uppercase'>Elegir</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </ClickAwayListener>
+                    )}
+                </div>
+
+                {/* Buscar Oferta */}
+                <div className='md:col-span-12 lg:col-span-4 flex flex-col gap-2'>
+                    <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
+                        2. Elegir Oferta Disponible
+                    </label>
+                    <div className='relative flex'>
+                        <select
+                            value={selectedIndexOfer}
+                            onChange={(event) => handleChangeOfer(event.target.value)}
+                            className='w-full h-11 px-4 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 outline-none focus:border-greenVE-500 transition-all shadow-sm'
+                        >
+                            <option value="-1" disabled>Seleccione una oferta disponible</option>
+                            {ofertas && ofertas.map((item, index) => (
+                                <option value={index} key={index}>
+                                    {`$${parseFloat(item.precioOferta).toFixed(2)} - ${item.tituloOferta} (${item.estado})`}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
-                <div className='w-5/12 flex flex-col gap-3'>
-                    <div className='flex flex-col'>
-                        <label className='font-semibold text-xs'>Buscar Oferta</label>
-                        <div className='flex'>
-                            <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[material-symbols--hotel] text-greenVE-600"></span>
-                            </div>
-                            <div className='w-full'>
-                                <select
-                                    value={selectedIndexOfer}
-                                    onChange={(event) => handleChangeOfer(event.target.value)}
-                                    className='text-xs w-full'>
-                                    <option value="-1" disabled selected>Seleccione oferta</option>
-                                    {
-                                        ofertas && ofertas.map((item, index) => (
-                                            <option value={index} >{`$${parseFloat(item.precioOferta).toFixed(2)} - ${item.tituloOferta} (${item.estado})`} <label></label></option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className='w-2/12 flex flex-col gap-3'>
-                    <div className='flex flex-col'>
-                        <label className='font-semibold text-xs'>Seleccionar estado reserva</label>
-                        <div className='flex'>
-                            <div className='border flex items-center w-10 justify-center bg-gray-300 border-black border-r-0'>
-                                <span className="icon-[material-symbols--hotel] text-greenVE-600"></span>
-                            </div>
-                            <div className='w-full'>
-                                <select
-                                    value={estadoRes}
-                                    onChange={(event) => setEstadoRes(event.target.value)}
-                                    className='text-xs w-full'>
-                                    {
-                                        Config.ESTADOS.map((item, index) => (
-                                            <option value={item.id} >{`${item.nombre} `}</option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                        </div>
+
+                {/* Estado de la Reserva */}
+                <div className='md:col-span-12 lg:col-span-3 flex flex-col gap-2'>
+                    <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
+                        3. Estado Actual
+                    </label>
+                    <div className='relative flex'>
+                        <select
+                            value={estadoRes}
+                            onChange={(event) => setEstadoRes(event.target.value)}
+                            className='w-full h-11 px-4 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 outline-none focus:border-greenVE-500 transition-all shadow-sm'
+                        >
+                            {Config.ESTADOS.map((item, index) => (
+                                <option value={item.id} key={index}>{item.nombre}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
             </div>
-            {
-                contactos &&
-                <EstablecimientoOferta
-                    ofertas={selectedOfer}
-                    eliminar={eliminar}
-                    actualizar={actualizar}
-                    adicionalAdulto={adicionalAdulto}
-                    adicionalNino={adicionalNino}
-                    fechaIngreso={fechaIngreso}
-                    fechaSalida={fechaSalida}
-                    actualizarEdades={actualizarEdades}
-                    setComReserva={setComReserva}
-                    comReserva={comReserva}
-                    setComCliente={setComCliente}
-                    comCliente={comCliente}
-                    actualizarFeriado={actualizarFeriado}
-                />
-            }
+
+            {/* Listado de Ofertas*/}
+            {contactos && (
+                <div className='animate-slideDown'>
+                    <EstablecimientoOferta
+                        ofertas={selectedOfer}
+                        eliminar={eliminar}
+                        actualizar={actualizar}
+                        adicionalAdulto={adicionalAdulto}
+                        adicionalNino={adicionalNino}
+                        fechaIngreso={fechaIngreso}
+                        fechaSalida={fechaSalida}
+                        actualizarEdades={actualizarEdades}
+                        setComReserva={setComReserva}
+                        comReserva={comReserva}
+                        setComCliente={setComCliente}
+                        comCliente={comCliente}
+                        actualizarFeriado={actualizarFeriado}
+                    />
+                </div>
+            )}
         </div>
     );
 };

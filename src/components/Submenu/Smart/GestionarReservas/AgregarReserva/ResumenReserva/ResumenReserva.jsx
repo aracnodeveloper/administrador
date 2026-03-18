@@ -31,36 +31,67 @@ const ResumenReserva = ({
     
 
     return (
-        <div className='flex p-4 z-10 gap-8 bg-white'>
-            <div className=' flex flex-col w-full gap-3'>
-                <TablaOfertas 
-                    ofertas={ofertas} 
-                    actualizarCantidad={actualizarCantidad}
-                    actualizarNinos={actualizarNinos}
-                    actualizarAdultos={actualizarAdultos}
-                    actualizarCostoAdulto={actualizarCostoAdulto}
-                    actualizarCostoNino={actualizarCostoNino}
-                    actualizarDescuento={actualizarDescuento}
-                    actualizarTipoPago={actualizarTipoPago}
-                    eliminar={eliminar}
-                    subtotal={subtotal}
-                    setSubtotal={setSubtotal}
-                />
-                <FeeReserva 
-                    referenciaFee={referenciaFee}
-                    setReferenciaFee={setReferenciaFee}
-                    comentarioFee={comentarioFee}
-                    setComentarioFee={setComentarioFee}
-                    facturar={facturar}
-                    handleChangeFacturar={handleChangeFacturar}
-                    totalFee={totalFee}
-                />
-                <div className='w-8/12 flex items-center justify-center'>
-                    <button className='bg-greenVE-500 text-white rounded-md px-2 py-2 w-36' onClick={()=>isLoading?null:guardarReserva()}>{isLoading?<span className="icon-[line-md--loading-twotone-loop] h-7 w-7 -my-2"></span>:"Guardar Reserva"}</button>
+        <div className='flex flex-col gap-8 animate-fadeIn'>
+            {/* Contenedor del Resumen Integral */}
+            <div className='flex flex-col w-full gap-8 bg-white p-2 rounded-2xl'>
+                
+                {/* Tabla de Ofertas y Detalles de Precios */}
+                <div className='animate-slideDown'>
+                    <TablaOfertas 
+                        ofertas={ofertas} 
+                        actualizarCantidad={actualizarCantidad}
+                        actualizarNinos={actualizarNinos}
+                        actualizarAdultos={actualizarAdultos}
+                        actualizarCostoAdulto={actualizarCostoAdulto}
+                        actualizarCostoNino={actualizarCostoNino}
+                        actualizarDescuento={actualizarDescuento}
+                        actualizarTipoPago={actualizarTipoPago}
+                        eliminar={eliminar}
+                        subtotal={subtotal}
+                        setSubtotal={setSubtotal}
+                    />
+                </div>
+
+                {/* Sección de Fee y Facturación */}
+                <div className='animate-slideDown' style={{ animationDelay: '100ms' }}>
+                    <FeeReserva 
+                        referenciaFee={referenciaFee}
+                        setReferenciaFee={setReferenciaFee}
+                        comentarioFee={comentarioFee}
+                        setComentarioFee={setComentarioFee}
+                        facturar={facturar}
+                        handleChangeFacturar={handleChangeFacturar}
+                        totalFee={totalFee}
+                    />
+                </div>
+
+                {/* Acciones Finales: Guardar Reserva */}
+                <div className='flex items-center justify-center pt-8 border-t border-slate-100 animate-slideUp'>
+                    <button 
+                        className={`group relative flex items-center justify-center gap-3 px-10 py-4 rounded-2xl font-bold uppercase tracking-[0.15em] transition-all duration-300 shadow-lg
+                            ${isLoading 
+                                ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
+                                : "bg-greenVE-600 text-white hover:bg-greenVE-700 hover:shadow-greenVE-200 hover:-translate-y-1 active:scale-95 shadow-greenVE-100"}`}
+                        onClick={() => isLoading ? null : guardarReserva()}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <>
+                                <span className="icon-[line-md--loading-twotone-loop] text-2xl"></span>
+                                <span className='text-sm'>Guardando...</span>
+                            </>
+                        ) : (
+                            <span className='text-sm'>Finalizar y Guardar Reserva</span>
+                        )}
+                        
+                        {!isLoading && (
+                            <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer'></div>
+                        )}
+                    </button>
                 </div>
             </div>
         </div>
     );
 };
 
-export default ResumenReserva;
+export default ResumenReserva;

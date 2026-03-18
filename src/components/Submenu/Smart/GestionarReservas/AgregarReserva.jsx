@@ -29,10 +29,10 @@ const AgregarReserva = ({ editData, setEditData }) => {
     const [subtotal, setSubtotal] = useState(0);
     const [totalFee, setTotalFee] = useState();
     const [formaPago, setFormaPago] = useState("1");
-    const [alerta, setAlerta]=useState();
-    const [adicional, setAdicional]=useState(false);
-    const [clientes, setClientes]=useState([]);
-    const [empresa, setEmpresa]=useState("1");
+    const [alerta, setAlerta] = useState();
+    const [adicional, setAdicional] = useState(false);
+    const [clientes, setClientes] = useState([]);
+    const [empresa, setEmpresa] = useState("1");
 
     const cleanFields = () => {
         setEditData();
@@ -63,7 +63,7 @@ const AgregarReserva = ({ editData, setEditData }) => {
 
     useEffect(() => {
         if (editData) {
-            console.log("datos editar",editData)
+            console.log("datos editar", editData)
             setUser({
                 usuario: editData.usuario,
                 contacto: editData.contacto,
@@ -120,16 +120,16 @@ const AgregarReserva = ({ editData, setEditData }) => {
 
     useEffect(() => {
         //id_usuario_metodo: 45
-        if(facturar=="3"){
+        if (facturar == "3") {
             setTotalFee(0)
-        }else if(user&&user.usuario&&((user.usuario[0].metodo=="express")||(user.usuario[0].metodo=="gratis"))){
-            var numFee=0;
-            selectedOfer.forEach((item)=>{
-                numFee+=getDays(item.fechaIngreso, item.fechaSalida)*parseInt(item.cantidadOfertas)
+        } else if (user && user.usuario && ((user.usuario[0].metodo == "express") || (user.usuario[0].metodo == "gratis"))) {
+            var numFee = 0;
+            selectedOfer.forEach((item) => {
+                numFee += getDays(item.fechaIngreso, item.fechaSalida) * parseInt(item.cantidadOfertas)
             });
             console.log(numFee);
-            setTotalFee(numFee*10)
-        }else if (verificarFechasIguales(selectedOfer)) {
+            setTotalFee(numFee * 10)
+        } else if (verificarFechasIguales(selectedOfer)) {
             console.log("aqui");
             setTotalFee(5)
         } else {
@@ -140,37 +140,37 @@ const AgregarReserva = ({ editData, setEditData }) => {
 
     function verificarFechasIguales(listado) {
         console.log("ingresó");
-    
+
         try {
             const fechaIngresoReferencia = listado[0].fechaIngreso;
             const fechaSalidaReferencia = listado[0].fechaSalida;
-    
+
             listado.forEach((item) => {
                 // Verifica que la fecha de ingreso y salida sean las mismas
                 if (item.fechaIngreso !== fechaIngresoReferencia || item.fechaSalida !== fechaSalidaReferencia) {
                     throw new Error("Fechas diferentes");
                 }
-    
+
                 // Verifica que haya un día de diferencia entre la fecha de salida del elemento anterior
                 // y la fecha de ingreso del elemento actual (para index > 0)
                 const diferenciaEnDias = (new Date(item.fechaIngreso) - new Date(item.fechaSalida)) / (1000 * 60 * 60 * 24);
                 console.log("dias", diferenciaEnDias, (diferenciaEnDias !== 1))
-                    console.log("dias", diferenciaEnDias, (diferenciaEnDias !== 1));
-    
-                    if (Math.abs(diferenciaEnDias) !== 1) {
-                        throw new Error("Diferencia en días incorrecta");
-                    }
+                console.log("dias", diferenciaEnDias, (diferenciaEnDias !== 1));
+
+                if (Math.abs(diferenciaEnDias) !== 1) {
+                    throw new Error("Diferencia en días incorrecta");
+                }
             });
         } catch (error) {
             console.log("falso", false);
             return false;
         }
-    
+
         return true;
     }
-    
-    
-    
+
+
+
 
     const getDays = (inicio, fin) => {
         const diffInMs = Math.abs(new Date(fin) - new Date(inicio));
@@ -379,13 +379,13 @@ const AgregarReserva = ({ editData, setEditData }) => {
             setIsLoading(false)
             if (res) {
                 setAlerta(
-                    <Alerta correcto={true} mensaje={"La reserva se ha guardado correctamente"} onClose={() => setAlerta(null)}/>
+                    <Alerta correcto={true} mensaje={"La reserva se ha guardado correctamente"} onClose={() => setAlerta(null)} />
                 )
                 cleanFields();
                 console.log(res)
-            }else{
+            } else {
                 setAlerta(
-                    <Alerta correcto={false} mensaje={"Ha ocurrido un error al guardar"} onClose={() => setAlerta(null)}/>
+                    <Alerta correcto={false} mensaje={"Ha ocurrido un error al guardar"} onClose={() => setAlerta(null)} />
                 )
             }
         })
@@ -419,7 +419,7 @@ const AgregarReserva = ({ editData, setEditData }) => {
             user={user}
             setUser={setUser}
             inputValue={inputValue}
-            setInputValue={setInputValue} 
+            setInputValue={setInputValue}
             adicional={adicional}
             setAdicional={setAdicional}
             cedulaValue={cedulaValue}
@@ -428,7 +428,7 @@ const AgregarReserva = ({ editData, setEditData }) => {
             setClientes={setClientes}
             empresa={empresa}
             setEmpresa={setEmpresa}
-            />,
+        />,
         <OfertaDetalle
             inputEst={inputEst}
             setInputEst={setInputEst}
@@ -479,75 +479,88 @@ const AgregarReserva = ({ editData, setEditData }) => {
             isLoading={isLoading}
         />
     ]
-
-
-
-
     return (
         <>
             {alerta}
-            <div className='pl-3 w-full'>
-                <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
-                    <div className='flex gap-2 items-center'>
-                        <label className='text-greenVE-700 text-xl border-0'>{editData ? `Modificar Reserva # ${editData.reserva.id_tbl_reserva}` : "Agregar reserva"}</label>
-                    </div>
-                    <div className='border border-gray-300 mt-2'></div>
-                    {
-                        selectedEst
-                        && <div className='w-full bg-white'>
-                            <div className='bg-greenVE-200 px-4 flex py-1 gap-2'>
-                                <span className="icon-[icon-park-solid--hotel] w-4 h-4"></span>
-                                <label className='text-xs font-semibold'>{selectedEst.titulo.toUpperCase()}</label>
+            <div className='w-full px-4 py-2 animate-fadeIn'>
+                {/* Contenedor Principal*/}
+                <div className='w-full bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all'>
+                    {/* Header de la Sección */}
+                    <div className='bg-slate-50/80 px-8 py-5 border-b border-slate-100 flex items-center justify-between'>
+                        <div className='flex items-center gap-4'>
+                            <div className='w-12 h-12 rounded-2xl bg-greenVE-600 text-white flex items-center justify-center shadow-lg shadow-greenVE-100'>
+                                <span className='icon-[material-symbols--event-available-outline-rounded] text-2xl'></span>
                             </div>
-                            <div className='flex flex-wrap gap-y-2 px-4 py-2'>
-                                {
-                                    contactos && contactos.map((item) => (
-                                        <div className='flex items-center gap-2 w-1/4'>
-                                            {
-                                                (
-                                                    item.tipo.toLowerCase().includes("telefono") ||
-                                                    item.tipo.toLowerCase().includes("teléfono") ||
-                                                    item.tipo.toLowerCase().includes("celular")
-                                                )
-                                                    ? <span className="icon-[bxs--phone] text-greenVE-600 h-4 w-4"></span>
-                                                    : item.tipo.toLowerCase().includes("whatsapp")
-                                                        ? <span className="text-greenVE-600 icon-[formkit--whatsapp] h-4 w-4"></span>
-                                                        : item.tipo.toLowerCase().includes("web")
-                                                            ? <span className="icon-[mdi--web] text-greenVE-600 h-4 w-4"></span>
-                                                            : <span className="icon-[mdi--email] text-greenVE-600 h-4 w-4"></span>
-                                            }
-                                            <label className='text-xs font-semibold'>{`${item.tipo}: `}</label>
-                                            <label className='text-xs'>{item.contacto}</label>
+                            <div>
+                                <h2 className='text-lg font-bold text-slate-800 tracking-tight'>
+                                    {editData ? `Modificar Reserva # ${editData.reserva.id_tbl_reserva}` : "Nueva Reserva"}
+                                </h2>
+                            </div>
+                        </div>
+                        {editData && (
+                            <div className='bg-amber-50 text-amber-700 px-4 py-1.5 rounded-full border border-amber-100 flex items-center gap-2'>
+                                <div className='w-2 h-2 rounded-full bg-amber-500 animate-pulse'></div>
+                                <span className='text-[10px] font-bold uppercase tracking-widest'>Modo Edición</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Información del Establecimiento*/}
+                    {selectedEst && (
+                        <div className='mx-8 mt-6 bg-slate-50 rounded-2xl border border-slate-100 p-6 flex flex-col gap-4 animate-slideDown'>
+                            <div className='flex items-center gap-3'>
+                                <div className='w-1.5 h-8 bg-greenVE-600 rounded-full'></div>
+                                <label className='text-sm font-bold text-slate-700 uppercase tracking-widest'>
+                                    {selectedEst.titulo}
+                                </label>
+                            </div>
+                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                                {contactos && contactos.map((item, idx) => (
+                                    <div key={idx} className='flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm transition-all hover:border-greenVE-300 group'>
+                                        <div className='flex flex-col min-w-0'>
+                                            <span className='text-[9px] font-bold text-slate-400 uppercase tracking-tighter'>{item.tipo}</span>
+                                            <label className='text-[11px] font-bold text-slate-600 truncate group-hover:text-greenVE-700 transition-colors'>{item.contacto}</label>
                                         </div>
-                                    ))
-                                }
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    }
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-3">
-                        <div class="border-b border-gray-200 dark:border-gray-700">
-                            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-                                <li onClick={() => setSelTab(0)} class="me-2">
-                                    <a href="#" class={selTab == 0 ? "inline-flex items-center justify-center p-4 text-greenVE-600 border-b-2 border-greenVE-600 rounded-t-lg active dark:text-greenVE-500 dark:border-greenVE-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"}>
-                                        <span className="icon-[mdi--account-circle] h-5 w-5"></span>Suscriptor
-                                    </a>
-                                </li>
-                                <li onClick={() => setSelTab(1)} class="me-2">
-                                    <a href="#" class={selTab == 1 ? "inline-flex items-center justify-center p-4 text-greenVE-600 border-b-2 border-greenVE-600 rounded-t-lg active dark:text-greenVE-500 dark:border-greenVE-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"} aria-current="page">
-                                        <span className="icon-[ion--bed] h-5 w-5"></span>Detalle oferta
-                                    </a>
-                                </li>
-                                <li onClick={() => setSelTab(2)} class="me-2">
-                                    <a href="#" class={selTab == 2 ? "inline-flex items-center justify-center p-4 text-greenVE-600 border-b-2 border-greenVE-600 rounded-t-lg active dark:text-greenVE-500 dark:border-greenVE-500 group gap-2" : "inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group gap-2"}>
-                                        <span className="icon-[bi--info-circle-fill] h-5 w-5"></span> Resumen reserva
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    )}
+
+                {/* Navegación por tabs */}
+                <div className="px-8 mt-6">
+                    <div className="flex border-b border-slate-100">
+                        {[
+                            { id: 0, label: "Suscriptor" },
+                            { id: 1, label: "Detalle de Oferta" },
+                            { id: 2, label: "Resumen de Reserva" }
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setSelTab(tab.id)}
+                                className={`flex items-center gap-3 px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all relative group
+                                        ${selTab === tab.id
+                                        ? "text-greenVE-600"
+                                        : "text-slate-400 hover:text-slate-600"}`}
+                            >
+                                {tab.label}
+                                {/* Indicador de Tab Activo */}
+                                <div className={`absolute bottom-0 left-0 w-full h-1 rounded-t-full transition-all duration-300
+                                        ${selTab === tab.id ? "bg-greenVE-600 opacity-100 translate-y-0" : "bg-slate-200 opacity-0 translate-y-2 pointer-events-none"}`}>
+                                </div>
+                            </button>
+                        ))}
                     </div>
-                    {tabs[selTab]}
+                </div>
+
+                {/* Área de Contenido del Paso */}
+                <div className='p-8 pt-6'>
+                    <div className='min-h-[400px] animate-fadeIn'>
+                        {tabs[selTab]}
+                    </div>
                 </div>
             </div>
+        </div >
         </>
     );
 };
