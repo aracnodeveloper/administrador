@@ -66,7 +66,7 @@ const InformacionSuscripcion = ({ suscripciones }) => {
                         {
                             suscripciones.map((item, index) => (
                                 <tr className='odd:bg-white even:bg-gray-50 text-[12px] flex justify-between border-y py-1'>
-                                    <td scope="col" className="flex justify-center items-center w-[5%]">{index+1}</td>
+                                    <td scope="col" className="flex justify-center items-center w-[5%]">{index + 1}</td>
                                     <td scope="col" className="flex justify-center items-center w-[15%]">{item.titulo}</td>
                                     <td scope="col" className="flex justify-center items-center w-[10%]">
                                         <input value={item.fecha_inicio} type='date' className='h-6 w-28 text-[10px] py-0' />
@@ -132,7 +132,7 @@ const InformacionSuscripcion = ({ suscripciones }) => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div >
     );
 };
 

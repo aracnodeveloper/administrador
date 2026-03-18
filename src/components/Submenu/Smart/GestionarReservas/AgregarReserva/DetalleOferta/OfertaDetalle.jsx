@@ -49,7 +49,7 @@ const OfertaDetalle = ({
                 setSuggestion(null);
             }
         }, 500);
-        return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta o el valor cambia
+        return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
     }, [inputEst]);
 
     const handleClickAway = () => {

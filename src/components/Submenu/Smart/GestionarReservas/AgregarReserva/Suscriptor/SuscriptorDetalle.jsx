@@ -76,7 +76,7 @@ const SuscriptorDetalle = ({ user }) => {
                     : <label className='text-xs'>Usuario {user.usuario[0].metodo}</label>
             }
             {
-                user.clicksContactos.length>0 &&
+                user.clicksContactos.length > 0 &&
                 <div className='flex flex-col gap-4'>
                     <div className='bg-blue-200 flex py-1 px-4 gap-1'>
                         <span className="icon-[game-icons--click] h-4 w-4 text-blue-500"></span>
@@ -105,7 +105,7 @@ const SuscriptorDetalle = ({ user }) => {
                 </div>
             }
             {
-                user.business&&user.business.length>0 &&
+                user.business && user.business.length > 0 &&
                 <div className='flex flex-col gap-4'>
                     <div className='bg-blue-200 flex py-1 px-4 gap-1'>
                         <span className="icon-[material-symbols-light--add-card-rounded] h-4 w-4 text-blue-500"></span>
@@ -134,7 +134,7 @@ const SuscriptorDetalle = ({ user }) => {
                 </div>
             }
             {
-                user.referidos&&user.referidos.length>0 &&
+                user.referidos && user.referidos.length > 0 &&
                 <div className='flex flex-col gap-4'>
                     <div className='bg-blue-200 flex py-1 px-4 gap-1'>
                         <span className="icon-[material-symbols-light--add-card-rounded] h-4 w-4 text-blue-500"></span>
@@ -168,4 +168,4 @@ const SuscriptorDetalle = ({ user }) => {
     );
 };
 
-export default SuscriptorDetalle;
+export default SuscriptorDetalle

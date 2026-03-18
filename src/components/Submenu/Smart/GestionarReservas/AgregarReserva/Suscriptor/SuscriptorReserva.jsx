@@ -35,7 +35,7 @@ const SuscriptorReserva = ({
                 setSuggestion(null);
             }
         }, 500);
-        return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta o el valor cambia
+        return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
     }, [inputValue]);
 
     useEffect(() => {
@@ -52,7 +52,7 @@ const SuscriptorReserva = ({
                 setSugCedula(null);
             }
         }, 500);
-        return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta o el valor cambia
+        return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
     }, [cedulaValue]);
 
     const handleChangeCedula = (value) => {
@@ -107,7 +107,7 @@ const SuscriptorReserva = ({
 
     return (
         <div className='flex flex-col lg:flex-row w-full gap-8 animate-fadeIn'>
-            {/* Columna Izquierda: Búsqueda y Configuración */}
+            {/* Columna Izquierda*/}
             <div className='w-full lg:w-1/2 flex flex-col gap-6 bg-slate-50/50 p-6 rounded-2xl border border-slate-100'>
                 <div className='flex flex-col gap-2'>
                     <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
@@ -115,12 +115,12 @@ const SuscriptorReserva = ({
                     </label>
                     <div className='relative flex items-stretch group'>
                         <input
-                            value={inputValue} 
+                            value={inputValue}
                             onChange={(e) => handleChange(e.target.value)}
                             className='w-full h-11 px-4 bg-white border border-slate-200 rounded-l-xl text-sm font-semibold text-slate-700 outline-none transition-all focus:border-greenVE-500 focus:ring-4 focus:ring-greenVE-500/5 shadow-sm placeholder:text-slate-300'
                             placeholder='Escriba nombres, cédula o ID...'
                         />
-                        <button 
+                        <button
                             className='flex items-center px-4 bg-white border border-slate-200 border-l-0 rounded-r-xl transition-all hover:bg-slate-50 active:scale-95 group'
                             onClick={loading ? () => { } : () => handleCLickCancel()}
                         >
@@ -136,8 +136,8 @@ const SuscriptorReserva = ({
                                 </div>
                                 <div className='max-h-64 overflow-y-auto'>
                                     {suggestion.map((item, key) => (
-                                        <div 
-                                            key={key} 
+                                        <div
+                                            key={key}
                                             className='flex items-center justify-between p-4 hover:bg-greenVE-50 transition-all cursor-pointer border-b border-slate-50 last:border-0 group'
                                             onClick={() => onClickSuggestion(item)}
                                         >
@@ -166,10 +166,10 @@ const SuscriptorReserva = ({
                         <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1'>
                             2. Configurar Empresa
                         </label>
-                        <select 
+                        <select
                             className='w-full h-11 px-4 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 outline-none focus:border-greenVE-500 transition-all shadow-sm'
-                            value={empresa} 
-                            onChange={(event)=>setEmpresa(event.target.value)}
+                            value={empresa}
+                            onChange={(event) => setEmpresa(event.target.value)}
                         >
                             <option value={"1"}>VisitaEcuador.com</option>
                             <option value={"2"}>Hoteles FullVacations</option>
@@ -179,14 +179,14 @@ const SuscriptorReserva = ({
                     <div className='flex flex-col gap-2'>
                         <label className='text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 opacity-0'>Persona Adicional</label>
                         <label className={`flex items-center gap-3 h-11 px-4 rounded-xl border transition-all cursor-pointer shadow-sm
-                            ${adicional 
-                                ? "bg-greenVE-600 border-greenVE-600 text-white shadow-greenVE-100" 
+                            ${adicional
+                                ? "bg-greenVE-600 border-greenVE-600 text-white shadow-greenVE-100"
                                 : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"}`}>
-                            <input 
-                                type='checkbox' 
-                                className='w-4 h-4 rounded border-slate-300 text-greenVE-600 focus:ring-greenVE-500 bg-white' 
-                                checked={adicional} 
-                                onChange={() => {setAdicional(!adicional); setClientes([])}} 
+                            <input
+                                type='checkbox'
+                                className='w-4 h-4 rounded border-slate-300 text-greenVE-600 focus:ring-greenVE-500 bg-white'
+                                checked={adicional}
+                                onChange={() => { setAdicional(!adicional); setClientes([]) }}
                             />
                             <span className='text-[11px] font-bold uppercase tracking-tight'>Pasajero Adicional</span>
                         </label>
@@ -209,12 +209,12 @@ const SuscriptorReserva = ({
                         </label>
                         <div className='relative flex items-stretch group'>
                             <input
-                                value={cedulaValue} 
+                                value={cedulaValue}
                                 onChange={(e) => handleChangeCedula(e.target.value)}
                                 className='w-full h-11 px-4 bg-white border border-slate-200 rounded-l-xl text-sm font-semibold text-slate-700 outline-none transition-all focus:border-greenVE-500 focus:ring-4 focus:ring-greenVE-500/5 shadow-sm placeholder:text-slate-300'
                                 placeholder='Ingrese cédula del pasajero...'
                             />
-                            <button 
+                            <button
                                 className='flex items-center px-4 bg-white border border-slate-200 border-l-0 rounded-r-xl hover:bg-slate-50 active:scale-95 group transition-all'
                                 onClick={loadingCed ? () => { } : () => handleCLickCancelCed()}
                             >
@@ -225,7 +225,7 @@ const SuscriptorReserva = ({
                         {sugCedula && (
                             <ClickAwayListener onClickAway={handleClickAway} >
                                 <div className="absolute mt-20 w-full max-w-[400px] bg-white z-[60] shadow-2xl rounded-xl border border-slate-100 overflow-hidden animate-slideUp cursor-pointer"
-                                     onClick={() => onClickSuggestionCed(sugCedula)}>
+                                    onClick={() => onClickSuggestionCed(sugCedula)}>
                                     <div className='flex items-center justify-between p-4 hover:bg-greenVE-50 transition-all group'>
                                         <div className='flex flex-col'>
                                             <span className='text-xs font-bold text-slate-700 group-hover:text-greenVE-800 transition-colors uppercase'>
@@ -242,10 +242,10 @@ const SuscriptorReserva = ({
                         )}
                     </div>
                 )}
-                
+
                 {clientes && clientes.length > 0 && (
                     <div className='animate-slideDown'>
-                        <ClienteDetalle clientes={clientes} handleDeleteCliente={handleDeleteCliente}/>
+                        <ClienteDetalle clientes={clientes} handleDeleteCliente={handleDeleteCliente} />
                     </div>
                 )}
             </div>

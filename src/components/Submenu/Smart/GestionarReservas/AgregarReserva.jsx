@@ -527,40 +527,40 @@ const AgregarReserva = ({ editData, setEditData }) => {
                         </div>
                     )}
 
-                {/* Navegación por tabs */}
-                <div className="px-8 mt-6">
-                    <div className="flex border-b border-slate-100">
-                        {[
-                            { id: 0, label: "Suscriptor" },
-                            { id: 1, label: "Detalle de Oferta" },
-                            { id: 2, label: "Resumen de Reserva" }
-                        ].map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setSelTab(tab.id)}
-                                className={`flex items-center gap-3 px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all relative group
+                    {/* Navegación por tabs */}
+                    <div className="px-8 mt-6">
+                        <div className="flex border-b border-slate-100">
+                            {[
+                                { id: 0, label: "Suscriptor" },
+                                { id: 1, label: "Detalle de Oferta" },
+                                { id: 2, label: "Resumen de Reserva" }
+                            ].map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setSelTab(tab.id)}
+                                    className={`flex items-center gap-3 px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all relative group
                                         ${selTab === tab.id
-                                        ? "text-greenVE-600"
-                                        : "text-slate-400 hover:text-slate-600"}`}
-                            >
-                                {tab.label}
-                                {/* Indicador de Tab Activo */}
-                                <div className={`absolute bottom-0 left-0 w-full h-1 rounded-t-full transition-all duration-300
+                                            ? "text-greenVE-600"
+                                            : "text-slate-400 hover:text-slate-600"}`}
+                                >
+                                    {tab.label}
+                                    {/* Indicador de Tab Activo */}
+                                    <div className={`absolute bottom-0 left-0 w-full h-1 rounded-t-full transition-all duration-300
                                         ${selTab === tab.id ? "bg-greenVE-600 opacity-100 translate-y-0" : "bg-slate-200 opacity-0 translate-y-2 pointer-events-none"}`}>
-                                </div>
-                            </button>
-                        ))}
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
 
-                {/* Área de Contenido del Paso */}
-                <div className='p-8 pt-6'>
-                    <div className='min-h-[400px] animate-fadeIn'>
-                        {tabs[selTab]}
+                    {/* Área de Contenido de las Tabs */}
+                    <div className='p-8 pt-6'>
+                        <div className='min-h-[400px] animate-fadeIn'>
+                            {tabs[selTab]}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div >
+            </div >
         </>
     );
 };

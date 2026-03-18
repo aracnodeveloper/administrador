@@ -10,7 +10,7 @@ import DescargarReservas from './DescargarReservas';
 const ListarReservas = ({ handleClickEdit }) => {
     const [data, setData] = useState();
     const [numPaginas, setNumPaginas] = useState();
-    const [total, setTotal]=useState();
+    const [total, setTotal] = useState();
     const [selPagina, setSelPagina] = useState(0);
     const [gestores, setGestores] = useState();
     const [selGestor, setSelGestor] = useState("-2");
@@ -22,7 +22,7 @@ const ListarReservas = ({ handleClickEdit }) => {
     const [nomEstablecimiento, setNomEstablecimiento] = useState();
     const [idReserva, setIdReserva] = useState();
     const [loading, setLoading] = useState();
-    const [cantidad, setCantidad]=useState("20");
+    const [cantidad, setCantidad] = useState("20");
 
     useEffect(() => {
         setLoading(true);
@@ -30,7 +30,7 @@ const ListarReservas = ({ handleClickEdit }) => {
             setLoading(false)
             if (res && res.reservas) {
                 setData(res.reservas)
-                setNumPaginas(cantidad=="1"?1:Math.ceil(parseInt(res.cantidad) / parseInt(cantidad)));
+                setNumPaginas(cantidad == "1" ? 1 : Math.ceil(parseInt(res.cantidad) / parseInt(cantidad)));
                 setTotal(res.cantidad)
             }
         });
@@ -58,13 +58,13 @@ const ListarReservas = ({ handleClickEdit }) => {
             codCliente: idSuscriptor,
             nomEstablecimiento: nomEstablecimiento,
             nroReserva: idReserva,
-            cantidad:cantidad!="1"?cantidad:""
+            cantidad: cantidad != "1" ? cantidad : ""
         };
         listarReservasFiltro(params, false).then((res) => {
             setLoading(false);
             if (res && res.reservas) {
                 setData(res.reservas);
-                setNumPaginas(cantidad=="1"?1:Math.ceil(parseInt(res.cantidad) / parseInt(cantidad)));
+                setNumPaginas(cantidad == "1" ? 1 : Math.ceil(parseInt(res.cantidad) / parseInt(cantidad)));
                 setTotal(res.cantidad)
                 if (aplicar) {
                     setSelPagina(0);
@@ -106,7 +106,7 @@ const ListarReservas = ({ handleClickEdit }) => {
                         <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
                         <label className='text-xs font-black uppercase tracking-widest text-slate-400'>Criterios de búsqueda</label>
                     </div>
-                    
+
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Desde</label>
@@ -170,14 +170,14 @@ const ListarReservas = ({ handleClickEdit }) => {
                             </span>
                         )}
                         <div className='flex gap-2 w-full lg:w-auto'>
-                            <select className='h-10 rounded-xl border-slate-200 text-sm font-bold text-slate-600 focus:ring-greenVE-500' value={cantidad} onChange={(event)=>setCantidad(event.target.value)}>
-                                {Config.ELEMENTOSHOJAS.map((item)=>(
+                            <select className='h-10 rounded-xl border-slate-200 text-sm font-bold text-slate-600 focus:ring-greenVE-500' value={cantidad} onChange={(event) => setCantidad(event.target.value)}>
+                                {Config.ELEMENTOSHOJAS.map((item) => (
                                     <option key={item.id} value={item.id}>{item.nombre} pág.</option>
                                 ))}
                             </select>
-                            <button 
+                            <button
                                 className='flex-grow bg-greenVE-600 hover:bg-greenVE-700 text-white font-bold text-xs uppercase tracking-widest px-8 h-10 rounded-xl transition-all shadow-lg shadow-greenVE-100 flex items-center justify-center gap-2'
-                                onClick={() => handleClicAplicar({filtros:true})}
+                                onClick={() => handleClicAplicar({ filtros: true })}
                             >
                                 <span className='icon-[material-symbols--search-rounded] text-lg'></span>
                                 Actualizar Resultados
@@ -203,7 +203,7 @@ const ListarReservas = ({ handleClickEdit }) => {
                             <div className='overflow-hidden rounded-2xl border border-slate-100 shadow-sm'>
                                 <TablaReservas handleClickEdit={handleClickEdit} reservas={data} />
                             </div>
-                            
+
                             <div className='mt-4'>
                                 <ReactPaginate
                                     forcePage={selPagina}
