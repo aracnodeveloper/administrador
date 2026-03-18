@@ -59,11 +59,11 @@ const DashboardBeta = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {menuItems.map((item, index) => {
-                        // Check for specific permission OR general Admin Beta permission (538)
+
                         const hasSpecificPerm = !item.permiso || verificarPermiso(item.permiso);
                         const hasAdminBeta = verificarPermiso(538);
 
-                        // If user has either specific permission or is an Admin Beta, show the card
+
                         if (!hasSpecificPerm && !hasAdminBeta) return null;
 
                         return (
@@ -99,3 +99,4 @@ const DashboardBeta = () => {
 };
 
 export default DashboardBeta;
+

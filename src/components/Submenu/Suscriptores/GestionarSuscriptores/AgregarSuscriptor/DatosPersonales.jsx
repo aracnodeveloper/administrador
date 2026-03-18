@@ -2,16 +2,52 @@ import React, { useEffect, useState } from 'react';
 import Config from '../../../../../global/config';
 import { getRemoteCities } from '../../../../../controllers/info/InfoController';
 
-const DatosPersonales = ({usuario, contactos}) => {
-    const [provincias, setProvincias]=useState();
-    const [selProvincia, setSelProvincia]=useState(0);
-    const [selCiudad, setSelCiudad]=useState(0);
-    
+const DatosPersonales = ({ usuario, contactos }) => {
+    const [provincias, setProvincias] = useState();
+    const [selProvincia, setSelProvincia] = useState(0);
+    const [selCiudad, setSelCiudad] = useState(0);
 
-    console.log (contactos)
-    useEffect(()=>{
-        getRemoteCities().then((res)=>{
-            if(res){
+    const [userData, setUserData] = useState({
+        ci_ruc: usuario?.ci_ruc || "",
+        nombres: usuario?.nombres || "",
+        usuario: usuario?.usuario || "",
+        clave: usuario?.clave || ""
+    });
+
+    useEffect(() => {
+        setUserData({
+            ci_ruc: usuario?.ci_ruc || "",
+            nombres: usuario?.nombres || "",
+            usuario: usuario?.usuario || "",
+            clave: usuario?.clave || ""
+        });
+    }, [usuario]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUserData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const [contactList, setContactList] = useState(contactos || []);
+
+    const handleAddContact = () => {
+        setContactList([...contactList, { id_tbl_tipo_contacto: "1", contacto: "" }]);
+    };
+
+    const handleChangeContact = (index, field, value) => {
+        const newList = [...contactList];
+        newList[index][field] = value;
+        setContactList(newList);
+    };
+
+    console.log(contactos)
+    useEffect(() => {
+        setContactList(contactos || []);
+    }, [contactos]);
+
+    useEffect(() => {
+        getRemoteCities().then((res) => {
+            if (res) {
                 setProvincias(res)
             }
         })
@@ -30,46 +66,54 @@ const DatosPersonales = ({usuario, contactos}) => {
                         <label>Contraseña:</label>
                     </div>
                     <div className='flex flex-col items-start gap-2'>
-                        <input value={usuario.ci_ruc} type='text' className='h-6 w-60 text-sm'></input>
-                        <input value={usuario.nombres} type='text' className='h-6 w-60 text-sm'></input>
-                        <select className='h-6 text-sm py-0 w-60' value={selProvincia} onChange={(event)=>setSelProvincia(event.target.value)}>
+                        <input name="ci_ruc" value={userData.ci_ruc} onChange={handleChange} type='text' className='h-6 w-60 text-sm'></input>
+                        <input name="nombres" value={userData.nombres} onChange={handleChange} type='text' className='h-6 w-60 text-sm'></input>
+                        <select className='h-6 text-sm py-0 w-60' value={selProvincia} onChange={(event) => setSelProvincia(event.target.value)}>
                             {
-                                provincias&&provincias.map((item, index)=>(
+                                provincias && provincias.map((item, index) => (
                                     <option value={index}>{item.Titulo}</option>
                                 ))
                             }
                         </select>
-                        <select className='h-6 text-sm w-60 py-0' value={selCiudad} onChange={(event)=>setSelCiudad(event.target.value)}>
+                        <select className='h-6 text-sm w-60 py-0' value={selCiudad} onChange={(event) => setSelCiudad(event.target.value)}>
                             {
-                                provincias&&provincias[selProvincia].Valor.map((item, index)=>(
+                                provincias && provincias[selProvincia].Valor.map((item, index) => (
                                     <option value={item.Valor}>{item.Titulo}</option>
                                 ))
                             }
                         </select>
-                        <input value={usuario.usuario} type='text' className='h-6 w-60 text-sm' disabled></input>
-                        <input value={usuario.clave} type='text' className='h-6 w-60 text-sm' disabled></input>
+                        <input name="usuario" value={userData.usuario} onChange={handleChange} type='text' className='h-6 w-60 text-sm'></input>
+                        <input name="clave" value={userData.clave} onChange={handleChange} type='password' title="Contraseña" className='h-6 w-60 text-sm'></input>
                     </div>
                 </div>
                 <div className='w-96 border border-gray-400 mt-5 mb-5 rounded-md flex flex-col gap-1 pb-3'>
                     <div className='bg-greenVE-500 text-center rounded-t-md w-96 text-white flex justify-center items-center gap-2'>
                         <label>Contactos</label>
-                        <span className="icon-[gridicons--add] h-5 w-5"></span>
+                        <span className="icon-[gridicons--add] h-5 w-5 cursor-pointer" onClick={handleAddContact}></span>
                     </div>
                     <div className='w-full flex gap-2 px-2'>
                         <label className='w-1/2 text-center'>Tipo</label>
                         <label className='w-1/2 text-center'>Contacto</label>
                     </div>
                     {
-                        contactos.map((item, index)=>(
+                        contactList.map((item, index) => (
                             <div className='w-full flex gap-2 px-2' key={index}>
-                                <select value={item.id_tbl_tipo_contacto} className='w-1/2 h-6 py-0 text-sm '>
+                                <select 
+                                    value={item.id_tbl_tipo_contacto} 
+                                    className='w-1/2 h-6 py-0 text-sm'
+                                    onChange={(e) => handleChangeContact(index, 'id_tbl_tipo_contacto', e.target.value)}
+                                >
                                     {
-                                        Config.TIPOCONT.map((item)=>(
+                                        Config.TIPOCONT.map((item) => (
                                             <option value={item.id} key={item.id} className=''>{item.nombre}</option>
                                         ))
                                     }
                                 </select>
-                                <input className='w-1/2 h-6 text-sm' value={item.contacto}></input>
+                                <input 
+                                    className='w-1/2 h-6 text-sm' 
+                                    value={item.contacto}
+                                    onChange={(e) => handleChangeContact(index, 'contacto', e.target.value)}
+                                ></input>
                             </div>
                         ))
                     }
