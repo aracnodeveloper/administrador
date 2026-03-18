@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Datepicker } from 'flowbite-react';
+import { formatDate } from '../../../../../global/utils';
 import Config from '../../../../../global/config';
 import { listarCanalesVenta } from '../../../../../controllers/info/InfoController';
 import { buscarUsuarios } from '../../../../../controllers/smart/SmartController';
@@ -68,11 +70,49 @@ const InformacionSuscripcion = ({ suscripciones }) => {
                                 <tr className='odd:bg-white even:bg-gray-50 text-[12px] flex justify-between border-y py-1'>
                                     <td scope="col" className="flex justify-center items-center w-[5%]">{index + 1}</td>
                                     <td scope="col" className="flex justify-center items-center w-[15%]">{item.titulo}</td>
-                                    <td scope="col" className="flex justify-center items-center w-[10%]">
-                                        <input value={item.fecha_inicio} type='date' className='h-6 w-28 text-[10px] py-0' />
+                                    <td scope="col" className="flex justify-center items-center w-[10%] px-1">
+                                        <Datepicker 
+                                            language="es-ES"
+                                            labelTodayButton="Hoy"
+                                            labelClearButton="Limpiar"
+                                            minDate={new Date("2015-01-01")}
+                                            maxDate={new Date("2040-12-31")}
+                                            value={new Date(item.fecha_inicio + "T12:00:00")}
+                                            onSelectedDateChanged={(date) => { /* Aquí faltaría una función para actualizar el estado de suscripciones */ }}
+                                            theme={{
+                                                root: {
+                                                    input: {
+                                                        field: {
+                                                            input: {
+                                                                base: "w-full h-7 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </td>
-                                    <td scope="col" className="flex justify-center items-center w-[10%]">
-                                        <input value={item.fecha_fin} type='date' className='h-6 w-28 text-[10px] py-0' />
+                                    <td scope="col" className="flex justify-center items-center w-[10%] px-1">
+                                        <Datepicker 
+                                            language="es-ES"
+                                            labelTodayButton="Hoy"
+                                            labelClearButton="Limpiar"
+                                            minDate={new Date("2015-01-01")}
+                                            maxDate={new Date("2040-12-31")}
+                                            value={new Date(item.fecha_fin + "T12:00:00")}
+                                            onSelectedDateChanged={(date) => { /* Aquí faltaría una función para actualizar el estado */ }}
+                                            theme={{
+                                                root: {
+                                                    input: {
+                                                        field: {
+                                                            input: {
+                                                                base: "w-full h-7 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </td>
                                     <td scope="col" className="flex justify-center items-center w-[10%] ">
                                         <select value={item.id_estado_pago} className='h-6 py-0 text-[10px] w-28'>
@@ -136,4 +176,4 @@ const InformacionSuscripcion = ({ suscripciones }) => {
     );
 };
 
-export default InformacionSuscripcion;
+export default InformacionSuscripcion

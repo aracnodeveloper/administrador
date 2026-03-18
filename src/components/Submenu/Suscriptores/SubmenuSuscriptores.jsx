@@ -47,7 +47,7 @@ const SubmenuSuscriptores = ({ defaultSubmenu = 0 }) => {
                                 <h2 className='text-xl font-bold text-greenVE-700'>Importar suscriptores</h2>
                                 <p className='text-slate-500 text-xs font-medium'>Control de carga masiva por código promocional.</p>
                             </div>
-                            <button 
+                            <button
                                 className='bg-white hover:bg-slate-50 text-slate-700 font-bold py-2 px-4 rounded-lg transition-all flex items-center gap-2 text-xs border border-slate-200 shadow-sm'
                             >
                                 <span className='icon-[material-symbols--download-rounded] text-lg'></span>
@@ -83,7 +83,7 @@ const SubmenuSuscriptores = ({ defaultSubmenu = 0 }) => {
 
     return (
         <div className='flex flex-col md:flex-row w-full min-h-[80vh] bg-slate-50/30'>
-            {/* Sidebar con diseño serio y profesional */}
+            {/* Sidebar*/}
             <aside className='w-full md:w-72 bg-white border-r border-slate-200 p-6 flex flex-col gap-6 shadow-sm'>
                 <div className='flex flex-col gap-1'>
                     <label className='text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2'>Módulo Operativo</label>
@@ -113,7 +113,7 @@ const SubmenuSuscriptores = ({ defaultSubmenu = 0 }) => {
 
             </aside>
 
-            {/* Area de contenido con scroll suave */}
+            {/* Area de contenido*/}
             <main className='flex-grow p-4 md:p-8 overflow-auto'>
                 <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-400 font-medium">Cargando módulo...</div>}>
                     <div className='bg-white rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 min-h-full'>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Datepicker } from 'flowbite-react';
 import { formatDate } from '../../../../global/utils';
 import { getCuentaGratis } from '../../../../controllers/callcenter/CallcenterController';
 import TablaCuentasGratis from './ListarCuentasGratis/TablaCuentasGratis';
@@ -96,11 +97,49 @@ const ListarCuentasGratis = () => {
                     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Desde</label>
-                            <input value={fInicio} type='date' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setFInicio(event.target.value) }} />
+                            <Datepicker
+                                language="es-ES"
+                                labelTodayButton="Hoy"
+                                labelClearButton="Limpiar"
+                                minDate={new Date("2020-01-01")}
+                                maxDate={new Date("2036-12-31")}
+                                value={new Date(fInicio + "T12:00:00")}
+                                onSelectedDateChanged={(date) => setFInicio(formatDate(date))}
+                                theme={{
+                                    root: {
+                                        input: {
+                                            field: {
+                                                input: {
+                                                    base: "w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all bg-white"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }}
+                            />
                         </div>
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Hasta</label>
-                            <input value={fFin} type='date' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setFFin(event.target.value) }} />
+                            <Datepicker
+                                language="es-ES"
+                                labelTodayButton="Hoy"
+                                labelClearButton="Limpiar"
+                                minDate={new Date("2020-01-01")}
+                                maxDate={new Date("2036-12-31")}
+                                value={new Date(fFin + "T12:00:00")}
+                                onSelectedDateChanged={(date) => setFFin(formatDate(date))}
+                                theme={{
+                                    root: {
+                                        input: {
+                                            field: {
+                                                input: {
+                                                    base: "w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all bg-white"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }}
+                            />
                         </div>
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Nombres</label>

@@ -59,7 +59,7 @@ const ListarSuscriptores = ({ handleClickEdit }) => {
                     </div>
                 </div>
 
-                {/* Sección de Filtros - Más profesional y seria */}
+                {/* Sección de Filtros */}
                 <div className='bg-slate-50 border border-slate-200 rounded-2xl p-6'>
                     <div className='flex items-center gap-2 mb-6'>
                         <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>

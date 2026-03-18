@@ -1,4 +1,6 @@
 import React from 'react';
+import { Datepicker } from 'flowbite-react';
+import { formatDate } from '../../../../../../global/utils';
 
 const EstablecimientoOferta = ({ ofertas, eliminar, actualizar, adicionalNino, adicionalAdulto, fechaIngreso, fechaSalida, actualizarEdades, comCliente, setComCliente, comReserva, setComReserva, actualizarFeriado }) => {
     console.log("ofertas",ofertas)
@@ -134,11 +136,53 @@ const EstablecimientoOferta = ({ ofertas, eliminar, actualizar, adicionalNino, a
                                                     ))
                                                 }
                                             </td>
-                                            <td className="flex justify-center items-center w-2/12 text-center border-x px-2 flex-col py-4">
-                                                <label className='font-semibold'>Fecha Ingreso:</label>
-                                                <input value={item.fechaIngreso} type='date' className='text-xs px-1 py-0 mb-2' onChange={(event) => fechaIngreso(index, event.target.value)}></input>
-                                                <label className='font-semibold'>Fecha Salida:</label>
-                                                <input value={item.fechaSalida} type='date' className='text-xs px-1 py-0 mb-2' onChange={(event) => fechaSalida(index, event.target.value)}></input>
+                                            <td className="flex justify-center items-center w-2/12 text-center border-x px-2 flex-col py-4 gap-2">
+                                                <div className='flex flex-col items-center w-full'>
+                                                    <label className='font-bold text-[10px] text-slate-400 uppercase tracking-tighter mb-1'>Ingreso</label>
+                                                    <Datepicker 
+                                                        language="es-ES"
+                                                        labelTodayButton="Hoy"
+                                                        labelClearButton="Limpiar"
+                                                        minDate={new Date("2020-01-01")}
+                                                        maxDate={new Date("2036-12-31")}
+                                                        value={new Date(item.fechaIngreso + "T12:00:00")}
+                                                        onSelectedDateChanged={(date) => fechaIngreso(index, formatDate(date))}
+                                                        theme={{
+                                                            root: {
+                                                                input: {
+                                                                    field: {
+                                                                        input: {
+                                                                            base: "w-full h-8 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className='flex flex-col items-center w-full'>
+                                                    <label className='font-bold text-[10px] text-slate-400 uppercase tracking-tighter mb-1'>Salida</label>
+                                                    <Datepicker 
+                                                        language="es-ES"
+                                                        labelTodayButton="Hoy"
+                                                        labelClearButton="Limpiar"
+                                                        minDate={new Date("2020-01-01")}
+                                                        maxDate={new Date("2036-12-31")}
+                                                        value={new Date(item.fechaSalida + "T12:00:00")}
+                                                        onSelectedDateChanged={(date) => fechaSalida(index, formatDate(date))}
+                                                        theme={{
+                                                            root: {
+                                                                input: {
+                                                                    field: {
+                                                                        input: {
+                                                                            base: "w-full h-8 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
                                             </td>
                                             <td className="flex justify-center items-center w-1/12 text-center border-x px-2">{`$ ${calcularPrecio(item)} USD`}</td>
                                         </tr>
