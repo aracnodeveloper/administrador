@@ -298,33 +298,47 @@ class Config {
 
     static get SettingTable() {
         return {
+            border: '1px solid #f1f5f9',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: '#f8fafc',
+                borderBottom: '1px solid #f1f5f9',
+            },
             '& .MuiDataGrid-columnHeaderTitle': {
-                fontWeight: 'bold', // Negrilla
-                fontSize: '0.75rem', // Tamaño de fuente
+                fontWeight: '800',
+                fontSize: '0.7rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: '#64748b',
                 outline: 'none',
             },
+            '& .MuiDataGrid-columnHeader': {
+                borderRight: '1px solid #f1f5f9', // Bordes verticales en cabecera
+            },
             '& .MuiDataGrid-cell': {
-                fontSize: '0.75rem', // Tamaño de fuente
-                display: 'flex',         // Usar flexbox
-                alignItems: 'center',    // Centrar el contenido verticalmente
+                fontSize: '0.8rem',
+                padding: '4px 12px', // Reducido de 12px a 4px para compactar verticalmente
+                borderBottom: '1px solid #f1f5f9',
+                borderRight: '1px solid #f1f5f9',
+                display: 'flex',
+                alignItems: 'center',
+                color: '#334155',
             },
             '& .MuiDataGrid-footerContainer': {
-                display: 'none', // Ocultar la barra de pie
+                display: 'none',
             },
-            '& .MuiInput-input': {
-                fontSize: '0.6rem', // Cambia el tamaño del texto dentro del panel de contenido
+            '& .MuiDataGrid-row:hover': {
+                backgroundColor: '#f1f5f9 !important',
             },
             '& .MuiDataGrid-row:nth-of-type(odd)': {
-                backgroundColor: '#ffffff',  // Color para las filas impares (blancas)
+                backgroundColor: '#ffffff',
             },
             '& .MuiDataGrid-row:nth-of-type(even)': {
-                backgroundColor: '#f9fafb',  // Color para las filas pares (#f9fafb)
+                backgroundColor: '#fcfdfe',
             },
-            '&  .MuiDataGrid-container--top [role="row"]': {
-                backgroundColor: '#f9fafb',  // Color de fondo personalizado para el header
-            },
-            '&  .MuiDataGrid-cell:focus-within': {
-                outline: 'none', // Quita el borde cuando la celda está seleccionada
+            '& .MuiDataGrid-cell:focus-within': {
+                outline: 'none',
             },
         }
     }

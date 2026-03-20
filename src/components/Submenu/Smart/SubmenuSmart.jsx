@@ -55,7 +55,7 @@ const SubmenuSmart = ({ defaultSubmenu = 0 }) => {
             {/* sidebar*/}
             <aside className='w-full md:w-72 bg-white border-r border-slate-200 p-6 flex flex-col gap-6 shadow-sm'>
                 <div className='flex flex-col gap-1'>
-                    <label className='text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2'>Módulo Operativo</label>
+                    <label className='text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2'></label>
                     <h2 className='text-xl font-bold text-slate-800 flex items-center gap-2'>
                         <span className='icon-[material-symbols--settings-suggest-outline] text-greenVE-600'></span>
                         Smart

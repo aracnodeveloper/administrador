@@ -7,31 +7,6 @@ import ReactPaginate from 'react-paginate';
 import Config from '../../../../global/config';
 import DescargarGratis from './DescargarGratis';
 
-const calendarTheme = {
-    popup: {
-        view: {
-            days: {
-                items: {
-                    item: {
-                        base: "block flex-1 cursor-pointer rounded-lg border-0 text-center text-sm font-semibold leading-9 text-gray-900 hover:bg-gray-100",
-                        selected: "bg-greenVE-600 text-white hover:bg-greenVE-700",
-                        outside: "text-gray-300 pointer-events-none"
-                    }
-                }
-            }
-        }
-    },
-    root: {
-        input: {
-            field: {
-                input: {
-                    base: "w-full h-10 pl-11 pr-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all bg-white"
-                }
-            }
-        }
-    }
-};
-
 const ListarCuentasGratis = () => {
     const [fInicio, setFInicio] = useState(formatDate(new Date().setMonth(new Date().getMonth() - 1)));
     const [fFin, setFFin] = useState(formatDate(new Date()))
@@ -113,46 +88,34 @@ const ListarCuentasGratis = () => {
                 </div>
 
                 {/* Filtros Limpios */}
-                <div className='bg-slate-50 border border-slate-200 rounded-2xl p-6'>
-                    <div className='flex items-center gap-2 mb-6'>
+                <div className='bg-slate-50 border border-slate-200 rounded-2xl p-4'>
+                    <div className='flex items-center gap-2 mb-3'>
                         <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
                         <label className='text-xs font-black uppercase tracking-widest text-slate-400'>Parámetros de Búsqueda</label>
                     </div>
 
-                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3'>
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Desde</label>
-                            <Datepicker
-                                language="es-ES"
-                                labelTodayButton="Hoy"
-                                labelClearButton="Limpiar"
-                                minDate={new Date("2020-01-01")}
-                                maxDate={new Date("2036-12-31")}
-                                selectedDate={new Date(fInicio.replace(/-/g, '/'))}
-                                theme={calendarTheme}
-                                onSelectedDateChanged={(date) => {
-                                    if (date) {
-                                        setFInicio(formatDate(date));
-                                    }
-                                }}
-                            />
+                            <div className='relative'>
+                                <input
+                                    type='date'
+                                    value={fInicio}
+                                    onChange={(event) => setFInicio(event.target.value)}
+                                    className='w-full h-10 px-4 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-greenVE-500 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
+                                />
+                            </div>
                         </div>
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Hasta</label>
-                            <Datepicker
-                                language="es-ES"
-                                labelTodayButton="Hoy"
-                                labelClearButton="Limpiar"
-                                minDate={new Date("2020-01-01")}
-                                maxDate={new Date("2036-12-31")}
-                                selectedDate={new Date(fFin.replace(/-/g, '/'))}
-                                theme={calendarTheme}
-                                onSelectedDateChanged={(date) => {
-                                    if (date) {
-                                        setFFin(formatDate(date));
-                                    }
-                                }}
-                            />
+                            <div className='relative'>
+                                <input
+                                    type='date'
+                                    value={fFin}
+                                    onChange={(event) => setFFin(event.target.value)}
+                                    className='w-full h-10 px-4 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-greenVE-500 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
+                                />
+                            </div>
                         </div>
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Nombres</label>
@@ -164,7 +127,7 @@ const ListarCuentasGratis = () => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col lg:flex-row justify-between items-center gap-4 mt-6 pt-6 border-t border-slate-100'>
+                    <div className='flex flex-col lg:flex-row justify-between items-center gap-3 mt-3 pt-3 border-t border-slate-100'>
                         <div className='flex flex-col gap-1.5 w-full lg:w-1/3'>
                             <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Correo Electrónico</label>
                             <input value={correo} placeholder='Ingresar correo electrónico' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setCorreo(event.target.value) }} />

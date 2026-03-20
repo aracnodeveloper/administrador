@@ -11,11 +11,7 @@ function App() {
   const session = JSON.parse(localStorage.getItem("datos"));
   const permisos = JSON.parse(localStorage.getItem("permisos"));
 
-  if (!session || !permisos) {
-    if (window.location.hostname !== "localhost") {
-      window.open("https://visitaecuador.com", "_self");
-    }
-  }
+
 
   return (
     <Router

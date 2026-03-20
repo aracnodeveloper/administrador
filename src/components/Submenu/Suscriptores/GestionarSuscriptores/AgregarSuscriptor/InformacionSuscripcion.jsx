@@ -6,31 +6,34 @@ import { listarCanalesVenta } from '../../../../../controllers/info/InfoControll
 import { buscarUsuarios } from '../../../../../controllers/smart/SmartController';
 import ClickAwayListener from 'react-click-away-listener';
 
-const InformacionSuscripcion = ({ suscripciones }) => {
+const InformacionSuscripcion = ({ suscripciones = [] }) => {
     const [canales, setCanales] = useState();
     const [suggestion, setSuggestion] = useState();
     const [inputValue, setInputValue] = useState();
+    const [promoCode, setPromoCode] = useState('');
+
+    // Estado local para manejar las suscripciones añadidas dinámicamente
+    const [listSuscripciones, setListSuscripciones] = useState(suscripciones);
+
+    useEffect(() => {
+        setListSuscripciones(suscripciones);
+    }, [suscripciones]);
+
     useEffect(() => {
         listarCanalesVenta().then((res) => {
             if (res) {
                 setCanales(res)
-
             }
         })
     }, []);
-    console.log(suscripciones)
 
     useEffect(() => {
         const timer = setTimeout(() => {
             if (inputValue) {
-                //setLoading(true)
                 buscarUsuarios(inputValue).then((res) => {
-                    //setLoading(false)
                     setSuggestion(res)
-                    console.log("respuesta", res)
                 });
             } else {
-                //setLoading(false)
                 setSuggestion(null);
             }
         }, 500);
@@ -45,135 +48,170 @@ const InformacionSuscripcion = ({ suscripciones }) => {
         setSuggestion()
     }
 
+    // Función para AÑADIR una suscripción al hacer clic en el botón
+    const handleAddSubscription = () => {
+        const nuevaSuscripcion = {
+            titulo: "",
+            precio: "0.00",
+            fecha_inicio: formatDate(new Date()),
+            fecha_fin: "",
+            id_estado_pago: "1",
+            vendedor: "",
+            id_tbl_tipo_canal: "1",
+            observacion: ""
+        };
+        setListSuscripciones([...listSuscripciones, nuevaSuscripcion]);
+    };
+
+    // Función para ELIMINAR una suscripción
+    const handleRemoveSubscription = (index) => {
+        const newList = [...listSuscripciones];
+        newList.splice(index, 1);
+        setListSuscripciones(newList);
+    };
+
     return (
-        <div className='w-full border-2 rounded-md mt-5 flex'>
-            <label className='absolute -mt-3 ml-5 rounded-full bg-greenVE-500 text-white px-4'>Información de la suscripción</label>
-            <div className='flex flex-col items-center justify-center w-full mt-5'>
-                <table className='w-full'>
-                    <thead className="text-[11px] text-gray-700 uppercase bg-gray-50 w-full">
-                        <tr className='flex  justify-between '>
-                            <th scope="col" className="flex justify-center items-center w-[5%]">#</th>
-                            <th scope="col" className="flex justify-center items-center w-[15%]">Suscripción</th>
-                            <th scope="col" className="flex justify-center items-center w-[10%]">Fecha Inicio</th>
-                            <th scope="col" className="flex justify-center items-center w-[10%]">Fecha Fin</th>
-                            <th scope="col" className="flex justify-center items-center w-[10%]">Estado de Pago</th>
-                            <th scope="col" className="flex justify-center items-center w-[10%]">Detalle Pago</th>
-                            <th scope="col" className="flex justify-center items-center w-[15%]">Observación</th>
-                            <th scope="col" className="flex justify-center items-center w-[15%]">Vendedor</th>
-                            <th scope="col" className="flex justify-center items-center w-[10%]">Canal</th>
-                            <th scope="col" className="flex justify-center items-center w-[5%]">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody className='text-[11px] text-gray-700 bg-gray-50 w-full'>
-                        {
-                            suscripciones.map((item, index) => (
-                                <tr className='odd:bg-white even:bg-gray-50 text-[12px] flex justify-between border-y py-1'>
-                                    <td scope="col" className="flex justify-center items-center w-[5%]">{index + 1}</td>
-                                    <td scope="col" className="flex justify-center items-center w-[15%]">{item.titulo}</td>
-                                    <td scope="col" className="flex justify-center items-center w-[10%] px-1">
-                                        <Datepicker 
-                                            language="es-ES"
-                                            labelTodayButton="Hoy"
-                                            labelClearButton="Limpiar"
-                                            minDate={new Date("2015-01-01")}
-                                            maxDate={new Date("2040-12-31")}
-                                            value={new Date(item.fecha_inicio + "T12:00:00")}
-                                            onSelectedDateChanged={(date) => { /* Aquí faltaría una función para actualizar el estado de suscripciones */ }}
-                                            theme={{
-                                                root: {
-                                                    input: {
-                                                        field: {
-                                                            input: {
-                                                                base: "w-full h-7 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }}
-                                        />
-                                    </td>
-                                    <td scope="col" className="flex justify-center items-center w-[10%] px-1">
-                                        <Datepicker 
-                                            language="es-ES"
-                                            labelTodayButton="Hoy"
-                                            labelClearButton="Limpiar"
-                                            minDate={new Date("2015-01-01")}
-                                            maxDate={new Date("2040-12-31")}
-                                            value={new Date(item.fecha_fin + "T12:00:00")}
-                                            onSelectedDateChanged={(date) => { /* Aquí faltaría una función para actualizar el estado */ }}
-                                            theme={{
-                                                root: {
-                                                    input: {
-                                                        field: {
-                                                            input: {
-                                                                base: "w-full h-7 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }}
-                                        />
-                                    </td>
-                                    <td scope="col" className="flex justify-center items-center w-[10%] ">
-                                        <select value={item.id_estado_pago} className='h-6 py-0 text-[10px] w-28'>
-                                            {
-                                                Config.ESTADOPAGO.map((item) => (
-                                                    <option value={item.id}>{item.nombre}</option>
-                                                ))
-                                            }
-                                        </select>
-                                    </td>
-                                    <td scope="col" className="flex justify-center items-center w-[10%]">Detalle Pago</td>
-                                    <td scope="col" className="flex justify-center items-center w-[15%]">
-                                        <input type='text' className='h-6 w-28 text-[10px] py-0' />
-                                    </td>
-                                    <td scope="col" className="flex justify-center items-center w-[15%]">
-                                        <input value={item.vendedor} type='text' className='h-6 w-36 text-[10px] py-0' onChange={(event) => setInputValue(event.target.value)} />
-                                        {suggestion && (
-                                            <ClickAwayListener onClickAway={handleClickAway}>
-                                                <div className=" absolute mt-28 max-h-[17rem] w-[34.5rem] bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
-                                                    {
-                                                        suggestion ? (
-                                                            suggestion.map((item, key) => (
-                                                                <div key={key} className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => { }/*() => (setDestination(item), setSuggestion(null))*/}>
-                                                                    <div className="flex justify-between w-full p-1 cursor-pointer" onClick={() => onClickSuggestion(item)} >
-                                                                        <label key={key} className="text-sm cursor-pointer text-xs" >
-                                                                            {`ID: ${item.usuario} CI: ${item.ci_ruc} ${item.nombres}`}
-                                                                        </label>
-                                                                        {
-                                                                            item.estado == "activo"
-                                                                                ? <span className="icon-[mdi--check-circle] text-greenVE-600 h-4 w-4"></span>
-                                                                                : <span className="icon-[material-symbols--cancel] text-red-500 h-4 w-4"></span>
-                                                                        }
-                                                                    </div>
-                                                                </div>
-                                                            ))
-                                                        ) : (<p></p>)
-                                                    }
-                                                </div>
-                                            </ClickAwayListener>
-                                        )}
-                                    </td>
-                                    <td scope="col" className="flex justify-center items-center w-[10%]">
-                                        <select className='h-6 py-0 text-[10px] w-28'>
-                                            {
-                                                canales && canales.map((item) => (
-                                                    <option value={item.id_tbl_tipo_canal}>{item.nombre}</option>
-                                                ))
-                                            }
-                                        </select>
-                                    </td>
-                                    <td scope="col" className="flex justify-center items-center w-[5%]">
-                                        <span className="icon-[material-symbols--cancel] text-gray-500 h-5 w-5"></span>
-                                    </td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
+        <div className='flex flex-col gap-6 animate-fadeIn py-4 mt-4'>
+            {/* Cabecera con Badge*/}
+            <div className='flex items-center'>
+                <div className='bg-greenVE-600 text-white px-8 py-2 rounded-full text-sm font-bold shadow-sm flex items-center gap-2.5'>
+                    <span className='icon-[material-symbols--info-outline-rounded] text-xl'></span>
+                    Información de la Suscripción
+                </div>
             </div>
-        </div >
+
+            {/* Panel de Búsqueda de Productos */}
+            <div className='bg-blue-50/50 border border-blue-200 rounded-xl p-4 shadow-sm'>
+                <div className='flex flex-col gap-4'>
+                    <label className='text-xs font-bold text-slate-700 ml-2'>
+                        Buscar Productos por Código Promocional
+                    </label>
+                    <div className='flex gap-3'>
+                        <div className='relative flex-1'>
+                            <input
+                                type='text'
+                                value={promoCode}
+                                onChange={(e) => setPromoCode(e.target.value)}
+                                placeholder="Ingrese código promocional"
+                                className='w-full h-11 px-5 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none shadow-sm'
+                            />
+                        </div>
+                        <button className='bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg transition-all shadow-md active:scale-95 text-xs uppercase tracking-widest'>
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Botón de Agregar (Vinculado a la función handleAddSubscription) */}
+            <div className='flex justify-start'>
+                <button
+                    onClick={handleAddSubscription}
+                    className='bg-greenVE-600 hover:bg-greenVE-700 text-white font-bold py-2.5 px-6 rounded-lg transition-all shadow-md flex items-center gap-2 text-xs uppercase tracking-widest active:scale-95'
+                >
+                    <span className='icon-[material-symbols--add-circle-outline-rounded] text-lg'></span>
+                    Agregar Suscripción
+                </button>
+            </div>
+
+            {/* Listado de Suscripciones (Cards) */}
+            <div className='flex flex-col gap-4'>
+                {listSuscripciones.length > 0 ? (
+                    listSuscripciones.map((item, index) => (
+                        <div key={index} className='bg-white border border-slate-200 rounded-xl p-4 shadow-sm relative group animate-fadeIn'>
+                            {/* Botón Eliminar Card */}
+                            <button
+                                onClick={() => handleRemoveSubscription(index)}
+                                className='absolute top-4 right-4 text-slate-300 hover:text-red-500 transition-colors'
+                            >
+                                <span className='icon-[material-symbols--close-rounded] text-2xl'></span>
+                            </button>
+
+                            <h4 className='text-sm font-bold text-greenVE-800 mb-6'>Suscripción #{index + 1}</h4>
+
+                            <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                                {/* Fila 1 */}
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Nombre Suscripción <span className='text-red-500'>*</span></label>
+                                    <select className='w-full h-10 px-3 rounded-lg border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 outline-none'>
+                                        <option value="">Seleccione un producto</option>
+                                        <option value="1">Plan Oro</option>
+                                        <option value="2">Plan Plata</option>
+                                    </select>
+                                </div>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Precio</label>
+                                    <input type='text' defaultValue={item.precio || "0.00"} className='w-full h-10 px-4 rounded-lg border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 outline-none' />
+                                </div>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Fecha Inicio</label>
+                                    <div className='relative'>
+                                        <input
+                                            type='date'
+                                            className='w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-2 focus:ring-greenVE-500/10 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
+                                            defaultValue={item.fecha_inicio || '2026-03-20'}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Fila 2 */}
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Fecha Fin</label>
+                                    <div className='relative'>
+                                        <input
+                                            type='date'
+                                            className='w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-2 focus:ring-greenVE-500/10 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
+                                            defaultValue={item.fecha_fin}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Estado de Pago</label>
+                                    <select defaultValue={item.id_estado_pago || "1"} className='w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 outline-none'>
+                                        <option value="1">Pagado</option>
+                                        <option value="2">Pendiente</option>
+                                    </select>
+                                </div>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Canal de Venta</label>
+                                    <select defaultValue={item.id_tbl_tipo_canal || "1"} className='w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 outline-none'>
+                                        {canales && canales.map((opt) => (
+                                            <option key={opt.id_tbl_tipo_canal} value={opt.id_tbl_tipo_canal}>{opt.nombre}</option>
+                                        ))}
+                                        <option value="1">Venta Directa</option>
+                                    </select>
+                                </div>
+
+                                {/* Fila 3 - Vendedor */}
+                                <div className='md:col-span-3 flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Vendedor</label>
+                                    <input type='text' defaultValue={item.vendedor} placeholder='Buscar vendedor...' className='w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 outline-none' />
+                                </div>
+
+                                {/* Fila 4 - Observaciones */}
+                                <div className='md:col-span-3 flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-1'>Observaciones</label>
+                                    <textarea rows='2' defaultValue={item.observacion} placeholder='Observaciones adicionales...' className='w-full p-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 outline-none resize-none'></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    /* Estado Vacío (Dotted Box) */
+                    <div className='border-2 border-dashed border-slate-200 rounded-2xl py-20 bg-slate-50/50 flex flex-col items-center justify-center gap-4 group hover:border-blue-400 hover:bg-blue-50/10 transition-all duration-300'>
+                        <div className='w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-300 group-hover:text-blue-400 transition-colors'>
+                            <span className='icon-[material-symbols--inventory-2-outline-rounded] text-3xl'></span>
+                        </div>
+                        <div className='flex flex-col items-center gap-1'>
+                            <h4 className='text-sm font-bold text-slate-400 group-hover:text-slate-600 transition-colors'>No hay suscripciones agregadas</h4>
+                            <p className='text-[11px] text-slate-400 text-center max-w-[300px]'>Busca productos con un código promocional y luego agrega una suscripción</p>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+        </div>
     );
 };
 
-export default InformacionSuscripcion
+export default InformacionSuscripcion;

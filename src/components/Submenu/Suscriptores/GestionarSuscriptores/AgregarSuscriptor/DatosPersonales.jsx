@@ -10,8 +10,9 @@ const DatosPersonales = ({ usuario, contactos }) => {
     const [userData, setUserData] = useState({
         ci_ruc: usuario?.ci_ruc || "",
         nombres: usuario?.nombres || "",
-        usuario: usuario?.usuario || "",
-        clave: usuario?.clave || ""
+        direccion: usuario?.direccion || "",
+        fecha_nacimiento: usuario?.fecha_nacimiento || "",
+        genero: usuario?.genero || ""
     });
 
     const [contactList, setContactList] = useState(contactos || []);
@@ -20,8 +21,9 @@ const DatosPersonales = ({ usuario, contactos }) => {
         setUserData({
             ci_ruc: usuario?.ci_ruc || "",
             nombres: usuario?.nombres || "",
-            usuario: usuario?.usuario || "",
-            clave: usuario?.clave || ""
+            direccion: usuario?.direccion || "",
+            fecha_nacimiento: usuario?.fecha_nacimiento || "",
+            genero: usuario?.genero || ""
         });
     }, [usuario]);
 
@@ -74,13 +76,13 @@ const DatosPersonales = ({ usuario, contactos }) => {
                     </div>
                 </div>
 
-                <div className='p-8 grid grid-cols-1 lg:grid-cols-12 gap-8'>
+                <div className='p-4 grid grid-cols-1 lg:grid-cols-12 gap-4'>
                     {/* Sección Principal*/}
-                    <div className='lg:col-span-8 flex flex-col gap-6'>
+                    <div className='lg:col-span-12 flex flex-col gap-4'>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 font-sans'>
                             <div className='flex flex-col gap-1.5'>
                                 <label className='text-[11px] font-bold text-slate-500 uppercase ml-2 flex items-center gap-2'>
-                                    Cédula / Identificación
+                                    Cédula / RUC <span className='text-red-500'>*</span>
                                 </label>
                                 <div className='relative'>
                                     <span className='absolute left-3 top-1/2 -translate-y-1/2 icon-[material-symbols--badge-outline-rounded] text-slate-300'></span>
@@ -89,14 +91,14 @@ const DatosPersonales = ({ usuario, contactos }) => {
                                         value={userData.ci_ruc}
                                         onChange={handleChange}
                                         type='text'
-                                        placeholder="Ingrese identificación"
+                                        placeholder="Ingrese cédula o RUC"
                                         className='w-full h-10 pl-10 pr-4 rounded-lg border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-greenVE-500/10 focus:border-greenVE-500 transition-all outline-none font-sans'
                                     />
                                 </div>
                             </div>
                             <div className='flex flex-col gap-1.5'>
                                 <label className='text-[11px] font-bold text-slate-500 uppercase ml-2 flex items-center gap-2'>
-                                    Nombres y Apellidos
+                                    Nombres Completos <span className='text-red-500'>*</span>
                                 </label>
                                 <div className='relative'>
                                     <span className='absolute left-3 top-1/2 -translate-y-1/2 icon-[material-symbols--label-outline-rounded] text-slate-300'></span>
@@ -105,7 +107,7 @@ const DatosPersonales = ({ usuario, contactos }) => {
                                         value={userData.nombres}
                                         onChange={handleChange}
                                         type='text'
-                                        placeholder="Ingrese nombres completos"
+                                        placeholder="Ingresar nombre completo"
                                         className='w-full h-10 pl-10 pr-4 rounded-lg border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-greenVE-500/10 focus:border-greenVE-500 transition-all outline-none font-sans'
                                     />
                                 </div>
@@ -114,65 +116,82 @@ const DatosPersonales = ({ usuario, contactos }) => {
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 pb-2 bg-slate-50/50 p-4 rounded-xl border border-slate-100 font-sans'>
                             <div className='flex flex-col gap-1.5'>
-                                <label className='text-[10px] font-bold text-slate-400 lg:text-center uppercase tracking-widest'>Ubicación: Provincia</label>
+                                <label className='text-[10px] font-bold text-slate-400 lg:text-center uppercase tracking-widest'>Provincia</label>
                                 <select
                                     value={selProvincia}
                                     onChange={(event) => setSelProvincia(event.target.value)}
                                     className='w-full h-9 px-3 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-600 focus:ring-2 focus:ring-greenVE-500/5 focus:border-greenVE-500 transition-all outline-none font-sans'
                                 >
+                                    <option value="">Seleccione provincia</option>
                                     {provincias && provincias.map((item, index) => (
                                         <option value={index} key={index}>{item.Titulo}</option>
                                     ))}
                                 </select>
                             </div>
                             <div className='flex flex-col gap-1.5'>
-                                <label className='text-[10px] font-bold text-slate-400 lg:text-center uppercase tracking-widest'>Ubicación: Ciudad</label>
+                                <label className='text-[10px] font-bold text-slate-400 lg:text-center uppercase tracking-widest'>Ciudad</label>
                                 <select
                                     value={selCiudad}
                                     onChange={(event) => setSelCiudad(event.target.value)}
                                     className='w-full h-9 px-3 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-600 focus:ring-2 focus:ring-greenVE-500/5 focus:border-greenVE-500 transition-all outline-none font-sans'
                                 >
+                                    <option value="">Seleccione ciudad</option>
                                     {provincias && provincias[selProvincia]?.Valor.map((item, index) => (
                                         <option value={item.Valor} key={index}>{item.Titulo}</option>
                                     ))}
                                 </select>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Sección Acceso*/}
-                    <div className='lg:col-span-4'>
-                        <div className='bg-slate-50 rounded-xl p-6 border border-slate-200 h-full flex flex-col gap-4 shadow-sm font-sans'>
-                            <h4 className='text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2 border-b border-slate-200 pb-3 mb-1'>
-                                <span className='icon-[material-symbols--lock-outline-rounded] text-slate-400'></span>
-                                Credenciales de Acceso
-                            </h4>
-
+                        {/* Nuevos campos: Dirección, Fecha Nacimiento, Género */}
+                        <div className='flex flex-col gap-4 font-sans'>
                             <div className='flex flex-col gap-1.5'>
-                                <label className='text-[10px] font-bold text-slate-400 uppercase italic ml-1'>Usuario ID</label>
-                                <input
-                                    name="usuario"
-                                    value={userData.usuario}
-                                    onChange={handleChange}
-                                    type='text'
-                                    placeholder="Ingresar usuario"
-                                    className='w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 shadow-sm focus:border-greenVE-500 transition-all outline-none font-sans'
-                                />
+                                <label className='text-[11px] font-bold text-slate-500 uppercase ml-2'>Dirección</label>
+                                <div className='relative'>
+                                    <span className='absolute left-3 top-1/2 -translate-y-1/2 icon-[material-symbols--home-outline-rounded] text-slate-300'></span>
+                                    <input
+                                        name="direccion"
+                                        value={userData.direccion}
+                                        onChange={handleChange}
+                                        type='text'
+                                        placeholder="Ingrese dirección completa"
+                                        className='w-full h-10 pl-10 pr-4 rounded-lg border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-greenVE-500/10 focus:border-greenVE-500 transition-all outline-none font-sans'
+                                    />
+                                </div>
                             </div>
 
-                            <div className='flex flex-col gap-1.5'>
-                                <label className='text-[10px] font-bold text-slate-400 uppercase italic ml-1'>Clave de Seguridad</label>
-                                <input
-                                    name="clave"
-                                    value={userData.clave}
-                                    onChange={handleChange}
-                                    type='password'
-                                    placeholder="Ingresar contraseña"
-                                    className='w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 shadow-sm focus:border-greenVE-500 transition-all outline-none font-sans'
-                                />
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-2'>Fecha de Nacimiento</label>
+                                    <div className='relative'>
+                                        <input
+                                            name="fecha_nacimiento"
+                                            value={userData.fecha_nacimiento}
+                                            onChange={handleChange}
+                                            type='date'
+                                            className='w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-2 focus:ring-greenVE-500/10 focus:border-greenVE-500 transition-all outline-none font-sans cursor-pointer'
+                                        />
+                                    </div>
+                                </div>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className='text-[11px] font-bold text-slate-500 uppercase ml-2'>Género</label>
+                                    <select
+                                        name="genero"
+                                        value={userData.genero}
+                                        onChange={handleChange}
+                                        className='w-full h-10 px-3 rounded-lg border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-greenVE-500/10 focus:border-greenVE-500 transition-all outline-none font-sans'
+                                    >
+                                        <option value="">Seleccione género</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Femenino</option>
+                                        <option value="O">Otro</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
                 </div>
             </div>
 

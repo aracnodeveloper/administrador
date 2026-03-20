@@ -147,17 +147,6 @@ const EstablecimientoOferta = ({ ofertas, eliminar, actualizar, adicionalNino, a
                                                         maxDate={new Date("2036-12-31")}
                                                         selectedDate={new Date(item.fechaIngreso.replace(/-/g, '/'))}
                                                         onSelectedDateChanged={(date) => fechaIngreso(index, formatDate(date))}
-                                                        theme={{
-                                                            root: {
-                                                                input: {
-                                                                    field: {
-                                                                        input: {
-                                                                            base: "w-full h-8 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }}
                                                     />
                                                 </div>
                                                 <div className='flex flex-col items-center w-full'>
@@ -170,17 +159,6 @@ const EstablecimientoOferta = ({ ofertas, eliminar, actualizar, adicionalNino, a
                                                         maxDate={new Date("2036-12-31")}
                                                         selectedDate={new Date(item.fechaSalida.replace(/-/g, '/'))}
                                                         onSelectedDateChanged={(date) => fechaSalida(index, formatDate(date))}
-                                                        theme={{
-                                                            root: {
-                                                                input: {
-                                                                    field: {
-                                                                        input: {
-                                                                            base: "w-full h-8 px-2 rounded-lg border-slate-200 text-[10px] font-bold focus:ring-greenVE-500 transition-all bg-white"
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }}
                                                     />
                                                 </div>
                                             </td>

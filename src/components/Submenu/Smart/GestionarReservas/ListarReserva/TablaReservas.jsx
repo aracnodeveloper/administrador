@@ -1,4 +1,3 @@
-import { Tooltip } from 'flowbite-react';
 import React, { useState } from 'react';
 import { getCertificadoReserva, listarReservas } from '../../../../../controllers/smart/SmartController';
 import Config from '../../../../../global/config';
@@ -64,30 +63,30 @@ const TablaReservas = ({ handleClickEdit, reservas }) => {
     }
 
     const options = (id) => {
-        return(
-        <div className="flex justify-center items-center text-center gap-2">
-            {
-                verificarPermiso(68) &&
-                    loadingId == id
-                    ? <div className='h-5 w-5' ><span className="icon-[line-md--loading-twotone-loop] h-5 w-5"></span></div>
-                    : <div className='h-5 w-5' title='Editar reserva' onClick={(e) => { e.preventDefault(); e.button === 0 && handleClickEditRes(id) }}><a className="icon-[typcn--edit] w-5 h-5 hover:bg-blue-600 cursor-pointer text-gray-500" href={`${window.location}reserva/${id}`} /></div>
-            }
-            {
-                <div className='h-5 w-5'><span title='Imprimir reserva' className="icon-[uil--print] w-5 h-5 hover:bg-blue-600  cursor-pointer text-gray-500" onClick={() => handleClickPrint(id)}></span></div>
-            }
-            {
-                verificarPermiso(73) &&
-                    loadingCertId == id
-                    ? <div className='h-5 w-5'><span className="icon-[line-md--loading-twotone-loop] h-5 w-5"></span></div>
-                    : <div className='h-5 w-5'><span title='Imprimir certificado' className="icon-[iconamoon--certificate-badge] w-5 h-5 hover:bg-greenVE-600  cursor-pointer text-gray-500" onClick={() => handleClickCert(id)}></span></div>
-            }
-        </div>)
+        return (
+            <div className="flex justify-center items-center text-center gap-2">
+                {
+                    verificarPermiso(68) &&
+                        loadingId == id
+                        ? <div className='h-5 w-5' ><span className="icon-[line-md--loading-twotone-loop] h-5 w-5"></span></div>
+                        : <div className='h-5 w-5' title='Editar reserva' onClick={(e) => { e.preventDefault(); e.button === 0 && handleClickEditRes(id) }}><a className="icon-[typcn--edit] w-5 h-5 hover:bg-blue-600 cursor-pointer text-gray-500" href={`${window.location}reserva/${id}`} /></div>
+                }
+                {
+                    <div className='h-5 w-5'><span title='Imprimir reserva' className="icon-[uil--print] w-5 h-5 hover:bg-blue-600  cursor-pointer text-gray-500" onClick={() => handleClickPrint(id)}></span></div>
+                }
+                {
+                    verificarPermiso(73) &&
+                        loadingCertId == id
+                        ? <div className='h-5 w-5'><span className="icon-[line-md--loading-twotone-loop] h-5 w-5"></span></div>
+                        : <div className='h-5 w-5'><span title='Imprimir certificado' className="icon-[iconamoon--certificate-badge] w-5 h-5 hover:bg-greenVE-600  cursor-pointer text-gray-500" onClick={() => handleClickCert(id)}></span></div>
+                }
+            </div>)
     }
 
     const usuario = (item) => {
         return (
             <div className="flex flex-col justify-center items-center gap-1  text-center py-1.5 overflow-hidden whitespace-nowrap text-ellipsis">
-                <label className={`${item.tipoUsuario=="gratis"?"text-greenVE-600":item.tipoUsuario==`suscriptor`?"text-blue-500":"text-orange-500"}`}>{item.tipoUsuario}</label>
+                <label className={`${item.tipoUsuario === "gratis" ? "text-greenVE-600" : item.tipoUsuario === `suscriptor` ? "text-blue-500" : "text-orange-500"}`}>{item.tipoUsuario}</label>
                 <label className='w-full overflow-hidden whitespace-nowrap text-ellipsis truncate' title={item.idCliSuscripcion}>{item.idCliSuscripcion}</label>
             </div>
         );
@@ -95,17 +94,17 @@ const TablaReservas = ({ handleClickEdit, reservas }) => {
 
     // Definir las columnas y su configuración
     const columns = [
-        { field: 'id', headerName: '#', flex: 1.5 },
-        { field: 'opciones', headerName: 'Opc.', flex: 7.5, renderCell: (params) => (options(params.row.id_tbl_reserva)), sortable: false },
-        { field: 'id_tbl_reserva', headerName: '# Reserva', flex: 5 },
-        { field: 'fecha', headerName: 'Fecha', flex: 8 },
-        { field: 'estado', headerName: 'Estado', flex: 8, renderCell: (params) => (estados[parseInt(params.row.id_tbl_estado_reserva) - 1]), sortable: true  },
-        { field: 'id_sus', headerName: 'ID Sus.', flex: 8, renderCell: (params) => (usuario(params.row.item)), sortable: true  },
-        { field: 'suscriptor', headerName: 'Suscriptor', flex: 15 },
-        { field: 'gestionado', headerName: 'Gestionado por', flex: 15 },
-        { field: 'establecimiento', headerName: 'Establecimiento', flex: 20 },
-        { field: 'num_paquetes', headerName: '# Paquetes', flex: 5 },
-        { field: 'total', headerName: 'Total', flex: 6, renderCell:(params)=>(<span>${params.row.total.toFixed(2)}</span>) },
+        { field: 'id', headerName: '#', width: 50 },
+        { field: 'opciones', headerName: 'Opc.', width: 100, renderCell: (params) => (options(params.row.id_tbl_reserva)), sortable: false },
+        { field: 'id_tbl_reserva', headerName: '# Reserva', width: 100 },
+        { field: 'fecha', headerName: 'Fecha', width: 150 },
+        { field: 'estado', headerName: 'Estado', width: 140, renderCell: (params) => (estados[parseInt(params.row.id_tbl_estado_reserva) - 1]), sortable: true },
+        { field: 'id_sus', headerName: 'ID Sus.', width: 150, renderCell: (params) => (usuario(params.row.item)), sortable: true },
+        { field: 'suscriptor', headerName: 'Suscriptor', width: 220 },
+        { field: 'gestionado', headerName: 'Gestionado por', width: 220 },
+        { field: 'establecimiento', headerName: 'Establecimiento', width: 280 },
+        { field: 'num_paquetes', headerName: '# Paquetes', width: 100 },
+        { field: 'total', headerName: 'Total', width: 100, renderCell: (params) => (<span className='font-bold text-slate-800'>${params.row.total.toFixed(2)}</span>) },
     ];
 
     // Mapear la lista recibida a las filas
@@ -113,33 +112,33 @@ const TablaReservas = ({ handleClickEdit, reservas }) => {
         id: index + 1, // Utilizo el índice + 1 como identificador
         id_tbl_reserva: item.id_tbl_reserva,
         fecha: item.fecha_creacion,
-        id_tbl_estado_reserva:item.id_tbl_estado_reserva,
-        estado:Config.obtenerEstadoReserva(parseInt(item.id_tbl_estado_reserva)),
+        id_tbl_estado_reserva: item.id_tbl_estado_reserva,
+        estado: Config.obtenerEstadoReserva(parseInt(item.id_tbl_estado_reserva)),
         id_sus: item.tipoUsuario,
         suscriptor: capitalize(item.usuarioCliente),
         gestionado: capitalize(item.usuarioCreacion),
         establecimiento: capitalize(item.establecimiento),
         num_paquetes: parseInt(item.totalCantidadOfertas),
         total: parseFloat(item.total_reserva),
-        item:item
+        item: item
     }));
 
     return (
         <>
-            <div style={{ width: '100%' }}>
+            <div className='scale-90  transform' style={{ width: '100%' }}>
                 <DataGrid
                     rows={rows}
                     columns={columns}
-                    pageSize={rows.length} 
+                    pageSize={rows.length}
                     getRowHeight={() => 'auto'}
                     disableSelectionOnClick
                     localeText={Config.esEs}
                     sx={Config.SettingTable}
                     initialState={{
                         pagination: {
-                          paginationModel: {
-                            pageSize: rows.length,
-                          },
+                            paginationModel: {
+                                pageSize: rows.length,
+                            },
                         },
                     }}
                 />
