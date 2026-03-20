@@ -87,95 +87,96 @@ const ListarCuentasGratis = () => {
                     </div>
                 </div>
 
-                {/* Filtros Limpios */}
-                <div className='bg-slate-50 border border-slate-200 rounded-2xl p-4'>
-                    <div className='flex items-center gap-2 mb-3'>
-                        <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
-                        <label className='text-xs font-black uppercase tracking-widest text-slate-400'>Parámetros de Búsqueda</label>
-                    </div>
-
-                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3'>
-                        <div className='flex flex-col gap-1.5'>
-                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Desde</label>
-                            <div className='relative'>
-                                <input
-                                    type='date'
-                                    value={fInicio}
-                                    onChange={(event) => setFInicio(event.target.value)}
-                                    className='w-full h-10 px-4 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-greenVE-500 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
-                                />
+                <div className='flex flex-col'>
+                    {/* Filtros Limpios */}
+                    <div className='bg-slate-50 border border-slate-200 rounded-t-2xl p-4'>
+                        <div className='flex items-center gap-2 mb-3'>
+                            <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
+                            <label className='text-[10px] font-black uppercase tracking-widest text-slate-400'>Parámetros de Búsqueda</label>
+                        </div>
+    
+                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+                            <div className='flex flex-col gap-1.5'>
+                                <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Desde</label>
+                                <div className='relative'>
+                                    <input
+                                        type='date'
+                                        value={fInicio}
+                                        onChange={(event) => setFInicio(event.target.value)}
+                                        className='w-full h-10 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 focus:ring-greenVE-500 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
+                                    />
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-1.5'>
+                                <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Hasta</label>
+                                <div className='relative'>
+                                    <input
+                                        type='date'
+                                        value={fFin}
+                                        onChange={(event) => setFFin(event.target.value)}
+                                        className='w-full h-10 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-medium text-slate-700 focus:ring-greenVE-500 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
+                                    />
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-1.5'>
+                                <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Nombres</label>
+                                <input value={nombre} placeholder='Ingresar nombre' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 bg-slate-50/50 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setNombre(event.target.value) }} />
+                            </div>
+                            <div className='flex flex-col gap-1.5'>
+                                <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Identificación</label>
+                                <input value={cedula} placeholder='Ingresar identificación' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 bg-slate-50/50 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setCedula(event.target.value) }} />
                             </div>
                         </div>
-                        <div className='flex flex-col gap-1.5'>
-                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Hasta</label>
-                            <div className='relative'>
-                                <input
-                                    type='date'
-                                    value={fFin}
-                                    onChange={(event) => setFFin(event.target.value)}
-                                    className='w-full h-10 px-4 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:ring-greenVE-500 focus:border-greenVE-500 transition-all outline-none cursor-pointer'
-                                />
+    
+                        <div className='flex flex-col lg:flex-row justify-between items-center gap-4 mt-6 pt-4 border-t border-slate-100'>
+                            <div className='flex flex-col gap-1.5 w-full lg:w-1/3'>
+                                <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Correo Electrónico</label>
+                                <input value={correo} placeholder='Ingresar correo electrónico' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 bg-slate-50/50 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setCorreo(event.target.value) }} />
+                            </div>
+    
+                            <div className='flex gap-2 w-full lg:w-auto mt-auto'>
+                                <select className='h-10 rounded-xl border-slate-200 bg-slate-50 text-sm font-bold text-slate-600 focus:ring-greenVE-500' value={cantidad} onChange={(event) => setCantidad(event.target.value)}>
+                                    {Config.ELEMENTOSHOJAS.map((item) => (
+                                        <option key={item.id} value={item.id}>{item.nombre} pág.</option>
+                                    ))}
+                                </select>
+                                <button
+                                    className='flex-grow bg-[#8b9531] hover:bg-[#7a832a] text-white font-bold text-xs uppercase tracking-widest px-8 h-10 rounded-xl transition-all flex items-center justify-center gap-2'
+                                    onClick={() => handleClicAplicar({ filtros: true })}
+                                >
+                                    <span className='icon-[material-symbols--search-rounded] text-lg'></span>
+                                    Actualizar Resultados
+                                </button>
                             </div>
                         </div>
-                        <div className='flex flex-col gap-1.5'>
-                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Nombres</label>
-                            <input value={nombre} placeholder='Ingresar nombre' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setNombre(event.target.value) }} />
-                        </div>
-                        <div className='flex flex-col gap-1.5'>
-                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Identificación</label>
-                            <input value={cedula} placeholder='Ingresar identificación' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setCedula(event.target.value) }} />
-                        </div>
                     </div>
-
-                    <div className='flex flex-col lg:flex-row justify-between items-center gap-3 mt-3 pt-3 border-t border-slate-100'>
-                        <div className='flex flex-col gap-1.5 w-full lg:w-1/3'>
-                            <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Correo Electrónico</label>
-                            <input value={correo} placeholder='Ingresar correo electrónico' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setCorreo(event.target.value) }} />
-                        </div>
-
-                        <div className='flex gap-2 w-full lg:w-auto mt-auto'>
-                            <select className='h-10 rounded-xl border-slate-200 text-sm font-bold text-slate-600 focus:ring-greenVE-500' value={cantidad} onChange={(event) => setCantidad(event.target.value)}>
-                                {Config.ELEMENTOSHOJAS.map((item) => (
-                                    <option key={item.id} value={item.id}>{item.nombre} pág.</option>
-                                ))}
-                            </select>
-                            <button
-                                className='flex-grow bg-greenVE-600 hover:bg-greenVE-700 text-white font-bold text-xs uppercase tracking-widest px-8 h-10 rounded-xl transition-all shadow-lg shadow-greenVE-100 flex items-center justify-center gap-2'
-                                onClick={() => handleClicAplicar({ filtros: true })}
-                            >
-                                <span className='icon-[material-symbols--search-rounded] text-lg'></span>
-                                Actualizar Resultados
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Área de Resultados */}
-                <div className='relative'>
+    
+                    {/* Área de Resultados */}
+                    <div className='relative border-x border-b border-slate-200 rounded-b-2xl bg-white'>
                     {loading ? (
                         <div className='w-full flex flex-col items-center justify-center py-20 gap-4'>
                             <span className="icon-[line-md--loading-twotone-loop] w-12 h-12 text-greenVE-600"></span>
                             <p className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Sincronizando base de datos...</p>
                         </div>
                     ) : (!data || data.length === 0) ? (
-                        <div className='w-full flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200'>
+                        <div className='w-full flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-b-2xl border-t border-dashed border-slate-200'>
                             <span className='icon-[material-symbols--search-off-rounded] text-4xl text-slate-300 mb-3'></span>
                             <p className='text-sm text-slate-500 font-medium'>No hay prospectos registrados</p>
                         </div>
                     ) : (
-                        <div className='flex flex-col w-full gap-4'>
-                            {total && (
-                                <div className='flex justify-end'>
-                                    <span className='bg-greenVE-50 text-greenVE-700 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-greenVE-100'>
-                                        Total: {total} registros
-                                    </span>
-                                </div>
-                            )}
-                            <div className='overflow-hidden rounded-2xl border border-slate-100 shadow-sm'>
+                        <div className='flex flex-col w-full'>
+                                {total && (
+                                    <div className='flex justify-end p-4'>
+                                        <div className='flex items-center gap-2 bg-[#fdfde1] text-[#8b9531] border border-[#f8f8d0] px-4 py-1.5 rounded-full shadow-sm'>
+                                            <span className='text-[10px] font-black uppercase tracking-widest'>Total: {total} Registros</span>
+                                        </div>
+                                    </div>
+                                )}
+                            <div className='border-t border-slate-100'>
                                 <TablaCuentasGratis listado={data} handleUpdateData={handleUpdateData} />
                             </div>
-
-                            <div className='mt-4'>
+                            
+                            <div className='bg-slate-50/30 border-t border-slate-100 mt-auto'>
                                 <ReactPaginate
                                     forcePage={selPagina}
                                     breakLabel="..."
@@ -186,11 +187,11 @@ const ListarCuentasGratis = () => {
                                     previousLabel={<span className='icon-[material-symbols--chevron-left-rounded] text-xl'></span>}
                                     containerClassName={'flex justify-center items-center gap-2 p-4'}
                                     pageClassName={'flex'}
-                                    pageLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-sm font-bold text-slate-600 transition-all hover:bg-greenVE-50 hover:text-greenVE-700 hover:border-greenVE-200'}
+                                    pageLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-600 transition-all hover:bg-greenVE-50 hover:text-greenVE-700 hover:border-greenVE-200'}
                                     previousClassName={'flex'}
-                                    previousLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all'}
+                                    previousLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-all'}
                                     nextClassName={'flex'}
-                                    nextLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all'}
+                                    nextLinkClassName={'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-all'}
                                     breakClassName={'text-slate-300'}
                                     activeClassName={'!bg-greenVE-600 !border-greenVE-600 rounded-xl shadow-md shadow-greenVE-100'}
                                     activeLinkClassName={'!text-white'}
@@ -198,6 +199,7 @@ const ListarCuentasGratis = () => {
                             </div>
                         </div>
                     )}
+                    </div>
                 </div>
             </div>
         </div>

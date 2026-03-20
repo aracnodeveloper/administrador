@@ -125,7 +125,7 @@ const TablaReservas = ({ handleClickEdit, reservas }) => {
 
     return (
         <>
-            <div className='scale-90  transform' style={{ width: '100%' }}>
+            <div style={{ width: '100%' }}>
                 <DataGrid
                     rows={rows}
                     columns={columns}
