@@ -7,6 +7,31 @@ import ReactPaginate from 'react-paginate';
 import Config from '../../../../global/config';
 import DescargarGratis from './DescargarGratis';
 
+const calendarTheme = {
+    popup: {
+        view: {
+            days: {
+                items: {
+                    item: {
+                        base: "block flex-1 cursor-pointer rounded-lg border-0 text-center text-sm font-semibold leading-9 text-gray-900 hover:bg-gray-100",
+                        selected: "bg-greenVE-600 text-white hover:bg-greenVE-700",
+                        outside: "text-gray-300 pointer-events-none"
+                    }
+                }
+            }
+        }
+    },
+    root: {
+        input: {
+            field: {
+                input: {
+                    base: "w-full h-10 pl-11 pr-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all bg-white"
+                }
+            }
+        }
+    }
+};
+
 const ListarCuentasGratis = () => {
     const [fInicio, setFInicio] = useState(formatDate(new Date().setMonth(new Date().getMonth() - 1)));
     const [fFin, setFFin] = useState(formatDate(new Date()))
@@ -71,7 +96,7 @@ const ListarCuentasGratis = () => {
     return (
         <div className='w-full p-6'>
             <div className='flex flex-col gap-6'>
-                {/* Header Ejecutivo */}
+                {/* Header  */}
                 <div className='flex justify-between items-center'>
                     <div className='flex flex-col gap-1'>
                         <h2 className='text-2xl font-black text-slate-800 tracking-tight'>Cuentas Gratuitas</h2>
@@ -87,7 +112,7 @@ const ListarCuentasGratis = () => {
                     </div>
                 </div>
 
-                {/* Filtros Limpios (Armonía con Suscriptores) */}
+                {/* Filtros Limpios */}
                 <div className='bg-slate-50 border border-slate-200 rounded-2xl p-6'>
                     <div className='flex items-center gap-2 mb-6'>
                         <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
@@ -103,17 +128,11 @@ const ListarCuentasGratis = () => {
                                 labelClearButton="Limpiar"
                                 minDate={new Date("2020-01-01")}
                                 maxDate={new Date("2036-12-31")}
-                                value={new Date(fInicio + "T12:00:00")}
-                                onSelectedDateChanged={(date) => setFInicio(formatDate(date))}
-                                theme={{
-                                    root: {
-                                        input: {
-                                            field: {
-                                                input: {
-                                                    base: "w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all bg-white"
-                                                }
-                                            }
-                                        }
+                                selectedDate={new Date(fInicio.replace(/-/g, '/'))}
+                                theme={calendarTheme}
+                                onSelectedDateChanged={(date) => {
+                                    if (date) {
+                                        setFInicio(formatDate(date));
                                     }
                                 }}
                             />
@@ -126,17 +145,11 @@ const ListarCuentasGratis = () => {
                                 labelClearButton="Limpiar"
                                 minDate={new Date("2020-01-01")}
                                 maxDate={new Date("2036-12-31")}
-                                value={new Date(fFin + "T12:00:00")}
-                                onSelectedDateChanged={(date) => setFFin(formatDate(date))}
-                                theme={{
-                                    root: {
-                                        input: {
-                                            field: {
-                                                input: {
-                                                    base: "w-full h-10 px-4 rounded-xl border-slate-200 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all bg-white"
-                                                }
-                                            }
-                                        }
+                                selectedDate={new Date(fFin.replace(/-/g, '/'))}
+                                theme={calendarTheme}
+                                onSelectedDateChanged={(date) => {
+                                    if (date) {
+                                        setFFin(formatDate(date));
                                     }
                                 }}
                             />

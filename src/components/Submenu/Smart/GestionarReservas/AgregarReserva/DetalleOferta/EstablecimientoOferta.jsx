@@ -145,7 +145,7 @@ const EstablecimientoOferta = ({ ofertas, eliminar, actualizar, adicionalNino, a
                                                         labelClearButton="Limpiar"
                                                         minDate={new Date("2020-01-01")}
                                                         maxDate={new Date("2036-12-31")}
-                                                        value={new Date(item.fechaIngreso + "T12:00:00")}
+                                                        selectedDate={new Date(item.fechaIngreso.replace(/-/g, '/'))}
                                                         onSelectedDateChanged={(date) => fechaIngreso(index, formatDate(date))}
                                                         theme={{
                                                             root: {
@@ -168,7 +168,7 @@ const EstablecimientoOferta = ({ ofertas, eliminar, actualizar, adicionalNino, a
                                                         labelClearButton="Limpiar"
                                                         minDate={new Date("2020-01-01")}
                                                         maxDate={new Date("2036-12-31")}
-                                                        value={new Date(item.fechaSalida + "T12:00:00")}
+                                                        selectedDate={new Date(item.fechaSalida.replace(/-/g, '/'))}
                                                         onSelectedDateChanged={(date) => fechaSalida(index, formatDate(date))}
                                                         theme={{
                                                             root: {
