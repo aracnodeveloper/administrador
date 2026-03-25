@@ -7,55 +7,54 @@ import Alerta from '../../../../global/Alerta';
 
 const GestionarEstablecimientos = () => {
     const [data, setData] = useState([]);
-    const [dataLugares, setDataLugares]= useState();
-    const [change, setChange] = useState(0);
+    const [dataLugares, setDataLugares] = useState();
     const [enableAdd, setEnableAdd] = useState(false);
     const [idLug, setIdLug] = useState("0");
     const [nombreEst, setNombreEst] = useState();
     const [alerta, setAlerta] = useState();
 
     useEffect(() => {
-        getEstablecimientos().then((resp)=>{
-            if(resp){
+        getEstablecimientos().then((resp) => {
+            if (resp) {
                 setData(resp);
             }
-        })
-        getLugares().then((resp)=>{
-            if(resp){
+        });
+        getLugares().then((resp) => {
+            if (resp) {
                 setDataLugares(resp);
             }
-        })
-    }, [change]);
+        });
+    }, []);
 
     const handleUpdateItem = (updatedItem) => {
-        setData((prev) => 
+        setData((prev) =>
             prev.map(item => item.id_establecimiento === updatedItem.id_establecimiento ? updatedItem : item)
         );
     };
 
     const handleDeleteItem = (id_establecimiento) => {
-        setData((prev) => 
+        setData((prev) =>
             prev.filter(item => item.id_establecimiento !== id_establecimiento)
         );
     };
 
-    const handleClickSave=()=>{
-        if(nombreEst!=null){
-            const params={
-                "tipo":"guardar",
-                "nombre_establecimiento":nombreEst,
-                "id_lugar":idLug
-            }
-            setEstablecimiento(params).then((resp)=>{
+    const handleClickSave = () => {
+        if (nombreEst != null) {
+            const params = {
+                "tipo": "guardar",
+                "nombre_establecimiento": nombreEst,
+                "id_lugar": idLug
+            };
+            setEstablecimiento(params).then((resp) => {
                 if (resp) {
-                    setEnableAdd(false)
+                    setEnableAdd(false);
                     setNombreEst();
-                    setIdLug("0")
-                    getEstablecimientos().then((resp)=>{
-                        if(resp){
+                    setIdLug("0");
+                    getEstablecimientos().then((resp) => {
+                        if (resp) {
                             setData(resp);
                         }
-                    })
+                    });
                     setAlerta(<Alerta
                         correcto={true}
                         mensaje="Se ha guardado correctamente"
@@ -64,90 +63,124 @@ const GestionarEstablecimientos = () => {
                 } else {
                     setAlerta(<Alerta
                         correcto={false}
-                        mensaje="Ocurrio un error al guardar"
+                        mensaje="Ocurrió un error al guardar"
                         onClose={() => setAlerta(null)}
                     />);
                 }
-            })
-        }else{
+            });
+        } else {
             setAlerta(<Alerta
                 correcto={false}
                 mensaje="Complete todos los campos"
                 onClose={() => setAlerta(null)}
             />);
         }
-    }
+    };
 
     return (
         <>
-            {
-                alerta
-            }
-            <div className='pl-3 w-full'>
-                <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
-                    <div className='flex gap-2 items-center'>
-                        <label className='text-greenVE-700 text-xl border-0'>Gestión de establecimientos</label>
-                        <Tooltip className='bg-gray-700' content="Añadir influencer" arrow={false}>
-                            <span className="z-0 icon-[solar--add-circle-bold-duotone] h-10 w-10 text-greenVE-500 cursor-pointer mt-3" onClick={() => setEnableAdd(true)}></span>
-                        </Tooltip>
+            {alerta}
+            <div className='w-full'>
+                <div className='bg-white border border-[#e2e8f0] rounded-lg shadow-sm overflow-hidden'>
+                    {/* Header Empresarial (Identidad Verde) */}
+                    <div className='px-8 py-6 border-b border-[#e2e8f0] bg-[#fdfdfd] flex justify-between items-center'>
+                        <div>
+                            <h2 className='text-xl font-bold text-[#1e293b] flex items-center gap-2'>
+                                <span className="icon-[material-symbols--apartment] text-3xl text-greenVE-500"></span>
+                                Gestión de Establecimientos
+                            </h2>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                            {!enableAdd && (
+                                <button 
+                                    onClick={() => setEnableAdd(true)}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-greenVE-500 text-white rounded text-xs font-bold hover:bg-greenVE-600 transition-all shadow-md shadow-greenVE-100"
+                                >
+                                    <span className="icon-[material-symbols--add-business-outline] text-lg"></span>
+                                    Nuevo Registro
+                                </button>
+                            )}
+                        </div>
                     </div>
-                    <div className='border border-gray-300 mt-2'></div>
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-3">
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">Establecimiento</th>
-                                    <th scope="col" className="px-6 py-3">Ciudad</th>
-                                    <th scope="col" className="px-6 py-3">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    enableAdd
-                                    &&<tr className='odd:bg-white even:bg-gray-50'>
-                                        <td className="px-6 py-4">
-                                            <input type='text' value={nombreEst}  className='text-xs h-5 bg-transparent rounded-lg' onChange={(event)=>{setNombreEst(event.target.value)}}></input>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <select value={idLug} className='text-xs h-8 bg-transparent rounded-lg' onChange={(event)=>setIdLug(event.target.value)}>
-                                                {
-                                                    dataLugares&&dataLugares.map((item)=>(
-                                                        <option value={item.id_lugar}>
-                                                                {item.nombre_lugar}
-                                                        </option>
-                                                    ))
-                                                }
-                                            </select>
-                                        </td>
-                                        <td className="px-6 py-4 flex gap-2">
-                                            <Tooltip className='bg-gray-700' content="Guardar" arrow={false}>
-                                                <span className="icon-[fluent--save-32-regular] w-5 h-5 hover:bg-blue-600 cursor-pointer" onClick={() => handleClickSave()}></span>
-                                            </Tooltip>
-                                            <Tooltip className='bg-gray-700' content="Cancelar" arrow={false}>
-                                                    <span className="icon-[material-symbols--cancel-outline] w-5 h-5 hover:text-red-600 cursor-pointer" onClick={()=>setEnableAdd(false)}></span>
-                                            </Tooltip>
-                                        </td>
+
+
+                    {/* Tabla Corporativa */}
+                    <div className="p-4">
+                        <div className="overflow-x-auto border border-[#f1f5f9] rounded shadow-sm">
+                            <table className="w-full text-[13px] text-left text-[#334155]">
+                                <thead className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider bg-[#f1f5f9] border-b border-[#e2e8f0]">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-4">Denominación del Establecimiento</th>
+                                        <th scope="col" className="px-6 py-4">Localidad / Ciudad</th>
+                                        <th scope="col" className="px-6 py-4 text-center">Acciones</th>
                                     </tr>
-                                }
-                                {
-                                    data.length ? data.map((item) => (
-                                        <>
+                                </thead>
+                                <tbody className="divide-y divide-[#f1f5f9]">
+                                    {enableAdd && (
+                                        <tr className='bg-[#f0f9ff]'>
+                                            <td className="px-6 py-3">
+                                                <input 
+                                                    type='text' 
+                                                    placeholder="Ingrese el nombre oficial..."
+                                                    value={nombreEst}  
+                                                    className='w-full text-[13px] border-[#cbd5e1] rounded bg-white py-1.5 focus:ring-1 focus:ring-[#0f172a]' 
+                                                    onChange={(event) => {setNombreEst(event.target.value)}} 
+                                                />
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                <select 
+                                                    value={idLug} 
+                                                    className='w-full text-[13px] border-[#cbd5e1] rounded bg-white py-1.5 focus:ring-1 focus:ring-[#0f172a]' 
+                                                    onChange={(event) => setIdLug(event.target.value)}
+                                                >
+                                                    <option value="0">Seleccionar ubicación...</option>
+                                                    {dataLugares && dataLugares.map((item) => (
+                                                        <option key={item.id_lugar} value={item.id_lugar}>
+                                                            {item.nombre_lugar}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                <div className="flex gap-2 justify-center">
+                                                    <button 
+                                                        onClick={() => handleClickSave()}
+                                                        className="px-3 py-1.5 bg-[#2563eb] text-white rounded text-[11px] font-bold hover:bg-[#1d4ed8]"
+                                                    >
+                                                        Confirmar
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => setEnableAdd(false)}
+                                                        className="px-3 py-1.5 bg-[#f1f5f9] text-[#64748b] rounded text-[11px] font-bold hover:bg-[#e2e8f0]"
+                                                    >
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                    {data.length ? data.map((item) => (
                                         <EstablecimientoItem 
                                             key={item.id_establecimiento} 
                                             item={item} 
                                             ciudades={dataLugares}
                                             onUpdateItem={handleUpdateItem}
-                                            onDeleteItem={handleDeleteItem}/>
-                                        
-                                        </>
+                                            onDeleteItem={handleDeleteItem}
+                                        />
                                     )) : (
                                         <tr>
-                                            <td colSpan="4"><span className="icon-[eos-icons--bubble-loading] h-10 w-full text-greenVE-500"></span></td>
+                                            <td colSpan="3" className="py-24 text-center">
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <span className="icon-[line-md--loading-twotone-loop] h-10 w-10 text-[#64748b]"></span>
+                                                    <p className="text-[#94a3b8] font-medium text-xs tracking-widest uppercase">Consultando base de datos...</p>
+                                                </div>
+                                            </td>
                                         </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -155,4 +188,5 @@ const GestionarEstablecimientos = () => {
     );
 };
 
-export default GestionarEstablecimientos;
+
+export default GestionarEstablecimientos;

@@ -89,6 +89,8 @@ const Menu = () => {
         }
     }, [currentPath, menuList.length]);
 
+    const isAtDashboard = currentPath === "/dashboard" || currentPath === "/administrador" || currentPath === "/administrador/" || currentPath === "/";
+
     return (
         <>
             <header className="bg-greenVE-500 border-b border-white/20 sticky top-0 z-50 shadow-md">
@@ -106,33 +108,48 @@ const Menu = () => {
                     <div className="hidden md:flex flex-grow justify-center h-full">
                         <nav className='flex h-full items-stretch'>
                             {
-                                menuList.map((item, index) => (
-                                    <button
-                                        key={index}
-                                        className={`px-8 h-20 text-[13px] font-medium transition-all duration-200 uppercase tracking-wider flex items-center relative group font-sans
-                                            ${index === selMenu 
-                                                ? "text-white font-bold" 
-                                                : "text-white/60 hover:text-white hover:bg-white/5"}`}
-                                        onClick={() => {
-                                            setSelMenu(index);
-                                            navigate(item.path);
-                                        }}
-                                    >
-                                        {item.title}
-                                        {/* Indicador de pestaña activo */}
-                                        <div className={`absolute bottom-0 left-0 w-full h-1.5 transition-all duration-300
-                                            ${index === selMenu ? "bg-white scale-x-100 opacity-100 shadow-[0_-2px_10px_rgba(255,255,255,0.4)]" : "bg-white scale-x-0 opacity-0 group-hover:scale-x-50 group-hover:opacity-20"}`}>
-                                        </div>
-                                    </button>
-                                ))
+                                menuList.map((item, index) => {
+                                    // Ocultar "Inicio" si ya estamos en el dashboard
+                                    if (item.title === "Inicio" && isAtDashboard) return null;
+
+                                    return (
+                                        <button
+                                            key={index}
+                                            className={`px-8 h-20 text-[13px] font-medium transition-all duration-200 uppercase tracking-wider flex items-center relative group font-sans
+                                                ${index === selMenu 
+                                                    ? "text-white font-bold" 
+                                                    : "text-white/60 hover:text-white hover:bg-white/5"}`}
+                                            onClick={() => {
+                                                setSelMenu(index);
+                                                navigate(item.path);
+                                            }}
+                                        >
+                                            {item.title}
+                                            {/* Indicador de pestaña activo */}
+                                            <div className={`absolute bottom-0 left-0 w-full h-1.5 transition-all duration-300
+                                                ${index === selMenu ? "bg-white scale-x-100 opacity-100 shadow-[0_-2px_10px_rgba(255,255,255,0.4)]" : "bg-white scale-x-0 opacity-0 group-hover:scale-x-50 group-hover:opacity-20"}`}>
+                                            </div>
+                                        </button>
+                                    );
+                                })
                             }
                         </nav>
                     </div>
 
                     {/* Menú Mobile */}
                     <div className='md:hidden'>
-                        <MenuMobile menuList={menuList} setSelMenu={setSelMenu} selMenu={selMenu} />
+                        <MenuMobile 
+                            menuList={menuList.filter(item => !(item.title === "Inicio" && isAtDashboard))} 
+                            setSelMenu={(index) => {
+                                // Encontrar el índice original en menuList
+                                const originalItem = menuList.filter(item => !(item.title === "Inicio" && isAtDashboard))[index];
+                                const originalIndex = menuList.findIndex(m => m.path === originalItem.path);
+                                setSelMenu(originalIndex);
+                            }} 
+                            selMenu={selMenu} 
+                        />
                     </div>
+
 
                     {/* Perfil Derecha */}
                     <div className='flex items-center justify-end flex-shrink-0'>

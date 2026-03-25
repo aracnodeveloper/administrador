@@ -102,7 +102,7 @@ const ListarReservas = ({ handleClickEdit }) => {
 
                 <div className='flex flex-col'>
                     {/* Parámetros de Búsqueda */}
-                    <div className='bg-slate-50 border border-slate-200 rounded-t-2xl p-4'>
+                    <div className='bg-slate-50 border border-slate-200 rounded-t-2xl p-6'>
                         <div className='flex items-center gap-2 mb-3'>
                             <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
                             <label className='text-[10px] font-black uppercase tracking-widest text-slate-400'>Criterios de búsqueda</label>
@@ -177,7 +177,7 @@ const ListarReservas = ({ handleClickEdit }) => {
                                 </select>
                             </div>
                         </div>
-                        <div className='flex justify-end items-center gap-4 mt-6 pt-4 border-t border-slate-100'>
+                        <div className='flex justify-end items-center gap-4 mt-6 pt-6 border-t border-slate-100'>
                             <div className='flex gap-2'>
                                 <select className='h-10 rounded-xl border-slate-200 bg-slate-50 text-sm font-bold text-slate-600 focus:ring-greenVE-500' value={cantidad} onChange={(event) => setCantidad(event.target.value)}>
                                     {Config.ELEMENTOSHOJAS.map((item) => (
@@ -198,7 +198,7 @@ const ListarReservas = ({ handleClickEdit }) => {
                     {/* Listado de Resultados */}
                     <div className='relative border-x border-b border-slate-200 rounded-b-2xl bg-white'>
                         {total && (
-                            <div className='flex justify-end p-4'>
+                            <div className='flex justify-end p-6'>
                                 <div className='flex items-center gap-2 bg-[#fdfde1] text-[#8b9531] border border-[#f8f8d0] px-4 py-1.5 rounded-full shadow-sm'>
                                     <span className='text-[10px] font-black uppercase tracking-widest'>Total: {total} Registros</span>
                                 </div>

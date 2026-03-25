@@ -89,7 +89,7 @@ const ListarCuentasGratis = () => {
 
                 <div className='flex flex-col'>
                     {/* Filtros Limpios */}
-                    <div className='bg-slate-50 border border-slate-200 rounded-t-2xl p-4'>
+                    <div className='bg-slate-50 border border-slate-200 rounded-t-2xl p-6'>
                         <div className='flex items-center gap-2 mb-3'>
                             <span className='icon-[material-symbols--filter-list-rounded] text-greenVE-600 text-xl'></span>
                             <label className='text-[10px] font-black uppercase tracking-widest text-slate-400'>Parámetros de Búsqueda</label>
@@ -128,7 +128,7 @@ const ListarCuentasGratis = () => {
                             </div>
                         </div>
     
-                        <div className='flex flex-col lg:flex-row justify-between items-center gap-4 mt-6 pt-4 border-t border-slate-100'>
+                        <div className='flex flex-col lg:flex-row justify-between items-center gap-4 mt-6 pt-6 border-t border-slate-100'>
                             <div className='flex flex-col gap-1.5 w-full lg:w-1/3'>
                                 <label className='text-[11px] font-bold text-slate-500 ml-3 uppercase'>Correo Electrónico</label>
                                 <input value={correo} placeholder='Ingresar correo electrónico' type='text' className='w-full h-10 px-4 rounded-xl border-slate-200 bg-slate-50/50 text-sm focus:ring-greenVE-500 focus:border-greenVE-500 transition-all' onChange={(event) => { setCorreo(event.target.value) }} />
@@ -166,7 +166,7 @@ const ListarCuentasGratis = () => {
                     ) : (
                         <div className='flex flex-col w-full'>
                                 {total && (
-                                    <div className='flex justify-end p-4'>
+                                    <div className='flex justify-end p-6'>
                                         <div className='flex items-center gap-2 bg-[#fdfde1] text-[#8b9531] border border-[#f8f8d0] px-4 py-1.5 rounded-full shadow-sm'>
                                             <span className='text-[10px] font-black uppercase tracking-widest'>Total: {total} Registros</span>
                                         </div>
