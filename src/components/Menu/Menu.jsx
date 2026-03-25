@@ -97,10 +97,10 @@ const Menu = () => {
                 <div className="max-w-[1920px] mx-auto flex h-20 px-12 items-center justify-between">
                     {/* Logo Izquierda - Estilo Empresarial */}
                     <div className="flex-shrink-0 cursor-pointer flex items-center h-full" onClick={() => navigate("/")}>
-                        <img 
-                            src="https://visitaecuador.com/img/web/ve_logo.svg" 
-                            className="h-11 w-auto object-contain transition-opacity hover:opacity-80" 
-                            alt="logo" 
+                        <img
+                            src="https://visitaecuador.com/img/web/ve_logo.svg"
+                            className="h-11 w-auto object-contain transition-opacity hover:opacity-80"
+                            alt="logo"
                         />
                     </div>
 
@@ -109,15 +109,15 @@ const Menu = () => {
                         <nav className='flex h-full items-stretch'>
                             {
                                 menuList.map((item, index) => {
-                                    // Ocultar "Inicio" si ya estamos en el dashboard
+                                    // Ocultar "Inicio" si ya estamos 
                                     if (item.title === "Inicio" && isAtDashboard) return null;
 
                                     return (
                                         <button
                                             key={index}
                                             className={`px-8 h-20 text-[13px] font-medium transition-all duration-200 uppercase tracking-wider flex items-center relative group font-sans
-                                                ${index === selMenu 
-                                                    ? "text-white font-bold" 
+                                                ${index === selMenu
+                                                    ? "text-white font-bold"
                                                     : "text-white/60 hover:text-white hover:bg-white/5"}`}
                                             onClick={() => {
                                                 setSelMenu(index);
@@ -138,15 +138,15 @@ const Menu = () => {
 
                     {/* Menú Mobile */}
                     <div className='md:hidden'>
-                        <MenuMobile 
-                            menuList={menuList.filter(item => !(item.title === "Inicio" && isAtDashboard))} 
+                        <MenuMobile
+                            menuList={menuList.filter(item => !(item.title === "Inicio" && isAtDashboard))}
                             setSelMenu={(index) => {
                                 // Encontrar el índice original en menuList
                                 const originalItem = menuList.filter(item => !(item.title === "Inicio" && isAtDashboard))[index];
                                 const originalIndex = menuList.findIndex(m => m.path === originalItem.path);
                                 setSelMenu(originalIndex);
-                            }} 
-                            selMenu={selMenu} 
+                            }}
+                            selMenu={selMenu}
                         />
                     </div>
 

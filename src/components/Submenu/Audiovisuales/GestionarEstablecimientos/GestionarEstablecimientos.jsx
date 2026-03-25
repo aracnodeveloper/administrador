@@ -80,14 +80,14 @@ const GestionarEstablecimientos = () => {
     return (
         <>
             {alerta}
-            <div className='w-full'>
+            <div className='w-full font-sans antialiased text-slate-700'>
                 <div className='bg-white border border-[#e2e8f0] rounded-lg shadow-sm overflow-hidden'>
-                    {/* Header */}
+                    {/* Header Section */}
                     <div className='px-8 py-6 border-b border-[#e2e8f0] bg-[#fdfdfd] flex justify-between items-center'>
-                        <div>
-                            <h2 className='text-xl font-bold text-[#1e293b] flex items-center gap-2'>
-                                <span className="icon-[material-symbols--apartment] text-3xl text-greenVE-500"></span>
-                                Gestión de Establecimientos
+                        <div className="flex items-center gap-3">
+                            <span className="icon-[material-symbols--apartment] text-2xl text-[#64748b]"></span>
+                            <h2 className='text-xl font-bold text-[#1e293b] tracking-tight'>
+                                Gestión de Hoteles
                             </h2>
                         </div>
 
@@ -95,49 +95,47 @@ const GestionarEstablecimientos = () => {
                             {!enableAdd && (
                                 <button
                                     onClick={() => setEnableAdd(true)}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-greenVE-500 text-white rounded text-xs font-bold hover:bg-greenVE-600 transition-all shadow-md shadow-greenVE-100"
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#334155] text-white rounded text-[13px] font-bold hover:bg-[#1e293b] transition-all shadow-sm active:scale-95"
                                 >
                                     <span className="icon-[material-symbols--add-business-outline] text-lg"></span>
-                                    Nuevo Registro
+                                    Nuevo Hotel
                                 </button>
                             )}
                         </div>
                     </div>
 
-
-
-                    <div className="p-4 bg-white font-sans antialiased">
+                    <div className="p-6 bg-white">
                         <div className="overflow-x-auto border border-[#f1f5f9] rounded-md shadow-sm">
-                            <table className="w-full text-left border-collapse tracking-tight">
+                            <table className="w-full text-left border-collapse">
                                 <thead className="bg-[#f8fafc] border-b border-[#f1f5f9]">
                                     <tr>
-                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9] w-12 text-center">#</th>
-                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9]">Nombre del Establecimiento</th>
-                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9] text-center w-64">Ubicación</th>
-                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] text-center w-32">Acciones</th>
+                                        <th scope="col" className="px-5 py-3 text-[10px] font-bold text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9] text-center w-12">#</th>
+                                        <th scope="col" className="px-5 py-3 text-[10px] font-bold text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9]">Nombre Oficial</th>
+                                        <th scope="col" className="px-5 py-3 text-[10px] font-bold text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9] text-center w-64">Ubicación</th>
+                                        <th scope="col" className="px-5 py-3 text-[10px] font-bold text-[#64748b] uppercase tracking-[0.1em] text-center w-40">Acciones</th>
                                     </tr>
                                 </thead>
 
                                 <tbody className="divide-y divide-[#f1f5f9]">
                                     {enableAdd && (
-                                        <tr className='bg-greenVE-50/30'>
-                                            <td className="px-4 py-2 border-r border-b border-[#f1f5f9]"></td>
-                                            <td className="px-4 py-2 border-r border-b border-[#f1f5f9]">
+                                        <tr className='bg-[#f8fafc] animate-in fade-in duration-300'>
+                                            <td className="px-5 py-3 border-r border-[#f1f5f9] bg-[#fcfdfe]"></td>
+                                            <td className="px-5 py-3 border-r border-[#f1f5f9]">
                                                 <input
                                                     type='text'
-                                                    placeholder="Ingrese el nombre oficial..."
+                                                    placeholder="Nombre del hotel..."
                                                     value={nombreEst}
-                                                    className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-3 focus:ring-1 focus:ring-greenVE-500 outline-none'
+                                                    className='w-full text-[13px] font-medium border-[#e2e8f0] rounded bg-white py-1.5 px-3 focus:ring-1 focus:ring-[#334155] focus:border-[#334155] outline-none transition-all'
                                                     onChange={(event) => { setNombreEst(event.target.value) }}
                                                 />
                                             </td>
-                                            <td className="px-4 py-2 border-r border-b border-[#f1f5f9]">
+                                            <td className="px-5 py-3 border-r border-[#f1f5f9]">
                                                 <select
                                                     value={idLug}
-                                                    className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-3 focus:ring-1 focus:ring-greenVE-500 outline-none'
+                                                    className='w-full text-[13px] font-medium border-[#e2e8f0] rounded bg-white py-1.5 px-3 focus:ring-1 focus:ring-[#334155] focus:border-[#334155] outline-none transition-all cursor-pointer'
                                                     onChange={(event) => setIdLug(event.target.value)}
                                                 >
-                                                    <option value="0">Seleccionar...</option>
+                                                    <option value="0">Seleccionar ubicación...</option>
                                                     {dataLugares && dataLugares.map((item) => (
                                                         <option key={item.id_lugar} value={item.id_lugar}>
                                                             {item.nombre_lugar}
@@ -145,13 +143,13 @@ const GestionarEstablecimientos = () => {
                                                     ))}
                                                 </select>
                                             </td>
-                                            <td className="px-4 py-2 border-b border-[#f1f5f9]">
+                                            <td className="px-5 py-3">
                                                 <div className="flex gap-4 justify-center items-center">
-                                                    <button onClick={() => handleClickSave()} className="text-greenVE-600 hover:scale-110 transition-transform" title="Confirmar">
-                                                        <span className="icon-[material-symbols--check-circle] text-xl"></span>
+                                                    <button onClick={() => handleClickSave()} className="text-[#94a3b8] hover:text-green-600 transition-colors" title="Guardar">
+                                                        <span className="icon-[material-symbols--check-circle] text-2xl block"></span>
                                                     </button>
-                                                    <button onClick={() => setEnableAdd(false)} className="text-gray-400 hover:text-red-500 hover:scale-110 transition-transform" title="Cancelar">
-                                                        <span className="icon-[material-symbols--cancel] text-xl"></span>
+                                                    <button onClick={() => setEnableAdd(false)} className="text-[#94a3b8] hover:text-red-500 transition-colors" title="Cancelar">
+                                                        <span className="icon-[material-symbols--cancel] text-2xl block"></span>
                                                     </button>
                                                 </div>
                                             </td>
@@ -171,7 +169,7 @@ const GestionarEstablecimientos = () => {
                                             <td colSpan="4" className="py-24 text-center">
                                                 <div className="flex flex-col items-center gap-2">
                                                     <span className="icon-[line-md--loading-twotone-loop] h-8 w-8 text-[#64748b]"></span>
-                                                    <p className="text-[#94a3b8] font-black text-[10px] tracking-widest uppercase">Consultando base de datos...</p>
+                                                    <p className="text-[#94a3b8] font-bold text-[10px] tracking-[0.2em] uppercase">Sincronizando registros...</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -180,7 +178,6 @@ const GestionarEstablecimientos = () => {
                             </table>
                         </div>
                     </div>
-
                 </div>
             </div>
         </>

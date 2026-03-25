@@ -37,31 +37,29 @@ const SubmenuInicio = () => {
     ];
 
     return (
-        <div className="p-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">Administrador <span className="text-greenVE-500">Beta</span></h1>
-                <p className="text-gray-500 mt-2">Panel global de gestión unificada. Seleccione un módulo para continuar.</p>
-                <div className="h-1 w-20 bg-greenVE-500 mt-4"></div>
+        <div className="p-10 font-sans antialiased text-slate-700 bg-[#f8fafc] min-h-[calc(100vh-80px)]">
+            <div className="mb-10 max-w-4xl">
+                <h1 className="text-3xl font-bold text-[#1e293b] tracking-tight">
+                    Panel de Administración
+                </h1>
+                <div className="h-1 w-16 bg-[#334155] mt-6 rounded-full"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl">
                 {menuItems.map((item, index) => (
                     <div 
                         key={index}
-                        className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all cursor-pointer group"
+                        className="bg-white p-8 rounded-lg border border-[#e2e8f0] hover:border-[#cbd5e1] hover:shadow-md transition-all cursor-pointer group flex flex-col h-full"
                         onClick={() => navigate(item.path)}
                     >
-                        <div className={`w-12 h-12 ${item.bg} rounded-lg flex items-center justify-center mb-4`}>
-                            <span className={`${item.icon} text-2xl ${item.color}`}></span>
+                        <div className="w-14 h-14 bg-[#f1f5f9] rounded flex items-center justify-center mb-6 group-hover:bg-[#334155] transition-colors duration-300">
+                            <span className={`${item.icon} text-3xl text-[#64748b] group-hover:text-white transition-colors duration-300`}></span>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-800 group-hover:text-greenVE-500 transition-colors uppercase">
+                        <h3 className="text-xl font-bold text-[#1e293b] group-hover:text-[#334155] transition-colors uppercase tracking-tight">
                             {item.title}
                         </h3>
-                        <p className="text-gray-500 text-sm mt-2">
-                            {item.description}
-                        </p>
-                        <div className="mt-6 flex items-center text-greenVE-500 font-semibold text-sm">
-                            Explorar módulo <span className="icon-[material-symbols--arrow-right-alt] ml-1"></span>
+                        <div className="mt-8 pt-6 border-t border-[#f1f5f9] flex items-center text-[#334155] font-bold text-[13px] uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                            Acceder al módulo <span className="icon-[material-symbols--arrow-right-alt-rounded] ml-2 text-lg"></span>
                         </div>
                     </div>
                 ))}

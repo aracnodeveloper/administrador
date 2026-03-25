@@ -79,15 +79,15 @@ const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem, index
     return (
         <>
             {alerta}
-            <tr className="hover:bg-[#f1f5f9] transition-colors even:bg-[#fcfdfe] odd:bg-white text-[13px] sm:text-[0.8rem] text-[#334155] font-sans antialiased">
-                <td className="px-4 py-2 border-r border-b border-[#f1f5f9] font-mono text-[10px] text-[#94a3b8] w-12 text-center">
-                    {index}
+            <tr className="hover:bg-[#f8fafc] transition-colors even:bg-[#fcfdfe] odd:bg-white text-[13px]">
+                <td className="px-5 py-3 border-r border-[#f1f5f9] font-mono text-[11px] text-[#94a3b8] text-center">
+                    {String(index).padStart(2, '0')}
                 </td>
-                <td className="px-4 py-2 border-r border-b border-[#f1f5f9]">
+                <td className="px-5 py-3 border-r border-[#f1f5f9]">
                     {edit ? (
                         <input 
                             type='text' 
-                            className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-2 focus:ring-1 focus:ring-greenVE-500 outline-none' 
+                            className='w-full text-[13px] font-medium border-[#e2e8f0] rounded bg-white py-1 px-3 focus:ring-1 focus:ring-[#334155] focus:border-[#334155] outline-none transition-all' 
                             value={nombreEst} 
                             onChange={(event) => setNombreEst(event.target.value)}
                         />
@@ -97,11 +97,11 @@ const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem, index
                         </span>
                     )}
                 </td>
-                <td className="px-4 py-2 border-r border-b border-[#f1f5f9] text-center">
+                <td className="px-5 py-3 border-r border-[#f1f5f9] text-center">
                     {edit ? (
                         <select 
                             value={idLug} 
-                            className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-2 focus:ring-1 focus:ring-greenVE-500 outline-none' 
+                            className='w-full text-[13px] font-medium border-[#e2e8f0] rounded bg-white py-1 px-3 focus:ring-1 focus:ring-[#334155] focus:border-[#334155] outline-none transition-all cursor-pointer' 
                             onChange={(event) => setIdLug(event.target.value)}
                         >
                             {ciudades && ciudades.map((city) => (
@@ -111,43 +111,41 @@ const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem, index
                             ))}
                         </select>
                     ) : (
-                        <div className="flex items-center gap-1.5 justify-center">
-                            <span className="font-medium text-[#64748b]">{nombreLug}</span>
-                        </div>
+                        <span className="text-[#64748b]">
+                            {nombreLug}
+                        </span>
                     )}
                 </td>
 
-
-                <td className="px-4 py-2 border-b border-[#f1f5f9]">
+                <td className="px-5 py-3 text-center">
                     <div className="flex gap-4 justify-center items-center">
                         {edit ? (
                             <button 
                                 onClick={handleClickGuardar} 
-                                className="text-greenVE-600 hover:scale-110 transition-transform flex items-center"
+                                className="text-[#94a3b8] hover:text-green-600 transition-colors"
                                 title="Guardar"
                             >
-                                {loading ? <span className="icon-[line-md--loading-twotone-loop] w-5 h-5"></span> : <span className="icon-[material-symbols--check-circle] text-xl"></span>}
+                                {loading ? <span className="icon-[line-md--loading-twotone-loop] w-5 h-5 block"></span> : <span className="icon-[material-symbols--check-circle] text-2xl block"></span>}
                             </button>
                         ) : (
                             <button 
                                 onClick={() => setEdit(true)} 
-                                className="text-[#64748b] hover:text-greenVE-600 hover:scale-110 transition-all flex items-center"
+                                className="text-[#94a3b8] hover:text-[#334155] transition-colors"
                                 title="Editar"
                             >
-                                <span className="icon-[material-symbols--edit-document-outline] text-xl"></span>
+                                <span className="icon-[material-symbols--edit-document-outline] text-xl block"></span>
                             </button>
                         )}
 
                         <button 
                             onClick={handleClickDelete} 
-                            className="text-[#94a3b8] hover:text-red-500 hover:scale-110 transition-all flex items-center"
+                            className="text-[#94a3b8] hover:text-red-500 transition-colors"
                             title="Eliminar"
                         >
-                            {loadingDelete ? <span className="icon-[line-md--loading-twotone-loop] w-5 h-5"></span> : <span className="icon-[material-symbols--delete-outline-rounded] text-xl"></span>}
+                            {loadingDelete ? <span className="icon-[line-md--loading-twotone-loop] w-5 h-5 block"></span> : <span className="icon-[material-symbols--delete-outline-rounded] text-xl block"></span>}
                         </button>
                     </div>
                 </td>
-
             </tr>
 
         </>
