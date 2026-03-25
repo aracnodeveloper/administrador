@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { setEstablecimiento } from '../../../../controllers/establecimientos/EstablecimientosController';
 import Alerta from '../../../../global/Alerta';
 
-const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem }) => {
+const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem, index }) => {
     const [edit, setEdit] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(false);
@@ -76,30 +76,32 @@ const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem }) => 
             }
         })
     }
-
     return (
         <>
             {alerta}
-            <tr className="hover:bg-[#f8fafc] transition-colors border-b border-[#f1f5f9]">
-                <td className="px-6 py-4">
+            <tr className="hover:bg-[#f1f5f9] transition-colors even:bg-[#fcfdfe] odd:bg-white text-[13px] sm:text-[0.8rem] text-[#334155] font-sans antialiased">
+                <td className="px-4 py-2 border-r border-b border-[#f1f5f9] font-mono text-[10px] text-[#94a3b8] w-12 text-center">
+                    {index}
+                </td>
+                <td className="px-4 py-2 border-r border-b border-[#f1f5f9]">
                     {edit ? (
                         <input 
                             type='text' 
-                            className='w-full text-[13px] border-[#cbd5e1] rounded bg-white py-1 focus:ring-1 focus:ring-[#0f172a]' 
+                            className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-2 focus:ring-1 focus:ring-greenVE-500 outline-none' 
                             value={nombreEst} 
                             onChange={(event) => setNombreEst(event.target.value)}
                         />
                     ) : (
-                        <span className="font-bold text-[#1e293b]">
+                        <span className="font-medium text-[#475569]">
                             {nombreEst}
                         </span>
                     )}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-2 border-r border-b border-[#f1f5f9] text-center">
                     {edit ? (
                         <select 
                             value={idLug} 
-                            className='w-full text-[13px] border-[#cbd5e1] rounded bg-white py-1 focus:ring-1 focus:ring-[#0f172a]' 
+                            className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-2 focus:ring-1 focus:ring-greenVE-500 outline-none' 
                             onChange={(event) => setIdLug(event.target.value)}
                         >
                             {ciudades && ciudades.map((city) => (
@@ -109,20 +111,20 @@ const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem }) => 
                             ))}
                         </select>
                     ) : (
-                        <div className="flex items-center gap-1.5 text-[#64748b]">
-                            <span className="icon-[material-symbols--location-on-outline] text-sm"></span>
-                            <span className="font-medium">{nombreLug}</span>
+                        <div className="flex items-center gap-1.5 justify-center">
+                            <span className="font-medium text-[#64748b]">{nombreLug}</span>
                         </div>
                     )}
                 </td>
 
-                <td className="px-6 py-4">
-                    <div className="flex gap-4 justify-center">
+
+                <td className="px-4 py-2 border-b border-[#f1f5f9]">
+                    <div className="flex gap-4 justify-center items-center">
                         {edit ? (
                             <button 
                                 onClick={handleClickGuardar} 
-                                className="text-[#2563eb] hover:scale-110 transition-transform flex items-center"
-                                title="Guardar Cambios"
+                                className="text-greenVE-600 hover:scale-110 transition-transform flex items-center"
+                                title="Guardar"
                             >
                                 {loading ? <span className="icon-[line-md--loading-twotone-loop] w-5 h-5"></span> : <span className="icon-[material-symbols--check-circle] text-xl"></span>}
                             </button>
@@ -147,6 +149,7 @@ const EstablecimientoItem = ({ item, ciudades, onUpdateItem, onDeleteItem }) => 
                 </td>
 
             </tr>
+
         </>
     );
 };

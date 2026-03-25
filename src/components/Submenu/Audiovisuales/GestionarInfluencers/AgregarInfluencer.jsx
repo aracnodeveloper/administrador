@@ -72,7 +72,7 @@ const AgregarInfluencer = ({ setChange, editar = false, data }) => {
         <>
             {correcto}
             {editar ? (
-                <span className="icon-[typcn--edit] w-5 h-5 hover:bg-blue-600 cursor-pointer" onClick={() => setIsOpen(true)}></span>
+                <span className="icon-[typcn--edit] w-5 h-5 text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" onClick={() => setIsOpen(true)}></span>
             ) : (
                 <span className="z-0 icon-[solar--add-circle-bold-duotone] h-10 w-10 text-greenVE-500 cursor-pointer mt-3" onClick={() => setIsOpen(true)}></span>
             )}
@@ -88,7 +88,8 @@ const AgregarInfluencer = ({ setChange, editar = false, data }) => {
                             <div className='flex flex-col gap-4 mt-4'>
                                 <input className={`rounded-md outline-none  focus:ring-0 ${errors.nombre_influencer ? "border-red-500 focus:border-red-500" : ""}`} {...register("nombre_influencer", { required: true })} placeholder="Nombre" />
                                 <input className={`rounded-md outline-none  focus:ring-0 ${errors.cp_influencer ? "border-red-500 focus:border-red-500" : ""}`} {...register("cp_influencer", { required: true })} placeholder="Código Promocional" />
-                                <input type="submit" className={`cursor-pointer  w-full border py-2 rounded-md ${isLoading?"bg-gray-400":"bg-greenVE-500"} text-white`} value={"Guardar"} />
+                                <input className="rounded-md outline-none focus:ring-0 border-gray-300" placeholder="Categoría (Viajes, Fitness, etc.)" />
+                                <input type="submit" className={`cursor-pointer  w-full border py-2 rounded-md ${isLoading ? "bg-gray-400" : "bg-greenVE-500"} text-white`} value={"Guardar"} />
                             </div>
                         </form>
                     </div>

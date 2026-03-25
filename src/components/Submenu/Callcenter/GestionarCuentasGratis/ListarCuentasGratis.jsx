@@ -141,7 +141,7 @@ const ListarCuentasGratis = () => {
                                     ))}
                                 </select>
                                 <button
-                                    className='flex-grow bg-[#8b9531] hover:bg-[#7a832a] text-white font-bold text-xs uppercase tracking-widest px-8 h-10 rounded-xl transition-all flex items-center justify-center gap-2'
+                                    className='flex-grow bg-greenVE-600 hover:bg-greenVE-700 text-white font-bold text-xs uppercase tracking-widest px-8 h-10 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm'
                                     onClick={() => handleClicAplicar({ filtros: true })}
                                 >
                                     <span className='icon-[material-symbols--search-rounded] text-lg'></span>

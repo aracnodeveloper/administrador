@@ -82,7 +82,7 @@ const GestionarEstablecimientos = () => {
             {alerta}
             <div className='w-full'>
                 <div className='bg-white border border-[#e2e8f0] rounded-lg shadow-sm overflow-hidden'>
-                    {/* Header Empresarial (Identidad Verde) */}
+                    {/* Header */}
                     <div className='px-8 py-6 border-b border-[#e2e8f0] bg-[#fdfdfd] flex justify-between items-center'>
                         <div>
                             <h2 className='text-xl font-bold text-[#1e293b] flex items-center gap-2'>
@@ -90,10 +90,10 @@ const GestionarEstablecimientos = () => {
                                 Gestión de Establecimientos
                             </h2>
                         </div>
-                        
+
                         <div className="flex gap-2">
                             {!enableAdd && (
-                                <button 
+                                <button
                                     onClick={() => setEnableAdd(true)}
                                     className="flex items-center gap-2 px-5 py-2.5 bg-greenVE-500 text-white rounded text-xs font-bold hover:bg-greenVE-600 transition-all shadow-md shadow-greenVE-100"
                                 >
@@ -105,36 +105,39 @@ const GestionarEstablecimientos = () => {
                     </div>
 
 
-                    {/* Tabla Corporativa */}
-                    <div className="p-4">
-                        <div className="overflow-x-auto border border-[#f1f5f9] rounded shadow-sm">
-                            <table className="w-full text-[13px] text-left text-[#334155]">
-                                <thead className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider bg-[#f1f5f9] border-b border-[#e2e8f0]">
+
+                    <div className="p-4 bg-white font-sans antialiased">
+                        <div className="overflow-x-auto border border-[#f1f5f9] rounded-md shadow-sm">
+                            <table className="w-full text-left border-collapse tracking-tight">
+                                <thead className="bg-[#f8fafc] border-b border-[#f1f5f9]">
                                     <tr>
-                                        <th scope="col" className="px-6 py-4">Denominación del Establecimiento</th>
-                                        <th scope="col" className="px-6 py-4">Localidad / Ciudad</th>
-                                        <th scope="col" className="px-6 py-4 text-center">Acciones</th>
+                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9] w-12 text-center">#</th>
+                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9]">Nombre del Establecimiento</th>
+                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] border-r border-[#f1f5f9] text-center w-64">Ubicación</th>
+                                        <th scope="col" className="px-4 py-3 text-[10px] sm:text-[0.7rem] font-black text-[#64748b] uppercase tracking-[0.1em] text-center w-32">Acciones</th>
                                     </tr>
                                 </thead>
+
                                 <tbody className="divide-y divide-[#f1f5f9]">
                                     {enableAdd && (
-                                        <tr className='bg-[#f0f9ff]'>
-                                            <td className="px-6 py-3">
-                                                <input 
-                                                    type='text' 
+                                        <tr className='bg-greenVE-50/30'>
+                                            <td className="px-4 py-2 border-r border-b border-[#f1f5f9]"></td>
+                                            <td className="px-4 py-2 border-r border-b border-[#f1f5f9]">
+                                                <input
+                                                    type='text'
                                                     placeholder="Ingrese el nombre oficial..."
-                                                    value={nombreEst}  
-                                                    className='w-full text-[13px] border-[#cbd5e1] rounded bg-white py-1.5 focus:ring-1 focus:ring-[#0f172a]' 
-                                                    onChange={(event) => {setNombreEst(event.target.value)}} 
+                                                    value={nombreEst}
+                                                    className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-3 focus:ring-1 focus:ring-greenVE-500 outline-none'
+                                                    onChange={(event) => { setNombreEst(event.target.value) }}
                                                 />
                                             </td>
-                                            <td className="px-6 py-3">
-                                                <select 
-                                                    value={idLug} 
-                                                    className='w-full text-[13px] border-[#cbd5e1] rounded bg-white py-1.5 focus:ring-1 focus:ring-[#0f172a]' 
+                                            <td className="px-4 py-2 border-r border-b border-[#f1f5f9]">
+                                                <select
+                                                    value={idLug}
+                                                    className='w-full text-[0.8rem] border-[#cbd5e1] rounded bg-white py-1 px-3 focus:ring-1 focus:ring-greenVE-500 outline-none'
                                                     onChange={(event) => setIdLug(event.target.value)}
                                                 >
-                                                    <option value="0">Seleccionar ubicación...</option>
+                                                    <option value="0">Seleccionar...</option>
                                                     {dataLugares && dataLugares.map((item) => (
                                                         <option key={item.id_lugar} value={item.id_lugar}>
                                                             {item.nombre_lugar}
@@ -142,38 +145,33 @@ const GestionarEstablecimientos = () => {
                                                     ))}
                                                 </select>
                                             </td>
-                                            <td className="px-6 py-3">
-                                                <div className="flex gap-2 justify-center">
-                                                    <button 
-                                                        onClick={() => handleClickSave()}
-                                                        className="px-3 py-1.5 bg-[#2563eb] text-white rounded text-[11px] font-bold hover:bg-[#1d4ed8]"
-                                                    >
-                                                        Confirmar
+                                            <td className="px-4 py-2 border-b border-[#f1f5f9]">
+                                                <div className="flex gap-4 justify-center items-center">
+                                                    <button onClick={() => handleClickSave()} className="text-greenVE-600 hover:scale-110 transition-transform" title="Confirmar">
+                                                        <span className="icon-[material-symbols--check-circle] text-xl"></span>
                                                     </button>
-                                                    <button 
-                                                        onClick={() => setEnableAdd(false)}
-                                                        className="px-3 py-1.5 bg-[#f1f5f9] text-[#64748b] rounded text-[11px] font-bold hover:bg-[#e2e8f0]"
-                                                    >
-                                                        Cancelar
+                                                    <button onClick={() => setEnableAdd(false)} className="text-gray-400 hover:text-red-500 hover:scale-110 transition-transform" title="Cancelar">
+                                                        <span className="icon-[material-symbols--cancel] text-xl"></span>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
                                     )}
-                                    {data.length ? data.map((item) => (
-                                        <EstablecimientoItem 
-                                            key={item.id_establecimiento} 
-                                            item={item} 
+                                    {data.length ? data.map((item, index) => (
+                                        <EstablecimientoItem
+                                            key={item.id_establecimiento}
+                                            item={item}
+                                            index={index + 1}
                                             ciudades={dataLugares}
                                             onUpdateItem={handleUpdateItem}
                                             onDeleteItem={handleDeleteItem}
                                         />
                                     )) : (
                                         <tr>
-                                            <td colSpan="3" className="py-24 text-center">
+                                            <td colSpan="4" className="py-24 text-center">
                                                 <div className="flex flex-col items-center gap-2">
-                                                    <span className="icon-[line-md--loading-twotone-loop] h-10 w-10 text-[#64748b]"></span>
-                                                    <p className="text-[#94a3b8] font-medium text-xs tracking-widest uppercase">Consultando base de datos...</p>
+                                                    <span className="icon-[line-md--loading-twotone-loop] h-8 w-8 text-[#64748b]"></span>
+                                                    <p className="text-[#94a3b8] font-black text-[10px] tracking-widest uppercase">Consultando base de datos...</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -182,6 +180,7 @@ const GestionarEstablecimientos = () => {
                             </table>
                         </div>
                     </div>
+
                 </div>
             </div>
         </>
@@ -189,4 +188,4 @@ const GestionarEstablecimientos = () => {
 };
 
 
-export default GestionarEstablecimientos;
+export default GestionarEstablecimientos;
