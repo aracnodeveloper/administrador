@@ -80,13 +80,13 @@ const GestionarInfluencer = () => {
                                                     <div className="text-slate-400 hover:text-blue-500 transition-all cursor-pointer flex items-center group" title="Editar">
                                                         <AgregarInfluencer setChange={handleSetChange} editar={true} data={item} key={`${item.id_influencer}-${change}`} />
                                                     </div>
-                                                    
+
                                                     <div className="text-slate-400 hover:text-greenVE-600 transition-all cursor-pointer flex items-center" title="Redes Sociales">
-                                                        <GestionarRedInfluencer data={item} key={`${item.id_influencer}-${change}`} setChange={handleSetChange}/>
+                                                        <GestionarRedInfluencer data={item} key={`${item.id_influencer}-${change}`} setChange={handleSetChange} />
                                                     </div>
 
                                                     <div className="text-slate-400 hover:text-greenVE-600 transition-all cursor-pointer flex items-center" title="Galería de Videos">
-                                                        <GestionarVideoInfluencer data={item}/>
+                                                        <GestionarVideoInfluencer data={item} />
                                                     </div>
 
                                                     <div className="text-slate-400 hover:text-red-500 transition-all cursor-pointer flex items-center" title="Eliminar Colaborador">
