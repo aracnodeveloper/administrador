@@ -23,6 +23,7 @@ const ListarReservas = ({ handleClickEdit }) => {
     const [idSuscriptor, setIdSuscriptor] = useState();
     const [nomEstablecimiento, setNomEstablecimiento] = useState();
     const [idReserva, setIdReserva] = useState();
+    const [ciRuc, setCiRuc] = useState();
     const [loading, setLoading] = useState();
     const [cantidad, setCantidad]=useState("20");
     const handleSetChange = () => {
@@ -64,6 +65,7 @@ const ListarReservas = ({ handleClickEdit }) => {
             codCliente: idSuscriptor,
             nomEstablecimiento: nomEstablecimiento,
             nroReserva: idReserva,
+            ciRuc: ciRuc,
             cantidad:cantidad!="1"?cantidad:""
         };
         listarReservasFiltro(params, false).then((res) => {
@@ -103,6 +105,7 @@ const ListarReservas = ({ handleClickEdit }) => {
                         codCliente: idSuscriptor,
                         nomEstablecimiento: nomEstablecimiento,
                         nroReserva: idReserva,
+                        ciRuc: ciRuc,
                     }} />
                 </div>
                 <div className='bg-greenVE-400 p-2 rounded-t-md flex flex-col '>
@@ -158,6 +161,7 @@ const ListarReservas = ({ handleClickEdit }) => {
                             <input placeholder='Id Suscriptor' value={idSuscriptor} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setIdSuscriptor(event.target.value) }}></input>
                             <input placeholder='Establecimiento' value={nomEstablecimiento} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setNomEstablecimiento(event.target.value) }}></input>
                             <input placeholder='Id Reserva' value={idReserva} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setIdReserva(event.target.value) }}></input>
+                            <input placeholder='Cédula / RUC' value={ciRuc} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setCiRuc(event.target.value) }}></input>
                             <select className='w-2/12 rounded-full h-7 py-0 text-xs' value={selPago} onChange={(event) => setSelPago(event.target.value)}>
                                 <option value="-3" disabled selected>Tipo de pago</option>
                                 <option value="-2">Todos los tipos</option>

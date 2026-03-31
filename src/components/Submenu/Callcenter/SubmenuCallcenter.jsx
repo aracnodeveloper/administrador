@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ListarCuentasGratis from './GestionarCuentasGratis/ListarCuentasGratis';
+import useMenuState from '../../../hooks/useMenuState';
 
-const SubmenuCallcenter = ({ defaultSubmenu = 0 }) => {
-    const [selSubmenu, setSelSubmenu] = useState(defaultSubmenu);
-   //const ListarReservas = lazy(()=> import('./GestionarReservas/ListarReservas'));
-
-    useEffect(() => {
-        setSelSubmenu(defaultSubmenu);
-    }, [defaultSubmenu]);
+const SubmenuCallcenter = () => {
+    const [selSubmenu, setSelSubmenu] = useMenuState('subCallcenter', 0);
 
     const submenuList = [
         {
-            "title": "Cuentas Gratuitas",
-            "page": <ListarCuentasGratis />
+            title: "Cuentas Gratuitas",
+            page: <ListarCuentasGratis />
         }
     ];
 
@@ -23,17 +19,17 @@ const SubmenuCallcenter = ({ defaultSubmenu = 0 }) => {
                     <label className='text-sm mb-2 text-center font-semibold text-greenVE-800 py-2 border-greenVE-600 border-0 border-b-2'>
                         Call Center
                     </label>
-                    {
-                        submenuList.map((item, index) => (
-                            <button
-                                key={index}
-                                className={`text-gray-800 font-light text-xs text-left py-1 border border-gray-200 ${index === 0 ? "border-t-0" : index === (submenuList.length - 1) ? "border-b-2" : "border-y-1"} border-x-0 px-4 ${index === selSubmenu ? "bg-greenVE-400" : "hover:bg-greenVE-100"}`}
-                                onClick={() => setSelSubmenu(index)}
-                            >
-                                {item.title}
-                            </button>
-                        ))
-                    }
+                    {submenuList.map((item, index) => (
+                        <button
+                            key={index}
+                            className={`text-gray-800 font-light text-xs text-left py-1 border border-gray-200 ${
+                                index === 0 ? "border-t-0" : index === (submenuList.length - 1) ? "border-b-2" : "border-y-1"
+                            } border-x-0 px-4 ${index === selSubmenu ? "bg-greenVE-400" : "hover:bg-greenVE-100"}`}
+                            onClick={() => setSelSubmenu(index)}
+                        >
+                            {item.title}
+                        </button>
+                    ))}
                 </div>
             </div>
             {submenuList[selSubmenu]?.page}

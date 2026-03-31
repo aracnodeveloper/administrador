@@ -142,8 +142,8 @@ export const listarReservas = async function ({ id = "", pagina = 1 }) {
 };
 
 export const listarReservasFiltro = async function (
-  filtros,
-  descargar = false
+    filtros,
+    descargar = false
 ) {
   try {
     var params = {
@@ -172,6 +172,9 @@ export const listarReservasFiltro = async function (
     }
     if (filtros.nroReserva) {
       params.nroReserva = filtros.nroReserva;
+    }
+    if (filtros.ciRuc) {
+      params.ciRuc = filtros.ciRuc;
     }
     if (filtros.cantidad) {
       params.cantidad = filtros.cantidad;
@@ -219,9 +222,9 @@ export const getCertificadoReserva = async function (ID) {
       console.log("certificado", res);
       const certificado = {};
       const impuestos =
-        (parseInt(res["data"][0]["iva"]) +
-          parseInt(res["data"][0]["servicios"])) /
-        100;
+          (parseInt(res["data"][0]["iva"]) +
+              parseInt(res["data"][0]["servicios"])) /
+          100;
       certificado.NombreSus = res["data"][0]["nombre_suscriptor"];
       certificado.CedulaSus = res["data"][0]["ci_ruc"];
       certificado.IdSus = res["data"][0]["usu_o_email"];
@@ -262,62 +265,62 @@ export const getCertificadoReserva = async function (ID) {
         habitacion.Nombre = reserva["habitacion"];
         habitacion.Cantidad = parseFloat(reserva["cantidad"]);
         habitacion.Subtotal =
-          parseFloat(reserva["cantidad"]) *
-          parseFloat(reserva["precio"]) *
-          (1 - impuestos);
+            parseFloat(reserva["cantidad"]) *
+            parseFloat(reserva["precio"]) *
+            (1 - impuestos);
         habitacion.Impuestos = (
-          parseFloat(reserva["cantidad"]) *
-          parseFloat(reserva["precio"] * impuestos)
+            parseFloat(reserva["cantidad"]) *
+            parseFloat(reserva["precio"] * impuestos)
         ).toFixed(2);
         habitacion.Impuestos = Number(habitacion.Impuestos);
         habitacion.SubtotalNino =
-          parseFloat(
-            reserva["ninos_extras"] != "" ? reserva["ninos_extras"] : "0"
-          ) *
-          parseFloat(
-            reserva["precio_nino_adicional"] != ""
-              ? reserva["precio_nino_adicional"]
-              : "0"
-          ) *
-          (1 - impuestos);
-        habitacion.ImpuestosNino = (
-          parseFloat(
-            reserva["ninos_extras"] != "" ? reserva["ninos_extras"] : "0"
-          ) *
-          parseFloat(
             parseFloat(
-              reserva["precio_nino_adicional"] != ""
-                ? reserva["precio_nino_adicional"]
-                : "0"
-            ) * impuestos
-          )
+                reserva["ninos_extras"] != "" ? reserva["ninos_extras"] : "0"
+            ) *
+            parseFloat(
+                reserva["precio_nino_adicional"] != ""
+                    ? reserva["precio_nino_adicional"]
+                    : "0"
+            ) *
+            (1 - impuestos);
+        habitacion.ImpuestosNino = (
+            parseFloat(
+                reserva["ninos_extras"] != "" ? reserva["ninos_extras"] : "0"
+            ) *
+            parseFloat(
+                parseFloat(
+                    reserva["precio_nino_adicional"] != ""
+                        ? reserva["precio_nino_adicional"]
+                        : "0"
+                ) * impuestos
+            )
         ).toFixed(2);
         habitacion.ImpuestosNino = Number(habitacion.ImpuestosNino);
         habitacion.SubtotalAdulto =
-          parseFloat(
-            reserva["adultos_extras"] != "" ? reserva["adultos_extras"] : "0"
-          ) *
-          parseFloat(
-            reserva["precio_adulto_adicional"] != ""
-              ? reserva["precio_adulto_adicional"]
-              : "0"
-          ) *
-          (1 - impuestos);
-        habitacion.ImpuestosAdulto = (
-          parseFloat(
-            reserva["adultos_extras"] != "" ? reserva["adultos_extras"] : "0"
-          ) *
-          parseFloat(
             parseFloat(
-              reserva["precio_adulto_adicional"] != ""
-                ? reserva["precio_adulto_adicional"]
-                : "0"
-            ) * impuestos
-          )
+                reserva["adultos_extras"] != "" ? reserva["adultos_extras"] : "0"
+            ) *
+            parseFloat(
+                reserva["precio_adulto_adicional"] != ""
+                    ? reserva["precio_adulto_adicional"]
+                    : "0"
+            ) *
+            (1 - impuestos);
+        habitacion.ImpuestosAdulto = (
+            parseFloat(
+                reserva["adultos_extras"] != "" ? reserva["adultos_extras"] : "0"
+            ) *
+            parseFloat(
+                parseFloat(
+                    reserva["precio_adulto_adicional"] != ""
+                        ? reserva["precio_adulto_adicional"]
+                        : "0"
+                ) * impuestos
+            )
         ).toFixed(2);
         habitacion.ImpuestosAdulto = Number(habitacion.ImpuestosAdulto);
         habitacion.Total =
-          parseFloat(reserva["cantidad"]) * parseFloat(reserva["precio"]);
+            parseFloat(reserva["cantidad"]) * parseFloat(reserva["precio"]);
         habitacion.Acomodacion = reserva["acomodacion"];
         habitacion.AplicaEn = reserva["aplicaEn"];
         habitacion.Ninos = reserva["ninosOferta"];
@@ -327,28 +330,28 @@ export const getCertificadoReserva = async function (ID) {
         habitacion.NinosAdicionales = reserva["ninos_extras"];
         habitacion.PrecioNinos = reserva["precio_nino_adicional"];
         ninos +=
-          parseInt(habitacion.Ninos ? habitacion.Ninos : "0") +
-          parseInt(
-            habitacion.NinosAdicionales ? habitacion.NinosAdicionales : "0"
-          );
+            parseInt(habitacion.Ninos ? habitacion.Ninos : "0") +
+            parseInt(
+                habitacion.NinosAdicionales ? habitacion.NinosAdicionales : "0"
+            );
         adultos +=
-          parseInt(habitacion.Adultos) +
-          parseInt(
-            habitacion.AdultosAdicionales ? habitacion.AdultosAdicionales : "0"
-          );
+            parseInt(habitacion.Adultos) +
+            parseInt(
+                habitacion.AdultosAdicionales ? habitacion.AdultosAdicionales : "0"
+            );
         habitaciones.push(habitacion);
         cantidad = cantidad + habitacion.Cantidad;
         total = total + habitacion.Total;
         imp =
-          imp +
-          habitacion.Impuestos +
-          habitacion.ImpuestosAdulto +
-          habitacion.ImpuestosNino;
+            imp +
+            habitacion.Impuestos +
+            habitacion.ImpuestosAdulto +
+            habitacion.ImpuestosNino;
         subtotal =
-          subtotal +
-          habitacion.Subtotal +
-          habitacion.SubtotalNino +
-          habitacion.SubtotalAdulto;
+            subtotal +
+            habitacion.Subtotal +
+            habitacion.SubtotalNino +
+            habitacion.SubtotalAdulto;
       }
       certificado.IdRes = idRes;
       certificado.Habitaciones = habitaciones;

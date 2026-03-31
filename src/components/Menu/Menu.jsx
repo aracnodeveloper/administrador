@@ -1,7 +1,8 @@
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { verificarPermiso } from "../../global/utils";
 import { useLocation } from "react-router-dom";
 import MenuMobile from "./MenuMobile";
+import useMenuState from "../../hooks/useMenuState";
 
 const SubmenuAudiovisuales = lazy(() =>
   import("../Submenu/Audiovisuales/SubmenuAudiovisuales")
@@ -13,6 +14,9 @@ const SubmenuSuscriptores = lazy(() =>
 const SubmenuCallcenter = lazy(() =>
   import("../Submenu/Callcenter/SubmenuCallcenter")
 );
+const SubmenuFullPack = lazy(() =>
+  import("../Submenu/FullPack/SubmenuFullPack")
+);
 
 const session = JSON.parse(localStorage.getItem("datos"));
 const nombre = session ? session.data.nombre : "";
@@ -22,11 +26,9 @@ const foto = session
     : "https://visitaecuador.com/ve/img/contenido/suscriptor/thum141x100/fotoperfil2_xXA8V_0.png"
   : "https://visitaecuador.com/ve/img/contenido/suscriptor/thum141x100/fotoperfil2_xXA8V_0.png";
 
+// Se construye fuera del componente igual que antes
 var menuList = [
-  {
-    title: "Inicio",
-    menu: <div>Menu Inicio</div>,
-  },
+  { title: "Inicio", menu: <div>Menu Inicio</div> },
 ];
 
 verificarPermiso(539) &&
@@ -34,7 +36,7 @@ verificarPermiso(539) &&
     title: "Audiovisuales",
     menu: (
       <Suspense fallback={<div>Cargando...</div>}>
-        <SubmenuAudiovisuales defaultSubmenu={0} />
+        <SubmenuAudiovisuales />
       </Suspense>
     ),
   });
@@ -43,7 +45,7 @@ menuList.push({
   title: "Suscriptores",
   menu: (
     <Suspense fallback={<div>Cargando...</div>}>
-      <SubmenuSuscriptores defaultSubmenu={0} />
+      <SubmenuSuscriptores />
     </Suspense>
   ),
 });
@@ -53,7 +55,17 @@ verificarPermiso(17) &&
     title: "Smart",
     menu: (
       <Suspense fallback={<div>Cargando...</div>}>
-        <SubmenuSmart defaultSubmenu={0} />
+        <SubmenuSmart />
+      </Suspense>
+    ),
+  });
+
+verificarPermiso(511) &&
+  menuList.push({
+    title: "FullPack",
+    menu: (
+      <Suspense fallback={<div>Cargando...</div>}>
+        <SubmenuFullPack />
       </Suspense>
     ),
   });
@@ -62,19 +74,22 @@ menuList.push({
   title: "Call Center",
   menu: (
     <Suspense fallback={<div>Cargando...</div>}>
-      <SubmenuCallcenter defaultSubmenu={0} />
+      <SubmenuCallcenter />
     </Suspense>
   ),
 });
 
 const Menu = () => {
-  const [selMenu, setSelMenu] = useState(null);
+  // "menu" es el query param que persiste en la URL: ?menu=2
+  const [selMenu, setSelMenu] = useMenuState("menu", null);
   const location = useLocation();
   const currentPath = location.pathname;
 
+  // Si la ruta incluye "reserva", forzamos al menú Smart
   useEffect(() => {
     if (currentPath.includes("reserva")) {
-      setSelMenu(menuList.findIndex((item) => item.title === "Smart"));
+      const smartIndex = menuList.findIndex((item) => item.title === "Smart");
+      if (smartIndex !== -1) setSelMenu(smartIndex);
     }
   }, [currentPath]);
 
@@ -102,9 +117,7 @@ const Menu = () => {
               {menuList.map((item, index) => (
                 <button
                   key={index}
-                  className={`border ${
-                    index === 0 ? "" : index === menuList.length - 1 ? "" : ""
-                  } px-4 ${
+                  className={`border px-4 ${
                     index === selMenu
                       ? "bg-white text-greenVE-500"
                       : "text-white hover:bg-greenVE-600"
@@ -141,24 +154,7 @@ const Menu = () => {
           </div>
         </div>
       </header>
-      {/*<div className='flex justify-between px-5 py-3 bg-greenVE-500'>
-                <img className='h-16' src='https://visitaecuador.com/ve/img/diseno/logo_ve.jpg'/>
-                <div className='flex flex-col w-20 justify-center items-center'>
-                    <span className="icon-[whh--avatar] h-10 w-10 text-gray-400"></span>
-                    <div className='flex flex-col'>
-                        <label className='text-xs'>Administrador</label>
-                        <button className='text-xs text-red-700'>Salir</button>
-                    </div>
-                </div>
-            </div>
-            <div className='h-8 w-full bg-greenVE-500 px-10 py-1'>
-                {
-                    menuList.map((item, index)=>(
-                        <button className={`text-white border ${index==0?"border-l-2":index==(menuList.length-1)?"border-r-2":" border-x-1"} border-y-0 px-4 ${index==selMenu?"bg-greenVE-700":"hover:bg-greenVE-600"}`} onClick={()=>setSelMenu(index)}>{item.title}</button>
-                    ))
-                }
-            </div>*/}
-      {selMenu !== null && menuList[selMenu].menu}
+      {selMenu !== null && menuList[selMenu]?.menu}
     </>
   );
 };

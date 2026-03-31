@@ -17,7 +17,6 @@ class GenericService {
 
     async post(url, params) {
       var headers={
-        "Autorization": "bearer " +Config.DEVELOPER_TOKEN,
         'Content-Type': 'application/json; charset=utf-8'
       }
       
