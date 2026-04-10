@@ -53,8 +53,6 @@ class EstablecimientosService extends GenericService {
         return await this.post(url, params);
     }
 
-    // ── Contratos ─────────────────────────────────────────────────────────
-
     async getContratos(id_establecimiento) {
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}getContratos/`;
         return await this.post(url, { id_establecimiento });
@@ -63,6 +61,11 @@ class EstablecimientosService extends GenericService {
     async setContrato(params) {
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}setContrato/`;
         return await this.post(url, params);
+    }
+
+    async getDatosContrato(id_establecimiento, id_contrato = 0) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getDatosContrato/`;
+        return await this.post(url, { id_establecimiento, id_contrato });
     }
 }
 

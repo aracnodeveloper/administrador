@@ -160,6 +160,7 @@ const PanelEdicionEstablecimiento = ({ establecimiento, tabInicial = "info", onC
                         {tab === "contratos" && (
                             <TabContratosEstablecimiento
                                 idEstablecimiento={establecimiento.id_tbl_establecimiento}
+                                establecimiento={detalle?.establecimiento}
                             />
                         )}
                     </>

@@ -133,8 +133,6 @@ export const updateEstablecimiento = async function (params = {}) {
     return null;
 };
 
-// ── Contratos ─────────────────────────────────────────────────────────────────
-
 export const getContratos = async function (id_establecimiento) {
     try {
         const s = new EstablecimientosService;
@@ -148,6 +146,15 @@ export const setContrato = async function (params = {}) {
     try {
         const s = new EstablecimientosService;
         const res = await s.setContrato(params);
+        if (res != null && res.estado) return res.data;
+    } catch { return null; }
+    return null;
+};
+
+export const getDatosContrato = async function (id_establecimiento, id_contrato = 0) {
+    try {
+        const s = new EstablecimientosService;
+        const res = await s.getDatosContrato(id_establecimiento, id_contrato);
         if (res != null && res.estado) return res.data;
     } catch { return null; }
     return null;
