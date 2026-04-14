@@ -5,35 +5,56 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83db3759-975e-480f-b365-566ca85cd530" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/Submenu/Tickets/SubmenuTickets.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Tickets/BuscadorEstablecimiento.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Tickets/BuscadorUsuario.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Tickets/CrearTicketModal.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Tickets/TicketMain.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/controllers/ticket/TicketController.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/Contactos.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/Detalle.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/Establecimiento.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/Oferta.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/ResultadoBusqueda.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/AgregarSuscriptor.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/AgregarSuscriptor.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/DatosPersonales.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/DatosPersonales.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/InformacionSuscripcion.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/AgregarSuscriptor/InformacionSuscripcion.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/ListarSuscriptores.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/ListarSuscriptores.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/TablaSuscriptores.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/GestionarSuscriptores/TablaSuscriptores.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/SubmenuSuscriptores.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Submenu/Suscriptores/SubmenuSuscriptores.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/suscriptores/SuscriptoresController.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/suscriptores/SuscriptoresController.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Menu/Menu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu/Menu.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/establecimientos/EstablecimientosController.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/establecimientos/EstablecimientosController.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/global/config.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/global/config.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/establecimientos/EstablecimientosService.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/establecimientos/EstablecimientosService.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/service.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/service.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/usuario/Documents/GitHub/administrador" value="2srFXzdeF882Wlwrva4o5DBymwa" />
+    </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="edit-panel" value="GPT-5 mini" />
+      <entry key="chat-panel" value="GPT-5 mini" />
+      <entry key="agent-panel" value="GPT-5 mini" />
+    </selectedModels>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "anthonyramosc"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;anthonyramosc&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/aracnodeveloper/administrador.git",
-    "accountId": "0720622f-9221-47b5-bb61-d2054f88696b"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/aracnodeveloper/administrador.git&quot;,
+    &quot;accountId&quot;: &quot;0720622f-9221-47b5-bb61-d2054f88696b&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -46,8 +67,13 @@
   &quot;keyToString&quot;: {
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;crm-visualizacion&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/aracnocia.ltda./Documents/Proyectos React/administrador&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -56,13 +82,23 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.start.executor&quot;: &quot;Run&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\usuario\Documents\GitHub\administrador\src\controllers" />
+      <recent name="C:\Users\usuario\Documents\GitHub\administrador\src\models" />
+      <recent name="C:\Users\usuario\Documents\GitHub\administrador\src\services" />
+      <recent name="C:\Users\usuario\Documents\GitHub\administrador\src" />
+      <recent name="C:\Users\usuario\Documents\GitHub\administrador\src\components\Tickets" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.26775.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.31033.133" />
       </set>
     </attachedChunks>
   </component>
@@ -79,10 +115,20 @@
       <workItem from="1764949878097" duration="927000" />
       <workItem from="1764954203205" duration="633000" />
       <workItem from="1768174426799" duration="4108000" />
+      <workItem from="1774986158225" duration="815000" />
+      <workItem from="1776180815752" duration="10549000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

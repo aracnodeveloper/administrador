@@ -1,6 +1,4 @@
-// clase generica para el consumo de APIS
-
-import axios from 'axios'; // Importa la biblioteca axios si no la tienes instalada
+import axios from 'axios';
 import Config from '../global/config.jsx';
 
 class GenericService {

@@ -67,6 +67,12 @@ class EstablecimientosService extends GenericService {
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}getDatosContrato/`;
         return await this.post(url, { id_establecimiento, id_contrato });
     }
+
+    async filtro(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}filtropost/`;
+        return await this.post(url, params);
+    }
+
 }
 
 export default EstablecimientosService;

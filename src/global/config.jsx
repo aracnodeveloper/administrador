@@ -60,7 +60,7 @@ class Config {
   }
 
    static get TICKETS() {
-    return "/tickets/"
+    return "/ticket/"
   }
 
   static get ESTADOS() {
