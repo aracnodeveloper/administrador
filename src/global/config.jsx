@@ -59,6 +59,10 @@ class Config {
     return "/est/";
   }
 
+   static get TICKETS() {
+    return "/tickets/"
+  }
+
   static get ESTADOS() {
     return [
       {
