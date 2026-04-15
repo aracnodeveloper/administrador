@@ -5,23 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83db3759-975e-480f-b365-566ca85cd530" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Submenu/Tickets/SubmenuTickets.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Tickets/BuscadorEstablecimiento.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Tickets/BuscadorUsuario.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Tickets/CrearTicketModal.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Tickets/TicketMain.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/controllers/ticket/TicketController.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/Contactos.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/Detalle.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/Establecimiento.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/Oferta.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/ResultadoBusqueda.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Menu/Menu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu/Menu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/establecimientos/EstablecimientosController.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/establecimientos/EstablecimientosController.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/global/config.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/global/config.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/establecimientos/EstablecimientosService.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/establecimientos/EstablecimientosService.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/service.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/service.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Tickets/CrearTicketModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Tickets/CrearTicketModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Tickets/TicketMain.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Tickets/TicketMain.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +102,8 @@
       <workItem from="1764954203205" duration="633000" />
       <workItem from="1768174426799" duration="4108000" />
       <workItem from="1774986158225" duration="815000" />
-      <workItem from="1776180815752" duration="10549000" />
+      <workItem from="1776180815752" duration="12478000" />
+      <workItem from="1776261410873" duration="5946000" />
     </task>
     <servers />
   </component>

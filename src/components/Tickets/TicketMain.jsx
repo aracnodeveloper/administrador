@@ -26,37 +26,43 @@ const initialFiltros = {
     id_tbl_type: '',
     fecha_desde: '',
     fecha_hasta: '',
+    ubicacion: '',
     is_active: '1',
 };
+
+const inputCls =
+    'w-full border border-gray-200 rounded-md px-3 py-2 text-sm bg-white ' +
+    'placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition';
 
 /* ───────── Componentes visuales reutilizables ───────── */
 
 const Badge = ({ usado }) =>
     usado ? (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
             Usado
         </span>
     ) : (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
             Disponible
         </span>
     );
 
 const TipoBadge = ({ tipo }) =>
     tipo == 1 ? (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
             Certificado
         </span>
     ) : (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
             Ticket
         </span>
     );
 
 const Row = ({ label, value }) => (
-    <div className="flex justify-between items-center border-b border-gray-50 pb-1">
-        <span className="text-gray-400 w-36 shrink-0">{label}</span>
-        <span className="text-right">{value}</span>
+    <div className="grid grid-cols-3 gap-3 py-2 border-b border-gray-100 last:border-0">
+        <span className="text-xs text-gray-500 font-medium">{label}</span>
+        <span className="col-span-2 text-sm text-gray-800 break-words">{value}</span>
     </div>
 );
 
@@ -67,13 +73,34 @@ const Toast = ({ tipo, mensaje, onClose }) => {
     }, [onClose]);
 
     const styles = {
-        ok: 'bg-green-600 text-white',
+        ok: 'bg-emerald-600 text-white',
         error: 'bg-red-600 text-white',
     };
 
     return (
-        <div className={`fixed top-4 right-4 z-50 px-4 py-2 rounded shadow-lg text-xs ${styles[tipo]}`}>
+        <div className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium ${styles[tipo]}`}>
             {mensaje}
+        </div>
+    );
+};
+
+const StatCard = ({ label, value, color = 'gray' }) => {
+    const colors = {
+        gray:    'bg-white border-gray-200',
+        emerald: 'bg-white border-emerald-100',
+        amber:   'bg-white border-amber-100',
+        slate:   'bg-white border-slate-200',
+    };
+    const valueColors = {
+        gray:    'text-gray-900',
+        emerald: 'text-emerald-600',
+        amber:   'text-amber-600',
+        slate:   'text-slate-700',
+    };
+    return (
+        <div className={`rounded-lg border ${colors[color]} px-4 py-3`}>
+            <p className="text-xs text-gray-500 font-medium">{label}</p>
+            <p className={`text-2xl font-semibold mt-0.5 ${valueColors[color]}`}>{value}</p>
         </div>
     );
 };
@@ -101,47 +128,97 @@ const ModalDetalle = ({ ticket, onClose, onMarcarUsado, onEliminar }) => {
         onClose();
     };
 
+    const tieneCoordenadas =
+        ticket.latitud !== null && ticket.latitud !== '' && ticket.latitud !== undefined &&
+        ticket.longitud !== null && ticket.longitud !== '' && ticket.longitud !== undefined;
+
+    const mapsUrl = tieneCoordenadas
+        ? `https://www.google.com/maps?q=${ticket.latitud},${ticket.longitud}`
+        : null;
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-                <div className="flex items-center justify-between px-5 py-4 border-b">
-                    <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-semibold text-gray-800">
-                            {obtenerNombreTipo(ticket.id_tbl_type)}
-                        </h3>
-                        <span className="font-mono font-bold text-xs text-gray-500">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-xl max-h-[92vh] flex flex-col overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <TipoBadge tipo={ticket.id_tbl_type} />
+                        <span className="font-mono font-bold text-base text-gray-900 truncate">
                             {ticket.codigo}
                         </span>
+                        <Badge usado={!!ticket.used_at} />
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">✕</button>
+                    <button
+                        onClick={onClose}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition shrink-0">
+                        ✕
+                    </button>
                 </div>
-                <div className="px-5 py-4 space-y-2 text-xs text-gray-700">
-                    <Row label="ID" value={ticket.id_tbl_certificado} />
-                    <Row label="Código" value={<span className="font-mono font-bold text-gray-900">{ticket.codigo}</span>} />
-                    <Row label="Tipo" value={<TipoBadge tipo={ticket.id_tbl_type} />} />
-                    <Row label="Estado" value={<Badge usado={!!ticket.used_at} />} />
-                    <Row label="Usuario" value={ticket.nombre_usuario || '—'} />
-                    <Row label="CI / RUC" value={ticket.ci_ruc || '—'} />
-                    <Row label="Suscripción" value={ticket.codigo_suscripcion || '—'} />
-                    <Row label="Establecimiento" value={ticket.id_tbl_establecimiento || '—'} />
-                    <Row label="Oferta" value={ticket.id_tbl_oferta || '—'} />
-                    <Row label="Creado" value={ticket.created_at || '—'} />
-                    <Row label="Usado el" value={ticket.used_at || '—'} />
+
+                <div className="px-6 py-5 overflow-y-auto">
+                    {/* Imagen del barcode */}
+                    {ticket.urlencriptado && (
+                        <div className="bg-gray-50 rounded-lg p-4 mb-5 flex justify-center">
+                            <img
+                                src={ticket.urlencriptado}
+                                alt={`Código ${ticket.codigo}`}
+                                className="max-h-24"
+                            />
+                        </div>
+                    )}
+
+                    {/* Datos */}
+                    <div className="space-y-0">
+                        <Row label="ID" value={<span className="font-mono">{ticket.id_tbl_certificado}</span>} />
+                        <Row label="Usuario" value={ticket.nombre_usuario || '—'} />
+                        <Row label="CI / RUC" value={<span className="font-mono">{ticket.ci_ruc || '—'}</span>} />
+                        <Row label="Suscripción" value={<span className="font-mono">{ticket.codigo_suscripcion || '—'}</span>} />
+                        <Row label="Establecimiento" value={<span className="font-mono text-xs">{ticket.id_tbl_establecimiento || '—'}</span>} />
+                        <Row label="Oferta" value={<span className="font-mono text-xs">{ticket.id_tbl_oferta || '—'}</span>} />
+                        <Row
+                            label="Beneficiarios"
+                            value={ticket.beneficiarios && ticket.beneficiarios > 0 ? ticket.beneficiarios : '—'}
+                        />
+                        <Row label="Ubicación" value={ticket.ubicacion || '—'} />
+                        <Row
+                            label="Coordenadas"
+                            value={
+                                tieneCoordenadas ? (
+                                    <a
+                                        href={mapsUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 text-emerald-700 hover:text-emerald-900 hover:underline">
+                                        <span className="font-mono text-xs">
+                                            {Number(ticket.latitud).toFixed(6)}, {Number(ticket.longitud).toFixed(6)}
+                                        </span>
+                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                    </a>
+                                ) : '—'
+                            }
+                        />
+                        <Row label="Creado" value={<span className="font-mono text-xs">{ticket.created_at || '—'}</span>} />
+                        <Row label="Usado el" value={<span className="font-mono text-xs">{ticket.used_at || '—'}</span>} />
+                    </div>
                 </div>
-                <div className="flex gap-2 px-5 py-4 border-t justify-end flex-wrap">
+
+                {/* Footer con acciones */}
+                <div className="flex gap-2 px-6 py-4 border-t border-gray-100 justify-end flex-wrap shrink-0 bg-gray-50/50">
                     {!ticket.used_at && ticket.is_active == 1 && (
                         confirm === 'uso' ? (
                             <>
-                                <span className="text-xs text-gray-500 self-center">¿Confirmar?</span>
-                                <button onClick={() => setConfirm(null)} className="px-3 py-1.5 text-xs rounded border text-gray-600 hover:bg-gray-50">Cancelar</button>
+                                <span className="text-xs text-gray-600 self-center mr-1">¿Confirmar?</span>
+                                <button onClick={() => setConfirm(null)} className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition">Cancelar</button>
                                 <button onClick={handleMarcarUsado} disabled={loadingUso}
-                                        className="px-3 py-1.5 text-xs rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-50">
+                                        className="px-3 py-2 text-sm rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition shadow-sm">
                                     {loadingUso ? 'Guardando...' : 'Sí, marcar usado'}
                                 </button>
                             </>
                         ) : (
                             <button onClick={() => setConfirm('uso')}
-                                    className="px-3 py-1.5 text-xs rounded bg-green-600 text-white hover:bg-green-700">
+                                    className="px-3 py-2 text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm">
                                 Marcar como usado
                             </button>
                         )
@@ -149,21 +226,25 @@ const ModalDetalle = ({ ticket, onClose, onMarcarUsado, onEliminar }) => {
                     {ticket.is_active == 1 && (
                         confirm === 'eliminar' ? (
                             <>
-                                <span className="text-xs text-gray-500 self-center">¿Eliminar?</span>
-                                <button onClick={() => setConfirm(null)} className="px-3 py-1.5 text-xs rounded border text-gray-600 hover:bg-gray-50">Cancelar</button>
+                                <span className="text-xs text-gray-600 self-center mr-1">¿Eliminar?</span>
+                                <button onClick={() => setConfirm(null)} className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition">Cancelar</button>
                                 <button onClick={handleEliminar} disabled={loadingElim}
-                                        className="px-3 py-1.5 text-xs rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50">
+                                        className="px-3 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition shadow-sm">
                                     {loadingElim ? 'Eliminando...' : 'Sí, eliminar'}
                                 </button>
                             </>
                         ) : (
                             <button onClick={() => setConfirm('eliminar')}
-                                    className="px-3 py-1.5 text-xs rounded border border-red-300 text-red-600 hover:bg-red-50">
+                                    className="px-3 py-2 text-sm font-medium rounded-lg border border-red-200 bg-white text-red-600 hover:bg-red-50 transition">
                                 Eliminar
                             </button>
                         )
                     )}
-                    <button onClick={onClose} className="px-3 py-1.5 text-xs rounded border text-gray-600 hover:bg-gray-50">Cerrar</button>
+                    <button
+                        onClick={onClose}
+                        className="px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition">
+                        Cerrar
+                    </button>
                 </div>
             </div>
         </div>
@@ -181,7 +262,8 @@ const TicketMain = () => {
     const [selTicket, setSelTicket] = useState(null);
     const [buscado, setBuscado] = useState(false);
     const [showCrear, setShowCrear] = useState(false);
-    const [toast, setToast] = useState(null); // { tipo: 'ok'|'error', mensaje }
+    const [toast, setToast] = useState(null);
+    const [showFiltros, setShowFiltros] = useState(true);
 
     const notify = (tipo, mensaje) => setToast({ tipo, mensaje });
 
@@ -203,7 +285,6 @@ const TicketMain = () => {
         setBuscado(true);
     }, [filtros, cantidad]);
 
-    // Cargar al entrar con filtros por defecto
     useEffect(() => {
         buscar(1);
         // eslint-disable-next-line
@@ -245,153 +326,171 @@ const TicketMain = () => {
 
     const handleLimpiar = () => {
         setFiltros(initialFiltros);
-        // Re-buscar con filtros iniciales
         setTimeout(() => buscar(1), 0);
     };
 
-    // Stats calculados del resultado actual
     const disponibles = lista.filter(t => !t.used_at).length;
     const usados = lista.filter(t => t.used_at).length;
 
     return (
-        <div className="p-4 max-w-7xl mx-auto">
+        <div className="p-4 sm:p-6 max-w-7xl mx-auto">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-start justify-between mb-5 gap-3 flex-wrap">
                 <div>
-                    <h2 className="text-lg font-semibold text-gray-800">Tickets y Certificados</h2>
-                    <p className="text-xs text-gray-500">Gestiona los códigos emitidos</p>
+                    <h2 className="text-xl font-semibold text-gray-900">Tickets y Certificados</h2>
+                    <p className="text-sm text-gray-500 mt-0.5">Gestiona los códigos emitidos a usuarios</p>
                 </div>
-                <button onClick={() => setShowCrear(true)}
-                        className="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-xs font-medium py-2 px-4 rounded shadow-sm transition-colors">
-                    <span className="text-base leading-none">+</span>
+                <button
+                    onClick={() => setShowCrear(true)}
+                    className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
                     Nuevo
                 </button>
             </div>
 
-            {/* Filtros */}
-            <div className="bg-white rounded-lg border shadow-sm p-4 mb-4">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Filtros</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div>
-                        <label className="text-xs text-gray-500 mb-1 block">Código</label>
-                        <input name="codigo" value={filtros.codigo} onChange={handleFiltro}
-                               placeholder="ABCD123..."
-                               className="w-full border rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400" />
-                    </div>
-                    <div>
-                        <label className="text-xs text-gray-500 mb-1 block">Código suscripción</label>
-                        <input name="codigo_suscripcion" value={filtros.codigo_suscripcion} onChange={handleFiltro}
-                               placeholder="SUS-..."
-                               className="w-full border rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400" />
-                    </div>
-                    <div>
-                        <label className="text-xs text-gray-500 mb-1 block">CI / RUC</label>
-                        <input name="ci_ruc" value={filtros.ci_ruc} onChange={handleFiltro}
-                               placeholder="1234567890"
-                               className="w-full border rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400" />
-                    </div>
-                    <div>
-                        <label className="text-xs text-gray-500 mb-1 block">Tipo</label>
-                        <select name="id_tbl_type" value={filtros.id_tbl_type} onChange={handleFiltro}
-                                className="w-full border rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400">
-                            {TIPO.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-xs text-gray-500 mb-1 block">Fecha desde</label>
-                        <input type="date" name="fecha_desde" value={filtros.fecha_desde} onChange={handleFiltro}
-                               className="w-full border rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400" />
-                    </div>
-                    <div>
-                        <label className="text-xs text-gray-500 mb-1 block">Fecha hasta</label>
-                        <input type="date" name="fecha_hasta" value={filtros.fecha_hasta} onChange={handleFiltro}
-                               className="w-full border rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400" />
-                    </div>
-                    <div>
-                        <label className="text-xs text-gray-500 mb-1 block">Estado</label>
-                        <select name="is_active" value={filtros.is_active} onChange={handleFiltro}
-                                className="w-full border rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-400">
-                            {ACTIVO.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
-                        </select>
-                    </div>
-                    <div className="flex items-end gap-2">
-                        <button onClick={() => buscar(1)} disabled={loading}
-                                className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-medium py-1.5 px-3 rounded disabled:opacity-50 transition-colors">
-                            {loading ? 'Buscando...' : 'Buscar'}
-                        </button>
-                        <button onClick={handleLimpiar}
-                                className="px-3 py-1.5 text-xs border rounded text-gray-500 hover:bg-gray-50">
-                            Limpiar
-                        </button>
-                    </div>
+            {/* Stats */}
+            {buscado && lista.length > 0 && (
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                    <StatCard label="Total" value={paginacion.items} color="slate" />
+                    <StatCard label="Disponibles" value={disponibles} color="emerald" />
+                    <StatCard label="Usados" value={usados} color="amber" />
                 </div>
+            )}
+
+            {/* Filtros */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-5 overflow-hidden">
+                <button
+                    onClick={() => setShowFiltros(!showFiltros)}
+                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition">
+                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Filtros</p>
+                    <svg
+                        className={`w-4 h-4 text-gray-400 transition-transform ${showFiltros ? 'rotate-180' : ''}`}
+                        fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                {showFiltros && (
+                    <div className="px-4 pb-4 border-t border-gray-100 pt-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Código</label>
+                                <input name="codigo" value={filtros.codigo} onChange={handleFiltro}
+                                       placeholder="ABCD123..." className={inputCls} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Código suscripción</label>
+                                <input name="codigo_suscripcion" value={filtros.codigo_suscripcion} onChange={handleFiltro}
+                                       placeholder="SUS-..." className={inputCls} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">CI / RUC</label>
+                                <input name="ci_ruc" value={filtros.ci_ruc} onChange={handleFiltro}
+                                       placeholder="1234567890" className={inputCls} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Tipo</label>
+                                <select name="id_tbl_type" value={filtros.id_tbl_type} onChange={handleFiltro} className={inputCls}>
+                                    {TIPO.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Ubicación</label>
+                                <input name="ubicacion" value={filtros.ubicacion} onChange={handleFiltro}
+                                       placeholder="Ej: Cuenca" className={inputCls} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Fecha desde</label>
+                                <input type="date" name="fecha_desde" value={filtros.fecha_desde} onChange={handleFiltro}
+                                       className={inputCls} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Fecha hasta</label>
+                                <input type="date" name="fecha_hasta" value={filtros.fecha_hasta} onChange={handleFiltro}
+                                       className={inputCls} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Estado</label>
+                                <select name="is_active" value={filtros.is_active} onChange={handleFiltro} className={inputCls}>
+                                    {ACTIVO.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2 mt-4">
+                            <button onClick={handleLimpiar}
+                                    className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                                Limpiar
+                            </button>
+                            <button onClick={() => buscar(1)} disabled={loading}
+                                    className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition shadow-sm">
+                                {loading ? 'Buscando...' : 'Buscar'}
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Tabla */}
             {buscado && (
-                <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-                    <div className="flex items-center justify-between px-4 py-3 border-b bg-gray-50 flex-wrap gap-2">
-                        <div className="flex items-center gap-3 text-xs">
-                            <span className="text-gray-500">
-                                <strong className="text-gray-800">{paginacion.items}</strong> resultado{paginacion.items !== 1 ? 's' : ''}
-                            </span>
-                            {lista.length > 0 && (
-                                <>
-                                    <span className="text-gray-300">|</span>
-                                    <span className="text-green-700">{disponibles} disponibles</span>
-                                    <span className="text-gray-500">{usados} usados</span>
-                                </>
-                            )}
-                        </div>
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/60 flex-wrap gap-2">
+                        <span className="text-sm text-gray-600">
+                            <strong className="text-gray-900">{paginacion.items}</strong> resultado{paginacion.items !== 1 ? 's' : ''}
+                        </span>
                         <span className="text-xs text-gray-400">
                             Página {paginacion.pagina} de {paginacion.paginas}
                         </span>
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="w-full text-xs">
+                        <table className="w-full text-sm">
                             <thead>
-                            <tr className="bg-gray-50 border-b">
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">ID</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">Código</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">Tipo</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">Estado</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">Usuario</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">CI / RUC</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">Suscripción</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">Creado</th>
-                                <th className="text-left px-3 py-2 font-semibold text-gray-600">Acciones</th>
+                            <tr className="bg-gray-50/60 border-b border-gray-100">
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Código</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Estado</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Usuario</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">CI / RUC</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Ubicación</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Benef.</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Creado</th>
+                                <th className="text-left px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
                             </tr>
                             </thead>
                             <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan={9} className="text-center py-8 text-gray-400">
+                                    <td colSpan={10} className="text-center py-12 text-gray-400 text-sm">
                                         Cargando...
                                     </td>
                                 </tr>
                             ) : lista.length === 0 ? (
                                 <tr>
-                                    <td colSpan={9} className="text-center py-8 text-gray-400">
+                                    <td colSpan={10} className="text-center py-12 text-gray-400 text-sm">
                                         No se encontraron registros
                                     </td>
                                 </tr>
                             ) : (
-                                lista.map((t, i) => (
+                                lista.map((t) => (
                                     <tr key={t.id_tbl_certificado}
-                                        className={`${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-green-50 transition-colors cursor-pointer`}
+                                        className="border-b border-gray-50 last:border-0 hover:bg-emerald-50/40 transition cursor-pointer"
                                         onClick={() => setSelTicket(t)}>
-                                        <td className="px-3 py-2 text-gray-400">{t.id_tbl_certificado}</td>
-                                        <td className="px-3 py-2 font-mono font-bold text-gray-800">{t.codigo}</td>
-                                        <td className="px-3 py-2"><TipoBadge tipo={t.id_tbl_type} /></td>
-                                        <td className="px-3 py-2"><Badge usado={!!t.used_at} /></td>
-                                        <td className="px-3 py-2 text-gray-700">{t.nombre_usuario || '—'}</td>
-                                        <td className="px-3 py-2 text-gray-500">{t.ci_ruc || '—'}</td>
-                                        <td className="px-3 py-2 text-gray-500">{t.codigo_suscripcion || '—'}</td>
-                                        <td className="px-3 py-2 text-gray-400">{t.created_at?.slice(0, 10) || '—'}</td>
-                                        <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                                        <td className="px-4 py-3 text-gray-400 text-xs">{t.id_tbl_certificado}</td>
+                                        <td className="px-4 py-3 font-mono font-bold text-gray-900">{t.codigo}</td>
+                                        <td className="px-4 py-3"><TipoBadge tipo={t.id_tbl_type} /></td>
+                                        <td className="px-4 py-3"><Badge usado={!!t.used_at} /></td>
+                                        <td className="px-4 py-3 text-gray-700">{t.nombre_usuario || '—'}</td>
+                                        <td className="px-4 py-3 text-gray-500 font-mono text-xs">{t.ci_ruc || '—'}</td>
+                                        <td className="px-4 py-3 text-gray-600 text-xs">{t.ubicacion || '—'}</td>
+                                        <td className="px-4 py-3 text-gray-600 text-center">{t.beneficiarios > 0 ? t.beneficiarios : '—'}</td>
+                                        <td className="px-4 py-3 text-gray-400 text-xs">{t.created_at?.slice(0, 10) || '—'}</td>
+                                        <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                                             <button onClick={() => setSelTicket(t)}
-                                                    className="px-2 py-1 text-xs rounded border border-green-300 text-green-700 hover:bg-green-50 transition-colors">
+                                                    className="px-3 py-1.5 text-xs font-medium rounded-md border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition">
                                                 Ver
                                             </button>
                                         </td>
@@ -403,24 +502,28 @@ const TicketMain = () => {
                     </div>
 
                     {paginacion.paginas > 1 && (
-                        <div className="flex items-center justify-center gap-1 px-4 py-3 border-t">
+                        <div className="flex items-center justify-center gap-1 px-4 py-3 border-t border-gray-100 bg-gray-50/30">
                             <button onClick={() => irPagina(paginacion.pagina - 1)}
                                     disabled={paginacion.pagina === 1}
-                                    className="px-2 py-1 text-xs border rounded disabled:opacity-40 hover:bg-gray-50">
+                                    className="px-3 py-1.5 text-sm border border-gray-200 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
                                 ‹ Ant
                             </button>
                             {Array.from({ length: Math.min(paginacion.paginas, 7) }, (_, i) => {
                                 const p = i + 1;
                                 return (
                                     <button key={p} onClick={() => irPagina(p)}
-                                            className={`px-2 py-1 text-xs border rounded ${p === paginacion.pagina ? 'bg-green-600 text-white border-green-600' : 'hover:bg-gray-50'}`}>
+                                            className={`px-3 py-1.5 text-sm border rounded-md transition ${
+                                                p === paginacion.pagina
+                                                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                                    : 'border-gray-200 hover:bg-gray-50'
+                                            }`}>
                                         {p}
                                     </button>
                                 );
                             })}
                             <button onClick={() => irPagina(paginacion.pagina + 1)}
                                     disabled={paginacion.pagina === paginacion.paginas}
-                                    className="px-2 py-1 text-xs border rounded disabled:opacity-40 hover:bg-gray-50">
+                                    className="px-3 py-1.5 text-sm border border-gray-200 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
                                 Sig ›
                             </button>
                         </div>
