@@ -12,7 +12,7 @@ const FullPackMain = () => {
     };
 
     return (
-        <div className="p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="p-4 md:p-6 w-full mx-auto">
             <div className="flex gap-2 mb-4">
                 <button
                     onClick={() => setTab('lista')}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TablaSuscriptores from "./TablaSuscriptores";
 import { listarSuscriptores } from "../../../../controllers/suscriptores/SuscriptoresController";
-import ReactPaginate from "react-paginate";
 import DescargarSuscriptores from "./DescargarSuscriptores";
 import Config from "../../../../global/config";
 
@@ -46,9 +45,9 @@ const ListarSuscriptores = ({ handleClickEdit }) => {
     handleUpdateSuscriptores({});
   }, []);
 
-  const handleOnPageChange = (page) => {
-    setSelPagina(page.selected);
-    handleUpdateSuscriptores({ pagina: page.selected + 1 });
+  const handleOnPageChange = (newPage) => {
+    setSelPagina(newPage);
+    handleUpdateSuscriptores({ pagina: newPage + 1 });
   };
 
   const handleClickAplicar = () => {
@@ -57,131 +56,118 @@ const ListarSuscriptores = ({ handleClickEdit }) => {
   };
 
   return (
-      <div className="pl-3 w-full">
-        <div className="w-full bg-gray-100 rounded-md px-4 py-2 pb-6">
-          <div className="flex gap-2 items-center mb-3">
-            <label className="text-greenVE-700 text-xl font-semibold">
-              Listar suscriptores
-            </label>
-            <DescargarSuscriptores
-                params={{
-                  cod_vendedor: idVendedor,
-                  nombre_vendedor: nombreVendedor,
-                  ci_cliente: ciUsuario,
-                  cod_cliente: idUsuario,
-                  nombre_cliente: nombreCliente,
-                }}
-            />
-          </div>
+      <div className="flex-1 p-4 w-full relative">
+        {/* Filtros inline */}
+        <div className="flex flex-wrap gap-2 mb-3 items-center">
+          <input
+              type="text"
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+              placeholder="ID suscripción"
+              value={idUsuario || ''}
+              onChange={(event) => setIdUsuario(event.target.value)}
+          />
+          <input
+              type="text"
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+              placeholder="Cédula"
+              value={ciUsuario || ''}
+              onChange={(event) => setCiUsuario(event.target.value)}
+          />
+          <input
+              type="text"
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+              placeholder="Nombre cliente"
+              value={nombreCliente || ''}
+              onChange={(event) => setNombreCliente(event.target.value)}
+          />
+          <input
+              type="text"
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+              placeholder="ID Vendedor"
+              value={idVendedor || ''}
+              onChange={(event) => setIdVendedor(event.target.value)}
+          />
+          <input
+              type="text"
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+              placeholder="Nombre vendedor"
+              value={nombreVendedor || ''}
+              onChange={(event) => setNombreVendedor(event.target.value)}
+          />
 
-          <div className="bg-greenVE-400 p-3 rounded-lg">
-            <label className="text-sm text-greenVE-800 font-medium mb-2 block">
-              Filtrar por:
-            </label>
+          <select
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+              value={cantidad}
+              onChange={(event) => setCantidad(event.target.value)}
+          >
+            {Config.ELEMENTOSHOJAS.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.nombre}
+                </option>
+            ))}
+          </select>
 
-            <div className="flex gap-2 flex-wrap">
-              <input
-                  value={idUsuario || ''}
-                  onChange={(event) => setIdUsuario(event.target.value)}
-                  placeholder="ID suscripción"
-                  className="flex-1 min-w-[150px] h-8 rounded-full px-3 text-sm focus:outline-none focus:ring-2 focus:ring-greenVE-600"
-              />
-              <input
-                  value={ciUsuario || ''}
-                  onChange={(event) => setCiUsuario(event.target.value)}
-                  placeholder="Cédula"
-                  className="flex-1 min-w-[150px] h-8 rounded-full px-3 text-sm focus:outline-none focus:ring-2 focus:ring-greenVE-600"
-              />
-              <input
-                  value={nombreCliente || ''}
-                  onChange={(event) => setNombreCliente(event.target.value)}
-                  placeholder="Nombre cliente"
-                  className="flex-1 min-w-[150px] h-8 rounded-full px-3 text-sm focus:outline-none focus:ring-2 focus:ring-greenVE-600"
-              />
-              <input
-                  value={idVendedor || ''}
-                  onChange={(event) => setIdVendedor(event.target.value)}
-                  placeholder="ID Vendedor"
-                  className="flex-1 min-w-[150px] h-8 rounded-full px-3 text-sm focus:outline-none focus:ring-2 focus:ring-greenVE-600"
-              />
-              <input
-                  value={nombreVendedor || ''}
-                  onChange={(event) => setNombreVendedor(event.target.value)}
-                  placeholder="Nombre vendedor"
-                  className="flex-1 min-w-[150px] h-8 rounded-full px-3 text-sm focus:outline-none focus:ring-2 focus:ring-greenVE-600"
-              />
-              <select
-                  className="h-8 rounded-full px-3 text-sm focus:outline-none focus:ring-2 focus:ring-greenVE-600"
-                  value={cantidad}
-                  onChange={(event) => setCantidad(event.target.value)}
-              >
-                {Config.ELEMENTOSHOJAS.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.nombre}
-                    </option>
-                ))}
-              </select>
-              <button
-                  className="bg-greenVE-600 hover:bg-greenVE-700 text-white px-6 rounded-full h-8 font-medium transition-colors"
-                  onClick={handleClickAplicar}
-              >
-                Aplicar
-              </button>
-            </div>
-          </div>
+          <button
+              className="bg-green-600 hover:bg-green-700 text-white px-6 rounded-lg py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+              onClick={handleClickAplicar}
+              disabled={loading}
+          >
+            {loading ? 'Buscando...' : 'Aplicar'}
+          </button>
 
-          <div className="mt-4">
-            {loading ? (
-                <div className="w-full flex flex-col items-center justify-center py-12">
-                  <span className="icon-[line-md--loading-twotone-loop] w-12 h-12 text-greenVE-600"></span>
-                  <p className="mt-3 text-gray-600">Cargando suscriptores...</p>
-                </div>
-            ) : !loading && !data ? (
-                <div className="w-full flex flex-col items-center justify-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                  <span className="icon-[material-symbols--inbox-outline] h-16 w-16 text-gray-400 mb-3"></span>
-                  <label className="text-gray-600 font-medium">Sin resultados disponibles</label>
-                  <p className="text-sm text-gray-400 mt-1">Intenta ajustar tus filtros</p>
-                </div>
-            ) : (
-                <div className="flex flex-col w-full">
-                  <TablaSuscriptores
-                      handleClickEdit={handleClickEdit}
-                      suscriptores={data}
-                  />
-                  {numPaginas > 1 && (
-                      <ReactPaginate
-                          forcePage={selPagina}
-                          breakLabel="..."
-                          nextLabel="Siguiente ›"
-                          onPageChange={handleOnPageChange}
-                          pageRangeDisplayed={5}
-                          pageCount={numPaginas}
-                          previousLabel="‹ Anterior"
-                          renderOnZeroPageCount={null}
-                          containerClassName={"flex justify-center p-4 gap-1"}
-                          pageClassName={""}
-                          pageLinkClassName={
-                            "px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100"
-                          }
-                          previousClassName={""}
-                          previousLinkClassName={
-                            "px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100"
-                          }
-                          nextClassName={""}
-                          nextLinkClassName={
-                            "px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100"
-                          }
-                          breakClassName={""}
-                          breakLinkClassName={
-                            "px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100"
-                          }
-                          activeClassName={"bg-greenVE-600 !text-white rounded"}
-                      />
-                  )}
-                </div>
-            )}
-          </div>
+          <DescargarSuscriptores
+              params={{
+                cod_vendedor: idVendedor,
+                nombre_vendedor: nombreVendedor,
+                ci_cliente: ciUsuario,
+                cod_cliente: idUsuario,
+                nombre_cliente: nombreCliente,
+              }}
+          />
         </div>
+
+        {/* Tabla */}
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          {loading ? (
+              <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
+                <svg className="w-5 h-5 animate-spin text-green-600" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                <span className="text-sm">Cargando suscriptores...</span>
+              </div>
+          ) : !loading && !data ? (
+              <p className="text-center text-xs text-gray-400 py-10">Sin resultados disponibles</p>
+          ) : (
+              <TablaSuscriptores
+                  handleClickEdit={handleClickEdit}
+                  suscriptores={data}
+              />
+          )}
+        </div>
+
+        {/* Paginación */}
+        {!loading && data && numPaginas > 1 && (
+            <div className="flex justify-between items-center mt-3 text-xs text-gray-500">
+              <span>Página {selPagina + 1} de {numPaginas}</span>
+              <div className="flex gap-2">
+                <button
+                    disabled={selPagina === 0}
+                    onClick={() => handleOnPageChange(selPagina - 1)}
+                    className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                >
+                  ← Anterior
+                </button>
+                <button
+                    disabled={selPagina >= numPaginas - 1}
+                    onClick={() => handleOnPageChange(selPagina + 1)}
+                    className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                >
+                  Siguiente →
+                </button>
+              </div>
+            </div>
+        )}
       </div>
   );
 };

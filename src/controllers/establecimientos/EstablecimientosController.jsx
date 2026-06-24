@@ -166,6 +166,122 @@ export const getDatosContrato = async function (id_establecimiento, id_contrato 
     return null;
 };
 
+// ── Servicios SMART del establecimiento ──────────────────────────────────────
+export const getServiciosEstablecimiento = async function (id_establecimiento) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.getServiciosEstablecimiento(id_establecimiento);
+        if (res != null && res.estado) return res.data;
+    } catch { return null; }
+    return null;
+};
+
+export const getCatalogoServiciosSmart = async function () {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.getCatalogoServiciosSmart();
+        if (res != null && res.estado) return res.data;
+    } catch { return null; }
+    return null;
+};
+
+export const setServiciosEstablecimiento = async function (params) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.setServiciosEstablecimiento(params);
+        if (res != null && res.estado) return res.data ?? true;
+    } catch { return null; }
+    return null;
+};
+
+// ── Ofertas del establecimiento ──────────────────────────────────────────────
+export const getOfertasEstablecimiento = async function (id_establecimiento) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.getOfertasEstablecimiento(id_establecimiento);
+        if (res != null && res.estado) return res.data;
+    } catch { return null; }
+    return null;
+};
+
+export const getCatalogosOferta = async function () {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.getCatalogosOferta();
+        if (res != null && res.estado) return res.data;
+    } catch { return null; }
+    return null;
+};
+
+export const gestionarOferta = async function (params) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.gestionarOferta(params);
+        if (res != null && res.estado) return res.data ?? true;
+    } catch { return null; }
+    return null;
+};
+
+export const eliminarOferta = async function (id_oferta) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.eliminarOferta(id_oferta);
+        if (res != null && res.estado) return true;
+    } catch { return null; }
+    return null;
+};
+
+export const getOferta = async function (id_info_indice) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.getOferta(id_info_indice);
+        if (res != null && res.estado) return res.data;
+    } catch { return null; }
+    return null;
+};
+
+export const getServiciosOferta = async function (id_oferta) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.getServiciosOferta(id_oferta);
+        if (res != null && res.estado) return res.data;
+    } catch { return null; }
+    return null;
+};
+
+export const setServiciosOferta = async function (params) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.setServiciosOferta(params);
+        if (res != null && res.estado) return res.data ?? true;
+    } catch { return null; }
+    return null;
+};
+
+// ── Aprobaciones ─────────────────────────────────────────────────────────────
+export const listarEstablecimientosRevision = async function () {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.listarEstablecimientosRevision();
+        if (res != null && res.estado) {
+            return Array.isArray(res.data)
+                ? res.data
+                : (res.data?.establecimientos ?? []);
+        }
+    } catch { return []; }
+    return [];
+};
+
+export const aprobarEstablecimiento = async function (id_establecimiento) {
+    try {
+        const s = new EstablecimientosService();
+        const res = await s.aprobarEstablecimiento(id_establecimiento);
+        if (res != null && res.estado) return res.data ?? true;
+        return res;
+    } catch { return null; }
+    return null;
+};
+
 export const getResultadoFiltro = async function (filtro) {
     var bd = JSON.parse(localStorage.getItem('datos'))
     if (bd == null) {

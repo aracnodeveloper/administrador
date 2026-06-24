@@ -61,10 +61,21 @@ export const crearTicket = async (data = {}) => {
         }
 
         const payload = { id_tbl_type: parseInt(data.id_tbl_type) };
-        ["id_tbl_usuario", "id_tbl_suscripcion", "id_tbl_oferta", "id_tbl_establecimiento"].forEach((k) => {
+
+        // id_tbl_usuario y id_tbl_suscripcion siguen siendo enteros del legacy VE
+        ["id_tbl_usuario", "id_tbl_suscripcion"].forEach((k) => {
             if (data[k] !== "" && data[k] !== null && data[k] !== undefined) {
                 const v = parseInt(data[k]);
                 if (!isNaN(v) && v > 0) payload[k] = v;
+            }
+        });
+
+        // id_tbl_oferta y id_tbl_establecimiento ahora son UUIDs (strings) de
+        // vino_api. NO los parseamos a int. Se mandan tal cual.
+        ["id_tbl_oferta", "id_tbl_establecimiento"].forEach((k) => {
+            const v = data[k];
+            if (v !== "" && v !== null && v !== undefined) {
+                payload[k] = String(v).trim();
             }
         });
 

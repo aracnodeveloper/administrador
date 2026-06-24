@@ -1,10 +1,8 @@
-import { Tooltip } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import TablaReservas from './ListarReserva/TablaReservas';
 import { listarGestoresReservas, listarReservas, listarReservasFiltro } from '../../../../controllers/smart/SmartController';
 import Config from '../../../../global/config';
 import { formatDate, verificarPermiso } from '../../../../global/utils';
-import ReactPaginate from 'react-paginate';
 import DescargarReservas from './DescargarReservas';
 
 
@@ -26,6 +24,7 @@ const ListarReservas = ({ handleClickEdit }) => {
     const [ciRuc, setCiRuc] = useState();
     const [loading, setLoading] = useState();
     const [cantidad, setCantidad]=useState("20");
+
     const handleSetChange = () => {
         setChange(prev => prev + 1);
     };
@@ -82,130 +81,185 @@ const ListarReservas = ({ handleClickEdit }) => {
         });
     };
 
-    const handleOnPageChange = (page) => {
-        setSelPagina(page.selected); // Cambiar el estado de la página seleccionada
-        handleClicAplicar({ aplicar: false, pagina: page.selected + 1 });
+    const handleOnPageChange = (newPage) => {
+        setSelPagina(newPage);
+        handleClicAplicar({ aplicar: false, pagina: newPage + 1 });
     };
 
-
-
     return (
-        <div className='pl-3 w-full'>
-            <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
-                <div className='flex gap-2 items-center mb-2'>
-                    <label className='text-greenVE-700 text-xl border-0'>Listar reservas</label>
-                    <DescargarReservas params={{
-                        id_tbl_usuario: parseInt(selGestor),
-                        id_tbl_estado_reserva: parseInt(selEstado),
-                        tipoPago: selPago,
-                        fechas: {
-                            inicio: fInicio,
-                            fin: fFin
-                        },
-                        codCliente: idSuscriptor,
-                        nomEstablecimiento: nomEstablecimiento,
-                        nroReserva: idReserva,
-                        ciRuc: ciRuc,
-                    }} />
+        <div className='flex-1 p-4 w-full relative'>
+            {/* Filtros inline */}
+            <div className="flex flex-wrap gap-2 mb-3 items-center">
+                {verificarPermiso(87) &&
+                    <select
+                        className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                        value={selGestor}
+                        onChange={(event) => setSelGestor(event.target.value)}
+                    >
+                        <option value="-2" disabled>Gestor de reserva</option>
+                        <option value="-1">Todos los gestores</option>
+                        {gestores && gestores.map((item, index) => (
+                            <option key={index} value={item.id_tbl_usuario}>{item.nombre}</option>
+                        ))}
+                    </select>
+                }
+                <select
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={selEstado}
+                    onChange={(event) => setSelEstado(event.target.value)}
+                >
+                    <option value="-2" disabled>Estado de reserva</option>
+                    <option value="-1">Todos los estados</option>
+                    {Config.ESTADOS.map((item, index) => (
+                        <option key={index} value={item.id}>{`${item.nombre} `}</option>
+                    ))}
+                </select>
+
+                {/* Filtro de fechas */}
+                <div className="flex items-center gap-1.5 border border-gray-200 rounded-lg px-2 py-1 bg-white">
+                    <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-[10px] text-gray-400 shrink-0">Fecha:</span>
+                    <input
+                        type="date"
+                        className="text-xs border-none outline-none bg-transparent text-gray-600"
+                        value={fInicio}
+                        onChange={e => setFInicio(e.target.value)}
+                        title="Desde"
+                    />
+                    <span className="text-gray-300 text-xs">—</span>
+                    <input
+                        type="date"
+                        className="text-xs border-none outline-none bg-transparent text-gray-600"
+                        value={fFin}
+                        onChange={e => setFFin(e.target.value)}
+                        title="Hasta"
+                    />
                 </div>
-                <div className='bg-greenVE-400 p-2 rounded-t-md flex flex-col '>
-                    <div>
-                        <div className='flex gap-2'>
-                            <div className='w-4/12'>
-                                <label className='text-sm text-greenVE-800 '>Filtrar por:</label>
-                            </div>
-                            <div className='w-2/12 ml-2'>
-                                <label className='text-sm text-greenVE-800 '>Desde:</label>
-                            </div>
-                            <div className='w-2/12'>
-                                <label className='text-sm text-greenVE-800 '>Hasta:</label>
-                            </div>
-                            {
-                                total&&
-                                <div className='w-[30%] flex items-center justify-end'>
-                                    <label className='text-base font-semibold text-greenVE-500 text-pretty bg-white rounded-md px-2'>Total: {total}</label>
-                                </div>
-                            }
+
+                <select
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={selPago}
+                    onChange={(event) => setSelPago(event.target.value)}
+                >
+                    <option value="-3" disabled>Tipo de pago</option>
+                    <option value="-2">Todos los tipos</option>
+                    {Config.PAGOS.map((item, index) => (
+                        <option key={index} value={item.id}>{`${item.nombre} `}</option>
+                    ))}
+                </select>
+
+                <select
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={cantidad}
+                    onChange={(event) => setCantidad(event.target.value)}
+                >
+                    {Config.ELEMENTOSHOJAS.map((item) => (
+                        <option key={item.id} value={item.id}>{item.nombre}</option>
+                    ))}
+                </select>
+
+                <DescargarReservas params={{
+                    id_tbl_usuario: parseInt(selGestor),
+                    id_tbl_estado_reserva: parseInt(selEstado),
+                    tipoPago: selPago,
+                    fechas: { inicio: fInicio, fin: fFin },
+                    codCliente: idSuscriptor,
+                    nomEstablecimiento: nomEstablecimiento,
+                    nroReserva: idReserva,
+                    ciRuc: ciRuc,
+                }} />
+            </div>
+
+            {/* Filtros secundarios */}
+            <div className="flex flex-wrap gap-2 mb-3 items-center">
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Id Suscriptor"
+                    value={idSuscriptor || ''}
+                    onChange={e => setIdSuscriptor(e.target.value)}
+                />
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Establecimiento"
+                    value={nomEstablecimiento || ''}
+                    onChange={e => setNomEstablecimiento(e.target.value)}
+                />
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Id Reserva"
+                    value={idReserva || ''}
+                    onChange={e => setIdReserva(e.target.value)}
+                />
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Cédula / RUC"
+                    value={ciRuc || ''}
+                    onChange={e => setCiRuc(e.target.value)}
+                />
+                <button
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 rounded-lg py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+                    onClick={() => handleClicAplicar({filtros:true})}
+                    disabled={loading}
+                >
+                    {loading ? 'Buscando...' : 'Aplicar'}
+                </button>
+            </div>
+
+            {/* Tabla */}
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                {total && (
+                    <div className="flex items-center justify-between px-4 py-2.5 border-b bg-gray-50">
+                        <div className="text-xs text-gray-500">
+                            Total: <strong className="text-gray-800">{total}</strong> resultado{total != 1 ? 's' : ''}
                         </div>
-                        <div className='flex gap-2 my-2'>
-                            {verificarPermiso(87) &&
-                                <select className='w-2/12 rounded-full h-7 py-0 text-xs capitalize' value={selGestor} onChange={(event) => setSelGestor(event.target.value)}>
-                                    <option value="-2" disabled selected>Gestor de reserva</option>
-                                    <option value="-1">Todos los gestores</option>
-                                    {gestores && gestores.map((item, index) => (
-                                        <option key={index} value={item.id_tbl_usuario}>{item.nombre}</option>
-                                    ))}
-                                </select>
-                            }
-                            <select className='w-2/12 rounded-full h-7 py-0 text-xs' value={selEstado} onChange={(event) => setSelEstado(event.target.value)}>
-                                <option value="-2" disabled selected>Estado de reserva</option>
-                                <option value="-1">Todos los estados</option>
-                                {Config.ESTADOS.map((item, index) => (
-                                    <option key={index} value={item.id}>{`${item.nombre} `}</option>
-                                ))}
-                            </select>
-                            <input value={fInicio} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setFInicio(event.target.value) }}></input>
-                            <input value={fFin} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setFFin(event.target.value) }}></input>
-                            <div className="flex gap-1">
-                                <select className='p-0 text-xs h-7 rounded-full px-2' value={cantidad} onChange={(event)=>setCantidad(event.target.value)}>
-                                    {
-                                        Config.ELEMENTOSHOJAS.map((item)=>(
-                                            <option value={item.id}>{item.nombre}</option>
-                                        ))
-                                    }
-                                </select>
-                                <button className='bg-greenVE-200 border-2 border-greenVE-600 px-4 rounded-full h-7' onClick={() => handleClicAplicar({filtros:true})}>Aplicar</button>
-                            </div>
-                        </div>
-                        <div className='flex gap-2 my-2'>
-                            <input placeholder='Id Suscriptor' value={idSuscriptor} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setIdSuscriptor(event.target.value) }}></input>
-                            <input placeholder='Establecimiento' value={nomEstablecimiento} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setNomEstablecimiento(event.target.value) }}></input>
-                            <input placeholder='Id Reserva' value={idReserva} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setIdReserva(event.target.value) }}></input>
-                            <input placeholder='Cédula / RUC' value={ciRuc} type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center rounded-full' onChange={(event) => { setCiRuc(event.target.value) }}></input>
-                            <select className='w-2/12 rounded-full h-7 py-0 text-xs' value={selPago} onChange={(event) => setSelPago(event.target.value)}>
-                                <option value="-3" disabled selected>Tipo de pago</option>
-                                <option value="-2">Todos los tipos</option>
-                                {Config.PAGOS.map((item, index) => (
-                                    <option key={index} value={item.id}>{`${item.nombre} `}</option>
-                                ))}
-                            </select>
-                        </div>
+                        <span className="text-xs text-gray-400">Página {selPagina + 1}</span>
+                    </div>
+                )}
+
+                {loading ? (
+                    <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
+                        <svg className="w-5 h-5 animate-spin text-green-600" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                        <span className="text-sm">Cargando...</span>
+                    </div>
+                ) : (!loading && !data) ? (
+                    <p className="text-center text-xs text-gray-400 py-10">Sin resultados disponibles</p>
+                ) : (
+                    <TablaReservas handleClickEdit={handleClickEdit} reservas={data} />
+                )}
+            </div>
+
+            {/* Paginación */}
+            {!loading && data && numPaginas > 1 && (
+                <div className="flex justify-between items-center mt-3 text-xs text-gray-500">
+                    <span>Página {selPagina + 1} de {numPaginas}</span>
+                    <div className="flex gap-2">
+                        <button
+                            disabled={selPagina === 0}
+                            onClick={() => handleOnPageChange(selPagina - 1)}
+                            className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                        >
+                            ← Anterior
+                        </button>
+                        <button
+                            disabled={selPagina >= numPaginas - 1}
+                            onClick={() => handleOnPageChange(selPagina + 1)}
+                            className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                        >
+                            Siguiente →
+                        </button>
                     </div>
                 </div>
-                {
-                    loading
-                        ? <div className='w-full flex items-center justify-center mt-5'>
-                            <span className="icon-[line-md--loading-twotone-loop] w-10 h-10 text-greenVE-600"></span>
-                        </div>
-                        : (!loading && !data)
-                            ? <div className='w-full flex items-center justify-center mt-5'>
-                                <label>Sin resultados disponibles</label>
-                            </div>
-                            : <div className="relative overflow-x-auto shadow-md rounded-b-lg ">
-                                <TablaReservas handleClickEdit={handleClickEdit} reservas={data} />
-                                <ReactPaginate
-                                    forcePage={selPagina}
-                                    breakLabel="..."
-                                    nextLabel="Siguiente"
-                                    onPageChange={handleOnPageChange}
-                                    pageRangeDisplayed={5}
-                                    pageCount={numPaginas}
-                                    previousLabel="Anterior"
-                                    renderOnZeroPageCount={null}
-                                    containerClassName={'flex justify-center p-4'}
-                                    pageClassName={'mx-1'}
-                                    pageLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    previousClassName={'mx-1'}
-                                    previousLinkClassName={'px-3 py-1  border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    nextClassName={'mx-1'}
-                                    nextLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    breakClassName={'mx-1'}
-                                    breakLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    activeClassName={'bg-greenVE-300 rounded py-1 -mt-1'}
-                                />
-                            </div>
-                }
-            </div>
+            )}
         </div>
     );
 };

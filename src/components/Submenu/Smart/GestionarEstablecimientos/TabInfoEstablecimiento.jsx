@@ -1,5 +1,10 @@
-import React, { useState, useRef } from "react";
-import { updateEstablecimiento } from "../../../../controllers/establecimientos/EstablecimientosController";
+import React, { useState, useRef, useEffect } from "react";
+import {
+    updateEstablecimiento,
+    getServiciosEstablecimiento,
+    getCatalogoServiciosSmart,
+    setServiciosEstablecimiento,
+} from "../../../../controllers/establecimientos/EstablecimientosController";
 import Config from "../../../../global/config";
 
 const URL_FOTOS_BASE  = "https://visitaecuador.com/ve/img/contenido/informacion/thum500x500/";
@@ -237,7 +242,201 @@ const PanelContactos = ({ contactos }) => {
     );
 };
 
-// ─── Tab Info: orquesta los 3 sub-tabs ───────────────────────────────────────
+// ─── Sub-tab: Servicios ──────────────────────────────────────────────────────
+const PanelServicios = ({ idEstablecimiento, onGuardado }) => {
+    const [cargando,      setCargando]      = useState(true);
+    const [guardando,     setGuardando]     = useState(false);
+    const [catalogo,      setCatalogo]      = useState([]);   // [{id, nombre, servicios:[{id, nombre}]}]
+    const [seleccionados, setSeleccionados] = useState({});   // { id_servicio: true }
+    const [detalles,      setDetalles]      = useState({});   // { id_servicio: "texto extra" }
+    const [abiertos,      setAbiertos]      = useState({});   // { id_tipo: true }
+    const [msj,           setMsj]           = useState("");
+    const [msjTipo,       setMsjTipo]       = useState("ok"); // ok | err
+
+    // Carga inicial: catalogo + servicios actuales del establecimiento
+    useEffect(() => {
+        if (!idEstablecimiento) return;
+        let cancelado = false;
+        setCargando(true);
+        Promise.all([
+            getCatalogoServiciosSmart(),
+            getServiciosEstablecimiento(idEstablecimiento),
+        ]).then(([cat, mios]) => {
+            if (cancelado) return;
+            // catalogo viene como { tipos: [...] }
+            const tipos = cat?.tipos ?? cat?.data?.tipos ?? [];
+            setCatalogo(tipos);
+            // abrir todos los tipos por defecto
+            const open = {};
+            tipos.forEach(t => { open[String(t.id ?? t.id_tbl_tipo_servicio_smart)] = true; });
+            setAbiertos(open);
+
+            // mios viene como
+            //   { servicios_seleccionados: { tipoNombre: [ids] }, detalle: { id: "texto" }, servicios_extra: {...} }
+            // (con fallback a las claves legacy seleccionados / detalles)
+            const sel = {};
+            const det = {};
+            if (mios) {
+                const selRaw = mios.servicios_seleccionados ?? mios.seleccionados ?? {};
+                Object.values(selRaw).forEach(arr => {
+                    (arr ?? []).forEach(id => { sel[String(id)] = true; });
+                });
+                const detRaw = mios.detalle ?? mios.detalles ?? {};
+                Object.entries(detRaw).forEach(([k, v]) => { det[String(k)] = v ?? ""; });
+            }
+            setSeleccionados(sel);
+            setDetalles(det);
+            setCargando(false);
+        }).catch(() => {
+            if (!cancelado) {
+                setMsj("No se pudo cargar el catalogo de servicios.");
+                setMsjTipo("err");
+                setCargando(false);
+            }
+        });
+        return () => { cancelado = true; };
+    }, [idEstablecimiento]);
+
+    const toggleTipo = (idTipo) => {
+        setAbiertos(prev => ({ ...prev, [idTipo]: !prev[idTipo] }));
+    };
+
+    const toggleServicio = (idServicio) => {
+        setSeleccionados(prev => {
+            const nuevo = { ...prev };
+            if (nuevo[idServicio]) delete nuevo[idServicio];
+            else nuevo[idServicio] = true;
+            return nuevo;
+        });
+    };
+
+    const setDetalle = (idServicio, texto) => {
+        setDetalles(prev => ({ ...prev, [idServicio]: texto }));
+    };
+
+    const guardar = async () => {
+        setGuardando(true);
+        setMsj("");
+        // Construir payload: { "29": 1, "67": 1, ... } solo de los marcados
+        const id_servicios = {};
+        Object.keys(seleccionados).forEach(id => {
+            if (seleccionados[id]) id_servicios[id] = 1;
+        });
+        const extra = {};
+        Object.entries(detalles).forEach(([id, v]) => {
+            if (id_servicios[id] && v != null && String(v).trim() !== "") {
+                extra[id] = String(v);
+            }
+        });
+        const ok = await setServiciosEstablecimiento({
+            id_establecimiento: idEstablecimiento,
+            id_servicios,
+            extra,
+        });
+        setGuardando(false);
+        if (ok) {
+            setMsj("Servicios actualizados correctamente.");
+            setMsjTipo("ok");
+            onGuardado?.();
+        } else {
+            setMsj("No se pudo guardar. Intenta de nuevo.");
+            setMsjTipo("err");
+        }
+    };
+
+    if (cargando) {
+        return (
+            <div className="flex items-center justify-center h-32 gap-2 text-gray-400">
+                <Spin size={5}/><span className="text-xs">Cargando servicios...</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-3">
+            {msj && (msjTipo === "ok" ? <MsgOk txt={msj}/> : <MsgErr txt={msj}/>)}
+
+            {catalogo.length === 0 ? (
+                <p className="text-center text-xs text-gray-400 py-6">
+                    No hay servicios disponibles en el catalogo SMART.
+                </p>
+            ) : (
+                <div className="space-y-2">
+                    {catalogo.map(tipo => {
+                        const idTipo = String(tipo.id ?? tipo.id_tbl_tipo_servicio_smart);
+                        const abierto = !!abiertos[idTipo];
+                        const servicios = tipo.servicios ?? [];
+                        const marcadosEnTipo = servicios.filter(s => seleccionados[String(s.id ?? s.id_tbl_servicio_smart)]).length;
+                        return (
+                            <div key={idTipo} className="border border-gray-200 rounded-lg overflow-hidden">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleTipo(idTipo)}
+                                    className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <span className="text-xs font-semibold text-gray-700">
+                                        {tipo.nombre ?? tipo.nombre_tipo_servicio_smart}
+                                        {marcadosEnTipo > 0 && (
+                                            <span className="ml-2 px-1.5 py-0.5 rounded-full text-[10px] bg-green-100 text-green-700">
+                                                {marcadosEnTipo}
+                                            </span>
+                                        )}
+                                    </span>
+                                    <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform ${abierto ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </button>
+                                {abierto && (
+                                    <div className="p-2 space-y-1.5">
+                                        {servicios.length === 0 ? (
+                                            <p className="text-[11px] text-gray-400 px-2">Sin servicios en este tipo.</p>
+                                        ) : servicios.map(s => {
+                                            const idServ = String(s.id ?? s.id_tbl_servicio_smart);
+                                            const marcado = !!seleccionados[idServ];
+                                            return (
+                                                <div key={idServ} className="flex items-start gap-2">
+                                                    <label className="flex items-center gap-2 flex-1 cursor-pointer hover:bg-gray-50 rounded px-1.5 py-1">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={marcado}
+                                                            onChange={() => toggleServicio(idServ)}
+                                                            className="w-3.5 h-3.5 accent-green-600"
+                                                        />
+                                                        <span className="text-[11px] text-gray-700">{s.nombre ?? s.nombre_servicio_smart}</span>
+                                                    </label>
+                                                    {marcado && (
+                                                        <input
+                                                            type="text"
+                                                            value={detalles[idServ] ?? ""}
+                                                            onChange={e => setDetalle(idServ, e.target.value)}
+                                                            placeholder="Detalle opcional"
+                                                            className="w-40 border border-gray-200 rounded px-2 py-0.5 text-[11px] focus:outline-none focus:ring-1 focus:ring-green-300"
+                                                        />
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            <div className="flex justify-end pt-2 sticky bottom-0 bg-white">
+                <button
+                    onClick={guardar}
+                    disabled={guardando}
+                    className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white text-xs font-semibold rounded-lg px-4 py-2 flex items-center gap-2 transition-colors">
+                    {guardando && <Spin size={3}/>}
+                    {guardando ? "Guardando..." : "Guardar servicios"}
+                </button>
+            </div>
+        </div>
+    );
+};
+
+// ─── Tab Info: orquesta los 4 sub-tabs ───────────────────────────────────────
 const TabBtn = ({ label, activo, onClick }) => (
     <button onClick={onClick}
         className={`px-3 py-1.5 text-[11px] font-semibold rounded-lg transition-colors ${activo ? "bg-green-600 text-white" : "text-gray-500 hover:bg-gray-100"}`}>
@@ -247,12 +446,14 @@ const TabBtn = ({ label, activo, onClick }) => (
 
 const TabInfoEstablecimiento = ({ detalle, ciudades, cargandoCiudades, tipos, onGuardado, onGaleriaChange }) => {
     const [subTab, setSubTab] = useState("info");
+    const idEst = detalle?.establecimiento?.id_tbl_establecimiento;
     return (
         <div>
             <div className="flex gap-1 mb-4 p-1 bg-gray-100 rounded-lg">
-                <TabBtn label="Datos"     activo={subTab === "info"}      onClick={() => setSubTab("info")}/>
-                <TabBtn label="Galería"   activo={subTab === "galeria"}   onClick={() => setSubTab("galeria")}/>
-                <TabBtn label="Contactos" activo={subTab === "contactos"} onClick={() => setSubTab("contactos")}/>
+                <TabBtn label="Datos"     activo={subTab === "info"}       onClick={() => setSubTab("info")}/>
+                <TabBtn label="Galería"   activo={subTab === "galeria"}    onClick={() => setSubTab("galeria")}/>
+                <TabBtn label="Contactos" activo={subTab === "contactos"}  onClick={() => setSubTab("contactos")}/>
+                <TabBtn label="Servicios" activo={subTab === "servicios"}  onClick={() => setSubTab("servicios")}/>
             </div>
             {subTab === "info" && (
                 <PanelInfo
@@ -272,6 +473,9 @@ const TabInfoEstablecimiento = ({ detalle, ciudades, cargandoCiudades, tipos, on
             )}
             {subTab === "contactos" && (
                 <PanelContactos contactos={detalle.contactos}/>
+            )}
+            {subTab === "servicios" && (
+                <PanelServicios idEstablecimiento={idEst}/>
             )}
         </div>
     );

@@ -70,7 +70,7 @@ const TablaReservas = ({ handleClickEdit, reservas }) => {
                 verificarPermiso(68) &&
                     loadingId == id
                     ? <div className='h-5 w-5' ><span className="icon-[line-md--loading-twotone-loop] h-5 w-5"></span></div>
-                    : <div className='h-5 w-5' title='Editar reserva' onClick={(e) => { e.preventDefault(); e.button === 0 && handleClickEditRes(id) }}><a className="icon-[typcn--edit] w-5 h-5 hover:bg-blue-600 cursor-pointer text-gray-500" href={`${window.location}reserva/${id}`} /></div>
+                    : <div className='h-5 w-5' title='Editar reserva' onClick={(e) => { e.preventDefault(); window.open(`/administrador/reserva/${id}`, '_blank') }}><span className="icon-[typcn--edit] w-5 h-5 hover:bg-blue-600 cursor-pointer text-gray-500" /></div>
             }
             {
                 <div className='h-5 w-5'><span title='Imprimir reserva' className="icon-[uil--print] w-5 h-5 hover:bg-blue-600  cursor-pointer text-gray-500" onClick={() => handleClickPrint(id)}></span></div>

@@ -73,6 +73,72 @@ class EstablecimientosService extends GenericService {
         return await this.post(url, params);
     }
 
+    // -- Servicios SMART del establecimiento ----------------------------------
+    async getServiciosEstablecimiento(id_establecimiento) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getServicios/`;
+        return await this.post(url, { id_establecimiento });
+    }
+
+    async getCatalogoServiciosSmart() {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getServiciosSmart/`;
+        return await this.post(url, {});
+    }
+
+    async setServiciosEstablecimiento(params) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}setServicios/`;
+        return await this.post(url, params);
+    }
+
+    // -- Ofertas del establecimiento ------------------------------------------
+    async getOfertasEstablecimiento(id_establecimiento) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getOfertas/`;
+        return await this.post(url, { id_establecimiento });
+    }
+
+    async getCatalogosOferta() {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getCatalogosOferta/`;
+        return await this.post(url, {});
+    }
+
+    async gestionarOferta(params) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}gestionarOfertas/`;
+        return await this.post(url, params);
+    }
+
+    async eliminarOferta(id_oferta) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}eliminarOferta/`;
+        return await this.post(url, { id_oferta });
+    }
+
+    // -- Oferta individual (con keywords/resumen/contenido + empresas) --------
+    async getOferta(id_info_indice) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getOferta/`;
+        return await this.post(url, { id_info_indice });
+    }
+
+    // -- Servicios de una oferta concreta -------------------------------------
+    async getServiciosOferta(id_oferta) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getServiciosOferta/`;
+        return await this.post(url, { id_oferta });
+    }
+
+    async setServiciosOferta(params) {
+        // params: { id_oferta, id_servicios: {<idServ>: <idTipoDetalle>}, extra: {<idServ>: "texto"} }
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}setServiciosOferta/`;
+        return await this.post(url, params);
+    }
+
+    // -- Aprobaciones (id_tbl_estado_modificacion = 2) ------------------------
+    async listarEstablecimientosRevision() {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}listarEstablecimientosRevision/`;
+        return await this.post(url, {});
+    }
+
+    async aprobarEstablecimiento(id_establecimiento) {
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}aprobarEstablecimiento/`;
+        return await this.post(url, { id_establecimiento });
+    }
+
 }
 
 export default EstablecimientosService;

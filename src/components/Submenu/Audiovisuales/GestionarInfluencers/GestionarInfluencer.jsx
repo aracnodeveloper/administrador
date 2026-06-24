@@ -1,9 +1,24 @@
-import { Tooltip } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { getInfluencers } from '../../../../controllers/audiovisuales/AudiovisualesController';
 import AgregarInfluencer from './AgregarInfluencer';
 import GestionarRedInfluencer from './GestionarRedInfluencer';
 import GestionarVideoInfluencer from './GestionarVideoInfluencer';
+
+// ── Botón de acción reutilizable ──────────────────────────────────────────────
+const BtnAccion = ({ title, activo, disabled, onClick, children }) => (
+    <button
+        onClick={onClick}
+        disabled={disabled}
+        title={title}
+        className={`p-1.5 rounded-lg text-xs transition-colors ${
+            disabled ? "bg-gray-100 text-gray-300 cursor-not-allowed" :
+            activo   ? "bg-green-600 text-white" :
+                       "bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700"
+        }`}
+    >
+        {children}
+    </button>
+);
 
 const GestionarInfluencer = () => {
     const [data, setData] = useState([]);
@@ -22,58 +37,55 @@ const GestionarInfluencer = () => {
     };
 
     return (
-        <div className='pl-3 w-full'>
-            <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
-                <div className='flex gap-2 items-center'>
-                    <label className='text-greenVE-700 text-xl border-0'>Gestión de Influencers</label>
-                    <Tooltip className='bg-gray-700' content="Añadir influencer" arrow={false}>
-                        <AgregarInfluencer setChange={handleSetChange} key={change} />
-                    </Tooltip>
-                </div>
-                <div className='border border-gray-300 mt-2'></div>
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-3">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">Id Influencer</th>
-                                <th scope="col" className="px-6 py-3">Nombre</th>
-                                <th scope="col" className="px-6 py-3">Código Promocional</th>
-                                <th scope="col" className="px-6 py-3">Categoría</th>
-                                <th scope="col" className="px-6 py-3">Acciones</th>
+        <div className='flex-1 p-4 w-full relative'>
+            {/* Header con botón agregar */}
+            <div className="flex flex-wrap gap-2 mb-3 items-center">
+                <AgregarInfluencer setChange={handleSetChange} key={change} />
+            </div>
+
+            {/* Tabla */}
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                {data.length === 0 ? (
+                    <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
+                        <svg className="w-5 h-5 animate-spin text-green-600" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                        <span className="text-sm">Cargando...</span>
+                    </div>
+                ) : (
+                    <table className="w-full text-xs">
+                        <thead>
+                            <tr className="bg-gray-50 border-b border-gray-200">
+                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600">ID</th>
+                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600">Nombre</th>
+                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600">Código Promocional</th>
+                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600">Categoría</th>
+                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {
-                                data.length ? data.map((item) => (
-                                    <tr key={item.id_influencer} className="odd:bg-white even:bg-gray-50">
-                                        <td className="px-6 py-4">{item.id_influencer}</td>
-                                        <td className="px-6 py-4">{item.nombre_influencer}</td>
-                                        <td className="px-6 py-4">{item.cp_influencer}</td>
-                                        <td className="px-6 py-4">{item.nombre_categoria}</td>
-                                        <td className="px-6 py-4 flex gap-2">
-                                            <Tooltip className='bg-gray-700' content="Editar" arrow={false}>
-                                                <AgregarInfluencer setChange={handleSetChange} editar={true} data={item} key={`${item.id_influencer}-${change}`} />
-                                            </Tooltip>
-                                            <Tooltip className='bg-gray-700' content="Redes sociales" arrow={false}>
-                                                <GestionarRedInfluencer data={item}  key={`${item.id_influencer}-${change}`} setChange={handleSetChange}/>
-                                            </Tooltip>
-                                            <Tooltip className='bg-gray-700' content="Videos" arrow={false}>
-                                                <GestionarVideoInfluencer data={item}/>
-                                            </Tooltip>{/*
-                                            <Tooltip className='bg-gray-700' content="Eliminar" arrow={false}>
-                                                <span className="icon-[material-symbols--delete] w-5 h-5 hover:text-red-600 cursor-pointer"></span>
-                                </Tooltip>*/}
-                                        </td>
-                                    </tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan="4"><span className="icon-[eos-icons--bubble-loading] h-10 w-full text-greenVE-500"></span></td>
-                                    </tr>
-                                )
-                            }
+                        <tbody className="divide-y divide-gray-100">
+                            {data.map((item, idx) => (
+                                <tr
+                                    key={item.id_influencer}
+                                    className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-green-50 transition-colors`}
+                                >
+                                    <td className="px-3 py-2 text-gray-400 font-mono">{item.id_influencer}</td>
+                                    <td className="px-3 py-2 font-semibold text-gray-800">{item.nombre_influencer}</td>
+                                    <td className="px-3 py-2 font-mono text-gray-700">{item.cp_influencer}</td>
+                                    <td className="px-3 py-2 text-gray-500">{item.nombre_categoria}</td>
+                                    <td className="px-3 py-2">
+                                        <div className="flex items-center gap-1.5">
+                                            <AgregarInfluencer setChange={handleSetChange} editar={true} data={item} key={`${item.id_influencer}-${change}`} />
+                                            <GestionarRedInfluencer data={item} key={`red-${item.id_influencer}-${change}`} setChange={handleSetChange}/>
+                                            <GestionarVideoInfluencer data={item}/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
-                </div>
+                )}
             </div>
         </div>
     );

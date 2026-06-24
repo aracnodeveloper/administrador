@@ -12,7 +12,7 @@ class Config {
   }
 
   static get CRM_TOKEN() {
-    return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Njc4MDE2NTcsImF1ZCI6IjI1NGMyOTA1OTg1MmRkN2I4MjI3OTk3MTY5ZTMzOTJlNzUxZWU0ZjYiLCJkYXRhIjp7ImNvZGlnbyI6InZpc2l0YWVjdWFkb3IiLCJub21icmVzIjoiVmlzaXRhRWN1YWRvci5jb20iLCJpZF91c3VhcmlvIjoiMCIsImlkX3NlcnZpY2lvIjoyNTUsIm1ldG9kbyI6bnVsbCwib3JpZ2VuIjoiYXBwIiwiaWRfY2FuYWwiOm51bGwsImlkX3VzdWFyaW9fY3JtIjoiMTcxNyJ9fQ.1KQLvxoCha0hl20NgYqOeXEWvAzD_93Q9QaM40i_Ob8";
+    return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE4MTEyODM1OTUsImF1ZCI6ImU4NjgzZTgwMDI3NjFiMzRiM2I5YThlYzhmYmQ4YmYyODgwYjdiNzUiLCJkYXRhIjp7ImNvZGlnbyI6InZlY3VhZG9yIiwibm9tYnJlcyI6IlZpc2l0YWVjdWFkb3IiLCJpZF91c3VhcmlvIjoiMCIsImlkX3NlcnZpY2lvIjoyNTUsIm1ldG9kbyI6bnVsbCwib3JpZ2VuIjoiYXBwIiwiaWRfY2FuYWwiOm51bGwsImlkX3VzdWFyaW9fY3JtIjoiODk4In19.pb8UJWQ8LgER-uYQftjrW3fPb_qskTIhTajSjHKdDDw";
   }
 
   static get METRICAS() {
@@ -48,7 +48,7 @@ class Config {
   }
 
   static get VERINFO() {
-    return "/info/";
+    return "/inf/";
   }
 
   static get VERLUG() {
@@ -59,7 +59,7 @@ class Config {
     return "/est/";
   }
 
-   static get TICKETS() {
+  static get TICKETS() {
     return "/ticket/"
   }
 

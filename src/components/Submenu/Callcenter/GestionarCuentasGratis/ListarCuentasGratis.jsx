@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { formatDate } from '../../../../global/utils';
 import { getCuentaGratis } from '../../../../controllers/callcenter/CallcenterController';
 import TablaCuentasGratis from './ListarCuentasGratis/TablaCuentasGratis';
-import ReactPaginate from 'react-paginate';
 import Config from '../../../../global/config';
 import DescargarGratis from './DescargarGratis';
-import { get } from 'react-hook-form';
 
 const ListarCuentasGratis = () => {
     const [fInicio, setFInicio] = useState(formatDate(new Date().setMonth(new Date().getMonth() - 1)));
@@ -56,8 +54,8 @@ const ListarCuentasGratis = () => {
         handleClicAplicar({});
     }, [selPagina])
 
-    const handleOnPageChange = (page) => {
-        setSelPagina(page.selected); // Cambiar el estado de la página seleccionada
+    const handleOnPageChange = (newPage) => {
+        setSelPagina(newPage);
     };
 
     const handleUpdateData = (index, item) => {
@@ -70,91 +68,129 @@ const ListarCuentasGratis = () => {
     };
 
     return (
-        <div className='pl-3 w-full'>
-            <div className='w-full bg-gray-100 rounded-md px-4 py-2 pb-6'>
-                <div className='flex gap-2 items-center mb-2'>
-                    <label className='text-greenVE-700 text-xl border-0'>Cuentas Gratis</label>
-                    <DescargarGratis params={{
-                        fechas:{
-                            inicio: fInicio,
-                            fin: fFin
-                        },
-                        nombre: nombre,
-                        correo: correo,
-                        ci:cedula,
-                    }}/>
+        <div className='flex-1 p-4 w-full relative'>
+            {/* Filtros inline */}
+            <div className="flex flex-wrap gap-2 mb-3 items-center">
+                {/* Filtro de fechas */}
+                <div className="flex items-center gap-1.5 border border-gray-200 rounded-lg px-2 py-1 bg-white">
+                    <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-[10px] text-gray-400 shrink-0">Fecha:</span>
+                    <input
+                        type="date"
+                        className="text-xs border-none outline-none bg-transparent text-gray-600"
+                        value={fInicio}
+                        onChange={e => setFInicio(e.target.value)}
+                        title="Desde"
+                    />
+                    <span className="text-gray-300 text-xs">—</span>
+                    <input
+                        type="date"
+                        className="text-xs border-none outline-none bg-transparent text-gray-600"
+                        value={fFin}
+                        onChange={e => setFFin(e.target.value)}
+                        title="Hasta"
+                    />
                 </div>
-                <div className='bg-greenVE-400 p-2  flex flex-col '>
-                    <div>
-                        <div className='flex gap-2'>
-                            <div className='w-2/12 ml-2'>
-                                <label className='text-sm text-greenVE-950 '>Desde:</label>
-                            </div>
-                            <div className='w-2/12'>
-                                <label className='text-sm text-greenVE-950 '>Hasta:</label>
-                            </div>
-                            {
-                                total&&
-                                <div className='w-[64.5%] flex items-center justify-end'>
-                                    <label className='text-base font-semibold text-greenVE-500 text-pretty bg-white rounded-md px-2'>Total: {total}</label>
-                                </div>
-                            }
+
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Nombres"
+                    value={nombre || ''}
+                    onChange={e => setNombre(e.target.value)}
+                />
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Cédula"
+                    value={cedula || ''}
+                    onChange={e => setCedula(e.target.value)}
+                />
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Correo electrónico"
+                    value={correo || ''}
+                    onChange={e => setCorreo(e.target.value)}
+                />
+
+                <select
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={cantidad}
+                    onChange={(event) => setCantidad(event.target.value)}
+                >
+                    {Config.ELEMENTOSHOJAS.map((item) => (
+                        <option key={item.id} value={item.id}>{item.nombre}</option>
+                    ))}
+                </select>
+
+                <button
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 rounded-lg py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+                    onClick={() => handleClicAplicar({filtros:true})}
+                    disabled={loading}
+                >
+                    {loading ? 'Buscando...' : 'Aplicar'}
+                </button>
+
+                <DescargarGratis params={{
+                    fechas:{ inicio: fInicio, fin: fFin },
+                    nombre: nombre,
+                    correo: correo,
+                    ci:cedula,
+                }}/>
+            </div>
+
+            {/* Tabla */}
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                {total != null && (
+                    <div className="flex items-center justify-between px-4 py-2.5 border-b bg-gray-50">
+                        <div className="text-xs text-gray-500">
+                            Total: <strong className="text-gray-800">{total}</strong> resultado{total !== 1 ? 's' : ''}
                         </div>
-                        <div className='flex gap-2 my-2'>
-                            <input value={fInicio} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setFInicio(event.target.value) }}></input>
-                            <input value={fFin} type='date' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setFFin(event.target.value) }}></input>
-                            <input value={nombre} placeholder='Nombres' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setNombre(event.target.value) }}></input>
-                            <input value={cedula} placeholder='Cédula' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setCedula(event.target.value) }}></input>
-                            <div className="flex gap-1">
-                                <select className='p-0 text-xs h-7  px-2' value={cantidad} onChange={(event)=>setCantidad(event.target.value)}>
-                                    {
-                                        Config.ELEMENTOSHOJAS.map((item)=>(
-                                            <option value={item.id}>{item.nombre}</option>
-                                        ))
-                                    }
-                                </select>
-                                <button className='bg-greenVE-200 border-2 border-greenVE-600 px-4  h-7' onClick={() => handleClicAplicar({filtros:true})}>Aplicar</button>
-                            </div>
-                        </div>
-                        <div className='flex gap-2 my-2'>
-                            <input value={correo} placeholder='Correo electrónico' type='text' className='text-xs px-1 py-1  mb-2 w-2/12 text-center ' onChange={(event) => { setCorreo(event.target.value) }}></input>
-                        </div>
+                        <span className="text-xs text-gray-400">Página {selPagina + 1}</span>
+                    </div>
+                )}
+
+                {loading ? (
+                    <div className="flex items-center justify-center py-16 gap-2 text-gray-400">
+                        <svg className="w-5 h-5 animate-spin text-green-600" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                        <span className="text-sm">Cargando...</span>
+                    </div>
+                ) : (!loading && !data) ? (
+                    <p className="text-center text-xs text-gray-400 py-10">Sin resultados disponibles</p>
+                ) : (
+                    <TablaCuentasGratis listado={data} handleUpdateData={handleUpdateData}/>
+                )}
+            </div>
+
+            {/* Paginación */}
+            {!loading && data && numPaginas > 1 && (
+                <div className="flex justify-between items-center mt-3 text-xs text-gray-500">
+                    <span>Página {selPagina + 1} de {numPaginas}</span>
+                    <div className="flex gap-2">
+                        <button
+                            disabled={selPagina === 0}
+                            onClick={() => handleOnPageChange(selPagina - 1)}
+                            className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                        >
+                            ← Anterior
+                        </button>
+                        <button
+                            disabled={selPagina >= numPaginas - 1}
+                            onClick={() => handleOnPageChange(selPagina + 1)}
+                            className="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                        >
+                            Siguiente →
+                        </button>
                     </div>
                 </div>
-                {
-                    loading
-                        ? <div className='w-full flex items-center justify-center mt-5'>
-                            <span className="icon-[line-md--loading-twotone-loop] w-10 h-10 text-greenVE-600"></span>
-                        </div>
-                        : (!loading && !data)
-                            ? <div className='w-full flex items-center justify-center mt-5'>
-                                <label>Sin resultados disponibles</label>
-                            </div>
-                            : <div className="relative overflow-x-auto shadow-md  ">
-                                <TablaCuentasGratis listado={data} handleUpdateData={handleUpdateData}/>
-                                {<ReactPaginate
-                                    forcePage={selPagina}
-                                    breakLabel="..."
-                                    nextLabel="Siguiente"
-                                    onPageChange={handleOnPageChange}
-                                    pageRangeDisplayed={5}
-                                    pageCount={numPaginas}
-                                    previousLabel="Anterior"
-                                    renderOnZeroPageCount={null}
-                                    containerClassName={'flex justify-center p-4'}
-                                    pageClassName={'mx-1'}
-                                    pageLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    previousClassName={'mx-1'}
-                                    previousLinkClassName={'px-3 py-1  border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    nextClassName={'mx-1'}
-                                    nextLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    breakClassName={'mx-1'}
-                                    breakLinkClassName={'px-3 py-1 border border-gray-300 text-greenVE-600 rounded cursor-pointer transition duration-200 hover:bg-greenVE-100'}
-                                    activeClassName={'bg-greenVE-300 rounded py-1 -mt-1'}
-                                />}
-                            </div>
-                }
-            </div>
+            )}
         </div>
     );
 };

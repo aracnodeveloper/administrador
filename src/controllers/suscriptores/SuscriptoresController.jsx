@@ -51,6 +51,40 @@ export const listarSuscriptores = async function ({
   }
 };
 
+export const listarPorVencer = async function ({ filtros = {}, pagina = 1 }) {
+  try {
+    var params = {
+      token: session.token,
+      pagina: pagina,
+    };
+    if (filtros && filtros.cod_vendedor) params.cod_vendedor = filtros.cod_vendedor;
+    if (filtros && filtros.nombre_vendedor) params.nombre_vendedor = filtros.nombre_vendedor;
+    if (filtros && filtros.ci_cliente) params.ci_cliente = filtros.ci_cliente;
+    if (filtros && filtros.cod_cliente) params.cod_cliente = filtros.cod_cliente;
+    if (filtros && filtros.nombre_cliente) params.nombre_cliente = filtros.nombre_cliente;
+    if (filtros && filtros.cantidad) params.cantidad = filtros.cantidad;
+    if (filtros && filtros.dias) params.dias = filtros.dias;
+    // dias_vencidas puede ser 0 (no incluir vencidas), por eso se valida contra undefined/null/""
+    if (
+      filtros &&
+      filtros.dias_vencidas !== undefined &&
+      filtros.dias_vencidas !== null &&
+      filtros.dias_vencidas !== ""
+    ) {
+      params.dias_vencidas = filtros.dias_vencidas;
+    }
+
+    const res = await susService.listarPorVencer(params);
+    if (res.estado && res.codigo == 0) {
+      return res["data"];
+    }
+    return { cantidad: 0, suscripciones: [] };
+  } catch (e) {
+    console.error("Error en listarPorVencer:", e);
+    throw e;
+  }
+};
+
 export const comprobarCodigoPromocional = async function (codigo) {
   try {
     var params = {

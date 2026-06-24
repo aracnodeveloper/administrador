@@ -6,6 +6,7 @@ import {
 } from "../../../../controllers/establecimientos/EstablecimientosController";
 import TabInfoEstablecimiento from "./TabInfoEstablecimiento";
 import TabContratosEstablecimiento from "./TabContratosEstablecimiento";
+import TabOfertasEstablecimiento from "./TabOfertasEstablecimiento";
 
 // ─── Helpers UI compartidos ───────────────────────────────────────────────────
 const Spin = ({ size = 4 }) => (
@@ -129,6 +130,11 @@ const PanelEdicionEstablecimiento = ({ establecimiento, tabInicial = "info", onC
                     activo={tab === "contratos"}
                     onClick={() => setTab("contratos")}
                 />
+                <TabBtn
+                    label="Ofertas"
+                    activo={tab === "ofertas"}
+                    onClick={() => setTab("ofertas")}
+                />
             </div>
 
             {/* ── Contenido ───────────────────────────────────────────── */}
@@ -161,6 +167,11 @@ const PanelEdicionEstablecimiento = ({ establecimiento, tabInicial = "info", onC
                             <TabContratosEstablecimiento
                                 idEstablecimiento={establecimiento.id_tbl_establecimiento}
                                 establecimiento={detalle?.establecimiento}
+                            />
+                        )}
+                        {tab === "ofertas" && (
+                            <TabOfertasEstablecimiento
+                                idEstablecimiento={establecimiento.id_tbl_establecimiento}
                             />
                         )}
                     </>
