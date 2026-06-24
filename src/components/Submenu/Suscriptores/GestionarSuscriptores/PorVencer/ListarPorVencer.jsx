@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import TablaPorVencer from "./TablaPorVencer";
-import { listarPorVencer } from "../../../../../controllers/suscriptores/SuscriptoresController";
+import {
+    listarPorVencer,
+    convertirPorVencerALeads,
+} from "../../../../../controllers/suscriptores/SuscriptoresController";
 import Config from "../../../../../global/config";
 
 const OPCIONES_DIAS = [
@@ -22,6 +25,10 @@ const ListarPorVencer = () => {
     const [dias, setDias] = useState("30");
     const [incluirVencidas, setIncluirVencidas] = useState(true);
     const [cantidad, setCantidad] = useState("20");
+
+    // conversión a leads RISE
+    const [convirtiendo, setConvirtiendo] = useState(false);
+    const [resultadoConv, setResultadoConv] = useState(null);
 
     const construirFiltros = () => ({
         ci_cliente: ciUsuario,
@@ -63,6 +70,37 @@ const ListarPorVencer = () => {
     const handlePagina = (nueva) => {
         setSelPagina(nueva);
         cargar({ pagina: nueva + 1 });
+    };
+
+    const handleConvertirLeads = async () => {
+        if (!data || data.length === 0) return;
+        const ok = window.confirm(
+            `¿Convertir las ${data.length} suscripción(es) en pantalla a leads de RISE?`
+        );
+        if (!ok) return;
+
+        setConvirtiendo(true);
+        setResultadoConv(null);
+        try {
+            const res = await convertirPorVencerALeads(data);
+            const rows = res?.rows || [];
+            const duplicados = rows.filter(
+                (r) => !r.success && /ya existe/i.test(r.error || "")
+            ).length;
+            const fallidos = (res?.failedCount || 0) - duplicados;
+            setResultadoConv({
+                creados: res?.createdCount || 0,
+                duplicados,
+                errores: fallidos > 0 ? fallidos : 0,
+                total: res?.totalRows || 0,
+            });
+        } catch (e) {
+            setResultadoConv({
+                error: "No se pudo conectar con RISE. Verifique la URL/disponibilidad del servicio.",
+            });
+        } finally {
+            setConvirtiendo(false);
+        }
     };
 
     // resumen
@@ -137,7 +175,41 @@ const ListarPorVencer = () => {
                 >
                     {loading ? "Buscando..." : "Aplicar"}
                 </button>
+
+                <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-lg py-1.5 text-xs font-medium transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
+                    onClick={handleConvertirLeads}
+                    disabled={loading || convirtiendo || !data || data.length === 0}
+                    title="Crea leads en RISE a partir de las suscripciones listadas (deduplica por cédula)"
+                >
+                    {convirtiendo ? "Convirtiendo..." : "Convertir a leads (RISE)"}
+                </button>
             </div>
+
+            {/* Resultado de conversión a leads */}
+            {resultadoConv && (
+                <div className="mb-3 text-[11px]">
+                    {resultadoConv.error ? (
+                        <span className="px-2.5 py-1 rounded-lg bg-red-100 text-red-700 font-medium">
+                            {resultadoConv.error}
+                        </span>
+                    ) : (
+                        <div className="flex flex-wrap gap-2">
+                            <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-700 font-medium">
+                                Leads creados: {resultadoConv.creados}
+                            </span>
+                            <span className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 font-medium">
+                                Ya existían: {resultadoConv.duplicados}
+                            </span>
+                            {resultadoConv.errores > 0 && (
+                                <span className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-700 font-medium">
+                                    Con error: {resultadoConv.errores}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Resumen */}
             {!loading && data && (

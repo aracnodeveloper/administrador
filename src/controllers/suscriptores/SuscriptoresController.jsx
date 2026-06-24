@@ -85,6 +85,36 @@ export const listarPorVencer = async function ({ filtros = {}, pagina = 1 }) {
   }
 };
 
+/** Tipo de lead en RISE para conversiones de suscripciones por vencer. */
+const RISE_LEAD_TYPE_RENOVACION = "e5e5e5e5-0000-0000-0000-000000000099";
+
+/**
+ * Convierte una lista de suscripciones por vencer en leads de RISE.
+ * Solo necesita nombre (usuario) y cédula (ci_ruc); RISE deduplica por cédula
+ * activa, así que repetir la conversión no crea duplicados.
+ * @returns el resultado de RISE: { totalRows, createdCount, failedCount, rows[] }
+ */
+export const convertirPorVencerALeads = async function (suscripciones) {
+  try {
+    const items = (suscripciones || [])
+      .map((s) => ({
+        name: (s.usuario || "").trim(),
+        cedula: (s.ci_ruc || "").trim(),
+        typeId: RISE_LEAD_TYPE_RENOVACION,
+      }))
+      .filter((it) => it.name && it.cedula);
+
+    if (items.length === 0) {
+      return { totalRows: 0, createdCount: 0, failedCount: 0, rows: [] };
+    }
+
+    return await susService.convertirEnLeadsRise(items);
+  } catch (e) {
+    console.error("Error en convertirPorVencerALeads:", e);
+    throw e;
+  }
+};
+
 export const comprobarCodigoPromocional = async function (codigo) {
   try {
     var params = {

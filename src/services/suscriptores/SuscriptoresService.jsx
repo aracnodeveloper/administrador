@@ -31,5 +31,25 @@ class SuscriptoresService extends GenericService {
     const url = `${Config.URL_SERVICIOS}${Config.VERSUS}sendNotificacionSuscripcion/`;
     return await this.post(url, params);
   }
+
+  /**
+   * Crea leads en RISE (otro host, sin el token de apidev) en modo relajado:
+   * basta nombre + cédula. Devuelve el LeadBulkCreateResultDto de RISE.
+   */
+  async convertirEnLeadsRise(items) {
+    // RISE_API puede venir con o sin "/api" (y con o sin slash final): se normaliza.
+    const base = (Config.RISE_API || "").replace(/\/+$/, "");
+    const path = /\/api$/i.test(base) ? "/Lead/bulk" : "/api/Lead/bulk";
+    const url = `${base}${path}?relaxRequired=true`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify(items),
+    });
+    if (!response.ok) {
+      throw new Error(`RISE respondió ${response.status}`);
+    }
+    return await response.json();
+  }
 }
 export default SuscriptoresService;

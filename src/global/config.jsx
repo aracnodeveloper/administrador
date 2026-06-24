@@ -7,6 +7,11 @@ class Config {
     return "https://api.visitaecuador.com/v1.7";
   }
 
+  /** Base del API de RISE (CRM de leads). Ajustar al entorno real (dev/prod). */
+  static get RISE_API() {
+    return "https://ris.redinservsa.com/ris/";
+  }
+
   static get DEVELOPER_TOKEN() {
     return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjI2NTI5OTcxMDcsImF1ZCI6IjY0NzY2ZTJiYzllYWUxNGI3ZjBhZGIyZGQ4ZWYyNjJlOThkNzZjZjkiLCJkYXRhIjp7ImlkX3NlcnZpY2lvIjoxLCJpZF9tZXRvZG8iOjEsIm5vbWJyZXMiOm51bGwsIm9yaWdlbiI6ImFwcCIsImlkX2Rlc2Fycm9sbGFkb3IiOjMsImlkX3VzdWFyaW9fdmVuZGVkb3IiOjM5OCwiZXhwIjoiMTAwMDAwMDAwMCJ9fQ.5P7XYwxRz3Ex3ARExA3Fdr59vM8yIP-mB5NZJlDgPBM";
   }
