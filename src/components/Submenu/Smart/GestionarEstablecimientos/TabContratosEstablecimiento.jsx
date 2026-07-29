@@ -63,6 +63,10 @@ const FormContrato = ({ idEstablecimiento, idUsuario, idCiudad, contrato, onGuar
     const [tiposBeneficio, setTiposBeneficio] = useState([]);
     const [clasificaciones,setClasificaciones]= useState([]);
     const [cargandoCat,    setCargandoCat]    = useState(true);
+    // Datos completos del contrato traídos por getDatosContrato (para editar):
+    // incluye id_tbl_cab_kardex / id_tbl_movimiento / id_tbl_rol_usuario, que el
+    // backend necesita para ir por la rama de UPDATE y no re-crear el kardex.
+    const [contratoSrv,    setContratoSrv]    = useState(null);
 
     // ── Sección Inicio ────────────────────────────────────────────────────
     const hoy    = new Date().toISOString().substring(0, 10);
@@ -127,6 +131,35 @@ const FormContrato = ({ idEstablecimiento, idUsuario, idCiudad, contrato, onGuar
                     setTiposPago(data.data.tiposPago ?? []);
                     setTiposBeneficio(data.data.tiposBeneficio ?? []);
                     setClasificaciones(data.data.clasificaciones ?? []);
+
+                    // Precarga de datos existentes al editar
+                    const c = data.data.contrato;
+                    if (c) {
+                        setContratoSrv(c);
+                        if (c.fecha_ini) setFechaIni(c.fecha_ini.substring(0, 10));
+                        if (c.fecha_fin) setFechaFin(c.fecha_fin.substring(0, 10));
+                        setIva(String(c.iva ?? 12));
+                        setServicios(String(c.servicios ?? 10));
+                        setComentario(c.comentario ?? "");
+                        setTerminos(c.terminosycondiciones ?? "");
+                        setNochesMeta(String(c.noches_gratis_meta ?? 0));
+                        setNochesGratis(String(c.x_noches_gratis ?? 0));
+                        setNochesCanje(String(c.x_noches_canje ?? 0));
+                        setMaxDias(String(c.max_dias_cancelar ?? 0));
+                        setMinPct(String(c.minimo_porcentaje ?? 0));
+                        setEdadNino(String(c.edad_nino ?? 12));
+                        setPrefLugar(String(c.preferencia_lugar ?? 3));
+                        setBeneficiosSelec(new Set((c.beneficiosActivos ?? []).map(String)));
+                        setClasifSelec(new Set((c.clasificacionesActivas ?? []).map(String)));
+                        setPagos((c.pagos ?? []).map((p, i) => ({
+                            key:    i,
+                            id:     String(p.id_tbl_tipo_pago),
+                            nombre: p.nombre,
+                            imagen: p.imagen,
+                            valor:  String(p.cantidad),
+                        })));
+                        setDocumentos(c.documentos ?? []);
+                    }
                 }
             } catch {}
             setCargandoCat(false);
@@ -213,25 +246,30 @@ const FormContrato = ({ idEstablecimiento, idUsuario, idCiudad, contrato, onGuar
             fd.append('idLugar',               idCiudad);
             fd.append('desdeptFechaReserva',   fechaIni);
             fd.append('hastaptFechaReserva',   fechaFin);
-            fd.append('iva_porcentaje',         iva);
-            fd.append('servicio_porcentaje',    servicios);
+            // Estos campos el PHP los lee vía $data[...] (extract de $_POST['data']),
+            // por eso van anidados como data[...] y no planos.
+            fd.append('data[iva_porcentaje]',      iva);
+            fd.append('data[servicio_porcentaje]', servicios);
+            fd.append('data[x_noches_gratis]',     nochesGratis);
+            fd.append('data[x_noches_canje]',      nochesCanje);
+            fd.append('data[max_dias_reserva]',    maxDias);
+            fd.append('data[minimo_porcentaje]',   minPct);
+            fd.append('data[edad_nino]',           edadNino);
+            // Estos el PHP los lee como variables sueltas (planos)
             fd.append('comentarios',            comentario);
             fd.append('terminos',               terminos);
             fd.append('noches_gratis_meta',     nochesMeta);
-            fd.append('x_noches_gratis',        nochesGratis);
-            fd.append('x_noches_canje',         nochesCanje);
-            fd.append('max_dias_reserva',       maxDias);
-            fd.append('minimo_porcentaje',      minPct);
-            fd.append('edad_nino',              edadNino);
             fd.append('preferencia_lugar',      prefLugar);
             fd.append('empresa',                '1');
             fd.append('idTipoContrato',         '1');
-            fd.append('idMovimiento',           '2');
+            fd.append('idMovimiento',           String(contratoSrv?.id_tbl_movimiento || '2'));
             fd.append('idProducto',             '5590');
             fd.append('lbAplicaCanje',          '0');
             fd.append('valorTotal',             String(totalPagos));
-            fd.append('id_tbl_cab_kardex',      contrato?.id_tbl_cab_kardex   ?? '');
-            fd.append('id_tbl_rol_usuario',     contrato?.id_tbl_rol_usuario  ?? '');
+            // Al editar, enviar el kardex/rol REALES (de getDatosContrato) para que el
+            // backend actualice y NO intente re-crear el kardex (evita "Duplicate entry").
+            fd.append('id_tbl_cab_kardex',      contratoSrv?.id_tbl_cab_kardex  ?? contrato?.id_tbl_cab_kardex  ?? '');
+            fd.append('id_tbl_rol_usuario',     contratoSrv?.id_tbl_rol_usuario ?? contrato?.id_tbl_rol_usuario ?? '');
             fd.append('idCarga',                '');
             fd.append('idDescarga',             '');
 

@@ -13,6 +13,26 @@ const OPCIONES_DIAS = [
     { id: "60", nombre: "Próximos 60 días" },
 ];
 
+const OPCIONES_DIAS_VENCIDAS = [
+    { id: "0", nombre: "Sin vencidas" },
+    { id: "7", nombre: "Vencidas 7 días" },
+    { id: "15", nombre: "Vencidas 15 días" },
+    { id: "30", nombre: "Vencidas 30 días" },
+    { id: "60", nombre: "Vencidas 60 días" },
+    { id: "90", nombre: "Vencidas 90 días" },
+    { id: "180", nombre: "Vencidas 180 días" },
+    { id: "365", nombre: "Vencidas 1 año" },
+    { id: "730", nombre: "Vencidas 2 años" },
+    { id: "1095", nombre: "Vencidas 3 años" },
+    { id: "1460", nombre: "Vencidas 4 años" },
+    { id: "1825", nombre: "Vencidas 5 años" },
+    { id: "2190", nombre: "Vencidas 6 años" },
+    { id: "2555", nombre: "Vencidas 7 años" },
+    { id: "2920", nombre: "Vencidas 8 años" },
+    { id: "3285", nombre: "Vencidas 9 años" },
+    { id: "3650", nombre: "Vencidas 10 años" },
+];
+
 const ListarPorVencer = () => {
     const [data, setData] = useState();
     const [loading, setLoading] = useState(false);
@@ -22,8 +42,9 @@ const ListarPorVencer = () => {
     // filtros
     const [ciUsuario, setCiUsuario] = useState("");
     const [nombreCliente, setNombreCliente] = useState("");
+    const [ciudad, setCiudad] = useState("");
     const [dias, setDias] = useState("30");
-    const [incluirVencidas, setIncluirVencidas] = useState(true);
+    const [diasVencidas, setDiasVencidas] = useState("30");
     const [cantidad, setCantidad] = useState("20");
 
     // conversión a leads RISE
@@ -33,9 +54,10 @@ const ListarPorVencer = () => {
     const construirFiltros = () => ({
         ci_cliente: ciUsuario,
         nombre_cliente: nombreCliente,
+        ciudad: ciudad,
         dias: dias,
-        // si se incluyen vencidas, mira los últimos 30 días vencidos; si no, 0
-        dias_vencidas: incluirVencidas ? "30" : "0",
+        // ventana hacia atrás de ya vencidas (0 = no incluir vencidas)
+        dias_vencidas: diasVencidas,
         cantidad: cantidad !== "1" ? cantidad : "",
     });
 
@@ -84,12 +106,15 @@ const ListarPorVencer = () => {
         try {
             const res = await convertirPorVencerALeads(data);
             const rows = res?.rows || [];
+            // Con upsert=true ya no debería haber "duplicados" por cédula (se actualizan en
+            // vez de fallar), pero se deja el conteo por si el backend rechaza alguno igual.
             const duplicados = rows.filter(
                 (r) => !r.success && /ya existe/i.test(r.error || "")
             ).length;
             const fallidos = (res?.failedCount || 0) - duplicados;
             setResultadoConv({
                 creados: res?.createdCount || 0,
+                actualizados: res?.updatedCount || 0,
                 duplicados,
                 errores: fallidos > 0 ? fallidos : 0,
                 total: res?.totalRows || 0,
@@ -138,6 +163,13 @@ const ListarPorVencer = () => {
                     value={nombreCliente}
                     onChange={(e) => setNombreCliente(e.target.value)}
                 />
+                <input
+                    type="text"
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs flex-1 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-green-300"
+                    placeholder="Ciudad"
+                    value={ciudad}
+                    onChange={(e) => setCiudad(e.target.value)}
+                />
                 <select
                     className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
                     value={dias}
@@ -148,15 +180,15 @@ const ListarPorVencer = () => {
                     ))}
                 </select>
 
-                <label className="flex items-center gap-1.5 text-xs text-gray-600 select-none">
-                    <input
-                        type="checkbox"
-                        className="accent-green-600"
-                        checked={incluirVencidas}
-                        onChange={(e) => setIncluirVencidas(e.target.checked)}
-                    />
-                    Incluir vencidas (30 d)
-                </label>
+                <select
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={diasVencidas}
+                    onChange={(e) => setDiasVencidas(e.target.value)}
+                >
+                    {OPCIONES_DIAS_VENCIDAS.map((o) => (
+                        <option key={o.id} value={o.id}>{o.nombre}</option>
+                    ))}
+                </select>
 
                 <select
                     className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -198,9 +230,14 @@ const ListarPorVencer = () => {
                             <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-700 font-medium">
                                 Leads creados: {resultadoConv.creados}
                             </span>
-                            <span className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 font-medium">
-                                Ya existían: {resultadoConv.duplicados}
+                            <span className="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-700 font-medium">
+                                Actualizados: {resultadoConv.actualizados}
                             </span>
+                            {resultadoConv.duplicados > 0 && (
+                                <span className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 font-medium">
+                                    Ya existían: {resultadoConv.duplicados}
+                                </span>
+                            )}
                             {resultadoConv.errores > 0 && (
                                 <span className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-700 font-medium">
                                     Con error: {resultadoConv.errores}

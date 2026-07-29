@@ -34,13 +34,16 @@ class SuscriptoresService extends GenericService {
 
   /**
    * Crea leads en RISE (otro host, sin el token de apidev) en modo relajado:
-   * basta nombre + cédula. Devuelve el LeadBulkCreateResultDto de RISE.
+   * basta nombre + cédula. upsert=true hace que, si ya existe un lead activo con la
+   * misma cédula + tipo, se actualicen sus datos de contacto en vez de fallar por
+   * duplicado (evita tener que borrar y recrear leads cuando se agregan campos nuevos
+   * como email/telefono/ciudad). Devuelve el LeadBulkCreateResultDto de RISE.
    */
   async convertirEnLeadsRise(items) {
     // RISE_API puede venir con o sin "/api" (y con o sin slash final): se normaliza.
     const base = (Config.RISE_API || "").replace(/\/+$/, "");
     const path = /\/api$/i.test(base) ? "/Lead/bulk" : "/api/Lead/bulk";
-    const url = `${base}${path}?relaxRequired=true`;
+    const url = `${base}${path}?relaxRequired=true&upsert=true`;
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8" },

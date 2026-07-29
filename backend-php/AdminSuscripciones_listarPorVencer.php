@@ -22,7 +22,7 @@
  *   - cantidad       (opcional, por defecto 20000)
  *   - dias           (opcional, ventana hacia adelante; por defecto 30)
  *   - dias_vencidas  (opcional, ventana hacia atrás de ya vencidas; por defecto 30; 0 = no incluir vencidas)
- *   - ci_cliente, cod_cliente, nombre_cliente, cod_vendedor, nombre_vendedor (filtros opcionales)
+ *   - ci_cliente, cod_cliente, nombre_cliente, cod_vendedor, nombre_vendedor, ciudad (filtros opcionales)
  */
 
 function listarPorVencer($post)
@@ -58,6 +58,10 @@ function listarPorVencer($post)
         if (!empty($post['ci_cliente']) && isset($post['ci_cliente']))
             $wher .= "d.ci_ruc='" . $post['ci_cliente'] . "' and ";
 
+        // Filtro por ciudad del cliente (tbl_lugar.desc_lugar, alias lug).
+        if (!empty($post['ciudad']) && isset($post['ciudad']))
+            $wher .= "UPPER(lug.desc_lugar) like UPPER('%" . $post['ciudad'] . "%') and ";
+
         // Ventana de caducidad: desde hace $diasVencidas días hasta dentro de $diasPorVencer días.
         // sr ya apunta a la renovación de fecha_fin más lejana y vigente (ver subconsulta).
         $wher .= "DATE(sr.fecha_fin) BETWEEN DATE_SUB(CURDATE(), INTERVAL " . $diasVencidas . " DAY) "
@@ -83,6 +87,27 @@ function listarPorVencer($post)
             LIMIT 1
         )";
 
+        // ---- Subconsultas: contacto del cliente (tbl_directorio -> tbl_contacto_directorio) ----
+        // Email: id_tbl_tipo_contacto = 1 ("Email"). Si hay varios, se toma el último agregado.
+        $subEmail = "(
+            SELECT cd.contacto
+            FROM tbl_contacto_directorio cd
+            WHERE cd.id_tbl_directorio = d.id_tbl_directorio
+              AND cd.id_tbl_tipo_contacto = 1
+            ORDER BY cd.id_tbl_contacto_directorio DESC
+            LIMIT 1
+        )";
+
+        // Teléfono: prioriza WhatsApp (14), luego Celular Personal (4), Celular Trabajo (3) y Telefono (2).
+        $subTelefono = "(
+            SELECT cd.contacto
+            FROM tbl_contacto_directorio cd
+            WHERE cd.id_tbl_directorio = d.id_tbl_directorio
+              AND cd.id_tbl_tipo_contacto IN (14, 4, 3, 2)
+            ORDER BY FIELD(cd.id_tbl_tipo_contacto, 14, 4, 3, 2), cd.id_tbl_contacto_directorio DESC
+            LIMIT 1
+        )";
+
         $from = "tbl_suscripcion s
                 JOIN tbl_usuario u USING(id_tbl_usuario)
                 JOIN tbl_directorio d USING(id_tbl_directorio)
@@ -93,11 +118,15 @@ function listarPorVencer($post)
                 JOIN tbl_suscripcion sv ON sv.id_tbl_suscripcion = s.id_tbl_suscripcion1
                 JOIN tbl_usuario uv ON sv.id_tbl_usuario = uv.id_tbl_usuario
                 JOIN tbl_directorio dv ON uv.id_tbl_directorio = dv.id_tbl_directorio
+                LEFT OUTER JOIN tbl_lugar lug ON lug.id_tbl_lugar = d.id_tbl_lugar
                 LEFT OUTER JOIN tbl_metodo_servicio ms ON ms.id_tbl_metodo_servicio = sr.id_tbl_metodo_servicio";
 
         $suscripciones = $this->find("all", array(
             'select'  => "s.codigo, u.id_tbl_usuario, d.ci_ruc,
                         CONCAT_WS(' ', TRIM(d.nom1), TRIM(d.nom2), TRIM(d.ape1)) as usuario,
+                        " . $subEmail . " as email,
+                        " . $subTelefono . " as telefono,
+                        lug.desc_lugar as ciudad,
                         ps.titulo as producto,
                         ps.anios, ps.tiempo,
                         ep.nombre_estado_pago_suscripcion as estado_pago,
@@ -109,7 +138,9 @@ function listarPorVencer($post)
                         sr.id_tbl_suscripcion_renovacion",
             'from'    => $from,
             'where'   => $wher,
-            'order'   => 'sr.fecha_fin ASC',
+            // Primero las VIGENTES por vencer (las más próximas a caducar arriba),
+            // luego las ya vencidas (las más recientes primero).
+            'order'   => "(DATE(sr.fecha_fin) < CURDATE()) ASC, ABS(DATEDIFF(DATE(sr.fecha_fin), CURDATE())) ASC",
             'limit'   => $lim . "," . $cantidad
         ));
 

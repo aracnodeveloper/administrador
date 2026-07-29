@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { verificarPermiso } from "../../global/utils";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import MenuMobile from "./MenuMobile";
 import useMenuState from "../../hooks/useMenuState";
 import {
@@ -66,6 +66,7 @@ const Menu = () => {
     const location = useLocation();
     const currentPath = location.pathname;
     const [scrolled, setScrolled] = useState(false);
+    const navigate = useNavigate();
 
     const menuList = useMemo(() => {
         const list = [];
@@ -185,6 +186,7 @@ const Menu = () => {
                             src="https://visitaecuador.com/img/web/ve_logo.svg"
                             style={{ width: "75px", height: "auto" }}
                             alt="logo"
+                            onClick={() => navigate('/')}
                             className={scrolled ? "brightness-0" : "brightness-0 invert"}
                         />
                     </div>

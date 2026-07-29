@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { listarEstablecimientosAdmin } from "../../../../controllers/establecimientos/EstablecimientosController";
 import PanelEdicionEstablecimiento from "./PanelEdicionEstablecimiento";
 
@@ -10,10 +10,26 @@ const getToken = () => {
 const URL_FOTOS = "https://visitaecuador.com/ve/img/contenido/informacion/thum500x500/";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+// Formatea una cantidad de días a una forma legible con años/meses.
+// Ej: 20 → "20d", 45 → "1m 15d", 800 → "2a 2m", 1000 → "2a 9m".
+const formatDias = (dias) => {
+    const d = Math.abs(Number(dias) || 0);
+    if (d < 30) return `${d}d`;
+    const anios     = Math.floor(d / 365);
+    const meses     = Math.floor((d % 365) / 30);
+    const restoDias = d % 30;
+    const partes = [];
+    if (anios) partes.push(`${anios}a`);
+    if (meses) partes.push(`${meses}m`);
+    // Sin años, mostrar los días sueltos para no perder precisión (ej: "1m 15d")
+    if (!anios && restoDias) partes.push(`${restoDias}d`);
+    return partes.join(" ") || `${d}d`;
+};
+
 const badgeContrato = (estado, dias) => {
-    if (estado === "activo")     return { cls: "bg-green-100 text-green-700",  txt: `Activo · ${dias}d` };
-    if (estado === "por_vencer") return { cls: "bg-amber-100 text-amber-700",  txt: `Vence en ${dias}d` };
-    return                              { cls: "bg-red-100 text-red-600",      txt: `Caducado ${Math.abs(dias)}d` };
+    if (estado === "activo")     return { cls: "bg-green-100 text-green-700",  txt: `Activo · ${formatDias(dias)}` };
+    if (estado === "por_vencer") return { cls: "bg-amber-100 text-amber-700",  txt: `Vence en ${formatDias(dias)}` };
+    return                              { cls: "bg-red-100 text-red-600",      txt: `Caducado ${formatDias(dias)}` };
 };
 
 const ESTADOS = [
@@ -22,6 +38,22 @@ const ESTADOS = [
     { value: "por_vencer", label: "Por vencer" },
     { value: "caducado",   label: "Caducados" },
 ];
+
+// ── Iconos de ordenamiento ───────────────────────────────────────────────────
+const SortIcon = ({ direction }) => (
+    <svg className="w-3 h-3 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {direction === "asc" ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+        ) : direction === "desc" ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+        ) : (
+            <>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 15l4 4 4-4" />
+            </>
+        )}
+    </svg>
+);
 
 // ── Botón de acción reutilizable ──────────────────────────────────────────────
 const BtnAccion = ({ title, activo, disabled, onClick, children }) => (
@@ -51,8 +83,14 @@ const ListarEstablecimientos = () => {
     const [busqueda, setBusqueda]       = useState("");
     const [fechaDesde, setFechaDesde]   = useState("");
     const [fechaHasta, setFechaHasta]   = useState("");
+    const [filtroProvincia, setFiltroProvincia] = useState("");
+    const [filtroCiudad, setFiltroCiudad]       = useState("");
     const [pag, setPag]                 = useState(1);
     const [cantidad, setCantidad]       = useState(20);
+
+    // Ordenamiento
+    const [sortKey, setSortKey]   = useState("");   // "nombre" | "ubicacion" | "contrato" | "ofertas"
+    const [sortDir, setSortDir]   = useState("");   // "asc" | "desc" | ""
     const [hayMas, setHayMas]           = useState(false);
 
     // Panel — qué establecimiento y en qué tab
@@ -71,6 +109,9 @@ const ListarEstablecimientos = () => {
             nitems:           cantidad,
             pag:              pagNum,
             dias_alerta:      30,
+            // El orden se resuelve en el backend para que respete la paginación
+            orden:            sortKey || undefined,
+            dir:              sortDir || undefined,
         };
         const data = await listarEstablecimientosAdmin(params);
         setCargando(false);
@@ -79,13 +120,56 @@ const ListarEstablecimientos = () => {
         setEstablecimientos(data.establecimientos ?? []);
         setHayMas((data.establecimientos ?? []).length === cantidad);
         if (resetResumen && data.resumen) setResumenGlobal(data.resumen);
-    }, [estado, busqueda, fechaDesde, fechaHasta, cantidad]);
+    }, [estado, busqueda, fechaDesde, fechaHasta, cantidad, sortKey, sortDir]);
 
-    // Reset página al cambiar filtros
-    useEffect(() => { setPag(1); }, [estado, busqueda, fechaDesde, fechaHasta, cantidad]);
+    // Reset página al cambiar filtros u orden
+    useEffect(() => { setPag(1); }, [estado, busqueda, fechaDesde, fechaHasta, cantidad, sortKey, sortDir]);
 
     // Cargar datos
     useEffect(() => { cargar(pag, pag === 1); }, [cargar, pag]);
+
+    // ── Extraer provincias y ciudades únicas del listado cargado ──
+    const provinciasUnicas = useMemo(() =>
+        [...new Set(establecimientos.map(e => e.provincia).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')),
+        [establecimientos]
+    );
+    const ciudadesUnicas = useMemo(() => {
+        let lista = establecimientos;
+        if (filtroProvincia) lista = lista.filter(e => e.provincia === filtroProvincia);
+        return [...new Set(lista.map(e => e.ciudad).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+    }, [establecimientos, filtroProvincia]);
+
+    // Reset ciudad si cambia provincia y la ciudad seleccionada ya no está disponible
+    useEffect(() => {
+        if (filtroCiudad && !ciudadesUnicas.includes(filtroCiudad)) setFiltroCiudad("");
+    }, [ciudadesUnicas, filtroCiudad]);
+
+    // ── Filtrar datos mostrados ──
+    // El ordenamiento se resuelve en el backend (ver params orden/dir en cargar),
+    // así aplica sobre todo el listado y no solo sobre la página actual.
+    const datosFiltrados = useMemo(() => {
+        let lista = [...establecimientos];
+
+        // Filtro por provincia
+        if (filtroProvincia) lista = lista.filter(e => e.provincia === filtroProvincia);
+        // Filtro por ciudad
+        if (filtroCiudad) lista = lista.filter(e => e.ciudad === filtroCiudad);
+
+        return lista;
+    }, [establecimientos, filtroProvincia, filtroCiudad]);
+
+    // ── Toggle de ordenamiento ──
+    const toggleSort = (key) => {
+        if (sortKey !== key) {
+            setSortKey(key);
+            setSortDir("asc");
+        } else if (sortDir === "asc") {
+            setSortDir("desc");
+        } else {
+            setSortKey("");
+            setSortDir("");
+        }
+    };
 
     const limpiarFechas = () => { setFechaDesde(""); setFechaHasta(""); };
 
@@ -167,6 +251,26 @@ const ListarEstablecimientos = () => {
                     )}
                 </div>
 
+                {/* ── Filtro por Provincia ── */}
+                <select
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={filtroProvincia}
+                    onChange={e => { setFiltroProvincia(e.target.value); setFiltroCiudad(""); }}
+                >
+                    <option value="">Todas las provincias</option>
+                    {provinciasUnicas.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+
+                {/* ── Filtro por Ciudad ── */}
+                <select
+                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                    value={filtroCiudad}
+                    onChange={e => setFiltroCiudad(e.target.value)}
+                >
+                    <option value="">Todas las ciudades</option>
+                    {ciudadesUnicas.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+
                 {/* Items por página */}
                 <select
                     className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -196,15 +300,53 @@ const ListarEstablecimientos = () => {
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-200">
                                 <th className="text-left px-3 py-2.5 font-semibold text-gray-600 w-10"></th>
-                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600">Establecimiento</th>
-                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600 hidden md:table-cell">Ubicación</th>
-                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600">Contrato</th>
-                                <th className="text-left px-3 py-2.5 font-semibold text-gray-600 hidden sm:table-cell">Ofertas</th>
+                                <th
+                                    className="text-left px-3 py-2.5 font-semibold text-gray-600 cursor-pointer select-none hover:text-green-700 transition-colors"
+                                    onClick={() => toggleSort("nombre")}
+                                >
+                                    Establecimiento
+                                    <SortIcon direction={sortKey === "nombre" ? sortDir : ""} />
+                                </th>
+                                <th
+                                    className="text-left px-3 py-2.5 font-semibold text-gray-600 hidden md:table-cell cursor-pointer select-none hover:text-green-700 transition-colors"
+                                    onClick={() => toggleSort("ubicacion")}
+                                >
+                                    Ubicación
+                                    <SortIcon direction={sortKey === "ubicacion" ? sortDir : ""} />
+                                </th>
+                                <th
+                                    className="text-left px-3 py-2.5 font-semibold text-gray-600 cursor-pointer select-none hover:text-green-700 transition-colors"
+                                    onClick={() => toggleSort("contrato")}
+                                >
+                                    Contrato
+                                    <SortIcon direction={sortKey === "contrato" ? sortDir : ""} />
+                                </th>
+                                <th
+                                    className="text-left px-3 py-2.5 font-semibold text-gray-600 hidden sm:table-cell cursor-pointer select-none hover:text-green-700 transition-colors"
+                                    onClick={() => toggleSort("ofertas")}
+                                >
+                                    Ofertas
+                                    <SortIcon direction={sortKey === "ofertas" ? sortDir : ""} />
+                                </th>
+                                <th
+                                    className="text-left px-3 py-2.5 font-semibold text-gray-600 hidden sm:table-cell cursor-pointer select-none hover:text-green-700 transition-colors"
+                                    onClick={() => toggleSort("reservas")}
+                                >
+                                    N. reservas
+                                    <SortIcon direction={sortKey === "reservas" ? sortDir : ""} />
+                                </th>
+                                <th
+                                    className="text-left px-3 py-2.5 font-semibold text-gray-600 hidden sm:table-cell cursor-pointer select-none hover:text-green-700 transition-colors"
+                                    onClick={() => toggleSort("noches")}
+                                >
+                                    N. noches
+                                    <SortIcon direction={sortKey === "noches" ? sortDir : ""} />
+                                </th>
                                 <th className="text-left px-3 py-2.5 font-semibold text-gray-600">Acciones</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {establecimientos.map((est, idx) => {
+                            {datosFiltrados.map((est, idx) => {
                                 const badge    = badgeContrato(est.estadoContrato, est.diasRestantes);
                                 const esSel    = panelEst?.id_tbl_establecimiento === est.id_tbl_establecimiento;
                                 const tabInfo  = esSel && panelTab === "info";
@@ -258,6 +400,20 @@ const ListarEstablecimientos = () => {
                                         <td className="px-3 py-2 text-gray-600 hidden sm:table-cell">
                                             <span className={`font-semibold ${est.ofertasActivas > 0 ? "text-green-600" : "text-gray-400"}`}>
                                                 {est.ofertasActivas}
+                                            </span>
+                                        </td>
+
+                                        {/* N. reservas (confirmadas) */}
+                                        <td className="px-3 py-2 text-gray-600 hidden sm:table-cell">
+                                            <span className={`font-semibold ${est.nReservas > 0 ? "text-gray-700" : "text-gray-400"}`}>
+                                                {est.nReservas ?? 0}
+                                            </span>
+                                        </td>
+
+                                        {/* N. noches */}
+                                        <td className="px-3 py-2 text-gray-600 hidden sm:table-cell">
+                                            <span className={`font-semibold ${est.nNoches > 0 ? "text-gray-700" : "text-gray-400"}`}>
+                                                {est.nNoches ?? 0}
                                             </span>
                                         </td>
 

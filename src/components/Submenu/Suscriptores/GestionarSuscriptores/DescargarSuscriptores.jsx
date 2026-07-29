@@ -19,6 +19,8 @@ const DescargarSuscriptores = ({ params }) => {
                     { header: "ID", key: "codigo", format: "text" },
                     { header: "Cédula/RUC", key: "ci_ruc", format: "text" },
                     { header: "Nombres", key: "usuario", format: "text" },
+                    { header: "Ciudad", key: "ciudad", format: "text" },
+                    { header: "Teléfonos", key: "telefonos", format: "text" },
                     { header: "Fecha Inicio", key: "fecha_inicio", format: "date" },
                     { header: "Fecha Fin", key: "fecha_fin", format: "date" },
                     { header: "Patrocinador", key: "vendedor", format: "text" },
@@ -31,11 +33,18 @@ const DescargarSuscriptores = ({ params }) => {
                 const rows = res.suscripciones.map(element => {
                     const fechaFin = new Date(element.fecha_fin.split(" ")[0]);
                     const estado = fechaFin < fActual ? "Expirado" : "Vigente";
+                    const telefonos = element.telefono || element.celular || "";
+
+                    // Aseguramos que las propiedades existan para el loop de más abajo
+                    element.telefonos = telefonos;
+                    element.ciudad = element.ciudad || "";
 
                     return [
                         element.codigo,
                         element.ci_ruc,
                         element.usuario,
+                        element.ciudad,
+                        element.telefonos,
                         element.fecha_inicio.split(" ")[0],
                         element.fecha_fin.split(" ")[0],
                         element.vendedor,
@@ -62,11 +71,11 @@ const DescargarSuscriptores = ({ params }) => {
                 });
 
                 worksheet.addConditionalFormatting({
-                    ref: `A2:I${rows.length + 1}`,
+                    ref: `A2:K${rows.length + 1}`,
                     rules: [
                         {
                             type: 'expression',
-                            formulae: [`=$I2="Expirado"`],
+                            formulae: [`=$K2="Expirado"`],
                             style: {
                                 font: { color: { argb: 'FFFF0000' } }
                             }

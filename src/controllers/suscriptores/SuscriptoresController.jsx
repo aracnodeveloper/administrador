@@ -62,6 +62,7 @@ export const listarPorVencer = async function ({ filtros = {}, pagina = 1 }) {
     if (filtros && filtros.ci_cliente) params.ci_cliente = filtros.ci_cliente;
     if (filtros && filtros.cod_cliente) params.cod_cliente = filtros.cod_cliente;
     if (filtros && filtros.nombre_cliente) params.nombre_cliente = filtros.nombre_cliente;
+    if (filtros && filtros.ciudad) params.ciudad = filtros.ciudad;
     if (filtros && filtros.cantidad) params.cantidad = filtros.cantidad;
     if (filtros && filtros.dias) params.dias = filtros.dias;
     // dias_vencidas puede ser 0 (no incluir vencidas), por eso se valida contra undefined/null/""
@@ -90,8 +91,11 @@ const RISE_LEAD_TYPE_RENOVACION = "e5e5e5e5-0000-0000-0000-000000000099";
 
 /**
  * Convierte una lista de suscripciones por vencer en leads de RISE.
- * Solo necesita nombre (usuario) y cédula (ci_ruc); RISE deduplica por cédula
- * activa, así que repetir la conversión no crea duplicados.
+ * Necesita nombre (usuario) y cédula (ci_ruc) como mínimo; RISE deduplica por
+ * cédula activa, así que repetir la conversión no crea duplicados.
+ * email/telefono/ciudad vienen del backend (listarPorVencer -> tbl_contacto_directorio
+ * y tbl_lugar vía tbl_directorio: email = tipo 1, telefono = tipo 4 o 14,
+ * ciudad = tbl_lugar.desc_lugar) y se mandan si existen.
  * @returns el resultado de RISE: { totalRows, createdCount, failedCount, rows[] }
  */
 export const convertirPorVencerALeads = async function (suscripciones) {
@@ -100,6 +104,9 @@ export const convertirPorVencerALeads = async function (suscripciones) {
       .map((s) => ({
         name: (s.usuario || "").trim(),
         cedula: (s.ci_ruc || "").trim(),
+        email: (s.email || "").trim(),
+        phone: (s.telefono || "").trim(),
+        city: (s.ciudad || "").trim(),
         typeId: RISE_LEAD_TYPE_RENOVACION,
       }))
       .filter((it) => it.name && it.cedula);
@@ -114,6 +121,9 @@ export const convertirPorVencerALeads = async function (suscripciones) {
     throw e;
   }
 };
+// Nota: convertirEnLeadsRise manda upsert=true, así que las filas cuya cédula+tipo
+// ya existan como lead activo se actualizan (rows[].updated === true) en vez de
+// generar el error "ya existe" de antes.
 
 export const comprobarCodigoPromocional = async function (codigo) {
   try {
